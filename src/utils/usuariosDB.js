@@ -57,3 +57,8 @@ export function getInstrutoresPendentes() {
 export function getGestores() {
   return getUsuarios().filter(u => u.perfil === "gestor" && u.aprovado);
 }
+
+// Retorna o gestor master
+export function getGestorMaster() {
+  return MASTER;
+}

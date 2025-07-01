@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+import { Routes, Route, Navigate } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
@@ -19,9 +19,7 @@ export default function App() {
   const [descricaoPainel, setDescricaoPainel] = useState("");
 
   return (
-    <Router>
-      {/* Sidebar e Topbar só aparecem se o usuário estiver logado */}
-      {usuario && <Sidebar perfil={usuario.perfil} setDescricaoPainel={setDescricaoPainel} />}
+    <div className="flex flex-col min-h-screen bg-slate-900">
       {usuario && (
         <Topbar
           nome={usuario.nome}
@@ -30,75 +28,61 @@ export default function App() {
         />
       )}
 
-      {/* Área principal do conteúdo */}
-      <main
-        className={
-          usuario
-            ? "ml-56 pt-16 min-h-screen bg-slate-900 p-8"
-            : "min-h-screen bg-slate-900 p-8"
-        }
-      >
-        {/* Texto informativo exibido fora da sidebar */}
-        {usuario && descricaoPainel && (
-          <div className="mb-4 text-slate-300 italic text-sm border-b border-slate-600 pb-2">
-            {descricaoPainel}
-          </div>
+      <div className="flex flex-1 pt-16">
+        {usuario && (
+          <Sidebar perfil={usuario.perfil} setDescricaoPainel={setDescricaoPainel} />
         )}
 
-        <Routes>
-          {/* Rotas protegidas */}
-          <Route
-            path="/"
-            element={
-              <Protected usuario={usuario}>
-                <GestorDashboard usuario={usuario} />
-              </Protected>
-            }
-          />
-          <Route
-            path="/cadastrar-gestor"
-            element={
-              <Protected usuario={usuario}>
-                <CadastroGestor usuario={usuario} />
-              </Protected>
-            }
-          />
-          <Route
-            path="/aprovacao"
-            element={
-              <Protected usuario={usuario}>
-                <AprovacaoInstrutor usuario={usuario} />
-              </Protected>
-            }
-          />
+        <main className="flex-1 p-8">
+          {usuario && descricaoPainel && (
+            <div className="mb-4 text-slate-300 italic text-sm border-b border-slate-600 pb-2">
+              {descricaoPainel}
+            </div>
+          )}
 
-          {/* Rotas públicas */}
-          <Route
-            path="/login"
-            element={
-              usuario ? (
-                <Navigate to="/" />
-              ) : (
-                <Login onLogin={setUsuario} />
-              )
-            }
-          />
-          <Route
-            path="/cadastro-instrutor"
-            element={
-              <CadastroInstrutor
-                onVoltar={() => (window.location.href = "/login")}
-              />
-            }
-          />
-
-          {/* Rota fallback */}
-          <Route
-            path="*"
-            element={<Navigate to={usuario ? "/" : "/login"} />}
-          />
-        </Routes>
-      </main>
-    </Router>
+          <Routes>
+            <Route
+              path="/"
+              element={
+                <Protected usuario={usuario}>
+                  <GestorDashboard usuario={usuario} />
+                </Protected>
+              }
+            />
+            <Route
+              path="/cadastrar-gestor"
+              element={
+                <Protected usuario={usuario}>
+                  <CadastroGestor usuario={usuario} />
+                </Protected>
+              }
+            />
+            <Route
+              path="/aprovacao"
+              element={
+                <Protected usuario={usuario}>
+                  <AprovacaoInstrutor usuario={usuario} />
+                </Protected>
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                usuario ? (
+                  <Navigate to="/" />
+                ) : (
+                  <Login onLogin={(user) => setUsuario(user)} />
+                )
+              }
+            />
+            <Route
+              path="/cadastro-instrutor"
+              element={<CadastroInstrutor onVoltar={() => (window.location.href = "/login")} />}
+            />
+            <Route path="*" element={<Navigate to={usuario ? "/" : "/login"} />} />
+          </Routes>
+        </main>
+      </div>
+    </div>
   );
 }
