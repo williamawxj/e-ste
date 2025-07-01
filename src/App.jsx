@@ -19,7 +19,7 @@ export default function App() {
   const [descricaoPainel, setDescricaoPainel] = useState("");
 
   return (
-    <div className="flex flex-col min-h-screen bg-slate-900">
+    <div className="min-h-screen bg-slate-900 text-white">
       {usuario && (
         <Topbar
           nome={usuario.nome}
@@ -28,12 +28,12 @@ export default function App() {
         />
       )}
 
-      <div className="flex flex-1 pt-16">
+      <div className="flex pt-16">
         {usuario && (
           <Sidebar perfil={usuario.perfil} setDescricaoPainel={setDescricaoPainel} />
         )}
 
-        <main className="flex-1 p-8">
+        <main className="flex-1 p-8 ml-56">
           {usuario && descricaoPainel && (
             <div className="mb-4 text-slate-300 italic text-sm border-b border-slate-600 pb-2">
               {descricaoPainel}
@@ -71,7 +71,7 @@ export default function App() {
                 usuario ? (
                   <Navigate to="/" />
                 ) : (
-                  <Login onLogin={(user) => setUsuario(user)} />
+                  <Login onLogin={setUsuario} />
                 )
               }
             />
