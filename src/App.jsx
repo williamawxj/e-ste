@@ -1,5 +1,5 @@
-import { useState } from "react";
-import { Routes, Route, Navigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
@@ -8,15 +8,37 @@ import CadastroInstrutor from "./pages/CadastroInstrutor";
 import GestorDashboard from "./pages/GestorDashboard";
 import CadastroGestor from "./pages/CadastroGestor";
 import AprovacaoInstrutor from "./pages/AprovacaoInstrutor";
+import GestorTurmasMaterias from "./pages/GestorTurmasMaterias";
 
 function Protected({ usuario, children }) {
-  if (!usuario) return <Navigate to="/login" />;
+  if (!usuario) return <Navigate to="/login" replace />;
   return children;
 }
 
 export default function App() {
   const [usuario, setUsuario] = useState(null);
   const [descricaoPainel, setDescricaoPainel] = useState("");
+  const navigate = useNavigate();
+
+  // Mantém o usuário logado mesmo após recarregar
+  useEffect(() => {
+    const usuarioSalvo = localStorage.getItem("usuario");
+    if (usuarioSalvo) {
+      setUsuario(JSON.parse(usuarioSalvo));
+    }
+  }, []);
+
+  function handleLogin(usuarioLogado) {
+    localStorage.setItem("usuario", JSON.stringify(usuarioLogado));
+    setUsuario(usuarioLogado);
+    navigate("/"); // Redireciona para a tela inicial após login
+  }
+
+  function handleLogout() {
+    localStorage.removeItem("usuario");
+    setUsuario(null);
+    navigate("/login"); // Redireciona para o login após logout
+  }
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -24,7 +46,7 @@ export default function App() {
         <Topbar
           nome={usuario.nome}
           perfil={usuario.perfil}
-          onLogout={() => setUsuario(null)}
+          onLogout={handleLogout}
         />
       )}
 
@@ -33,7 +55,7 @@ export default function App() {
           <Sidebar perfil={usuario.perfil} setDescricaoPainel={setDescricaoPainel} />
         )}
 
-        <main className="flex-1 p-8 ml-56">
+        <main className={`flex-1 p-8 ${usuario ? "ml-56" : ""}`}>
           {usuario && descricaoPainel && (
             <div className="mb-4 text-slate-300 italic text-sm border-b border-slate-600 pb-2">
               {descricaoPainel}
@@ -69,17 +91,34 @@ export default function App() {
               path="/login"
               element={
                 usuario ? (
-                  <Navigate to="/" />
+                  <Navigate to="/" replace />
                 ) : (
-                  <Login onLogin={setUsuario} />
+                  <Login onLogin={handleLogin} />
                 )
               }
             />
             <Route
               path="/cadastro-instrutor"
-              element={<CadastroInstrutor onVoltar={() => (window.location.href = "/login")} />}
+              element={
+                <CadastroInstrutor
+                  onVoltar={() => navigate("/login")}
+                />
+              }
             />
-            <Route path="*" element={<Navigate to={usuario ? "/" : "/login"} />} />
+            <Route
+              path="/gestor-turmas-materias"
+              element={
+                <Protected usuario={usuario}>
+                  <GestorTurmasMaterias />
+                </Protected>
+              }
+            />
+            <Route
+              path="*"
+              element={
+                <Navigate to={usuario ? "/" : "/login"} replace />
+              }
+            />
           </Routes>
         </main>
       </div>
