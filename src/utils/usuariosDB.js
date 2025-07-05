@@ -37,11 +37,16 @@ export function updateUsuario(email, novoUsuario) {
   localStorage.setItem(CHAVE, JSON.stringify(users));
 }
 
-// Autenticação: retorna user se existir e aprovado
 export function autentica(email, senha) {
-  const users = getUsuarios();
-  return users.find(u => u.email === email && u.senha === senha && u.aprovado);
+  const usuario = getUsuarios().find(u => u.email === email);
+
+  if (!usuario) return null; // Usuário não existe
+  if (usuario.senha !== senha) return null; // Senha incorreta
+  if (!usuario.aprovado) return null; // Ainda não aprovado
+
+  return usuario; // Login válido
 }
+
 
 // Buscar usuário por email
 export function getUsuario(email) {

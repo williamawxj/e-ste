@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { getInstrutoresPendentes, updateUsuario } from "../utils/usuariosDB";
 import Button from "../components/Button";
+import { Navigate } from "react-router-dom";
 
 export default function AprovacaoInstrutor({ usuario }) {
   const [pendentes, setPendentes] = useState([]);
@@ -14,8 +15,8 @@ export default function AprovacaoInstrutor({ usuario }) {
     setPendentes(getInstrutoresPendentes());
   }
 
-  if (usuario.perfil !== "gestor") {
-    return <div className="text-center mt-10 text-red-400">Acesso restrito!</div>;
+  if (!usuario || usuario.perfil !== "gestor") {
+    return <Navigate to="/login" />;
   }
 
   return (

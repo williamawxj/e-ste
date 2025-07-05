@@ -1,6 +1,7 @@
 import { useState } from "react";
 import Button from "../components/Button";
 import { saveUsuario } from "../utils/usuariosDB";
+import { Navigate } from "react-router-dom";
 
 export default function CadastroGestor({ usuario }) {
   const [nome, setNome] = useState("");
@@ -8,8 +9,8 @@ export default function CadastroGestor({ usuario }) {
   const [senha, setSenha] = useState("");
   const [enviado, setEnviado] = useState(false);
 
-  if (usuario.perfil !== "gestor") {
-    return <div className="text-center mt-10 text-red-400">Acesso restrito!</div>;
+  if (!usuario || usuario.perfil !== "gestor") {
+    return <Navigate to="/login" />;
   }
 
   function handleCadastro(e) {

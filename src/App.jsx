@@ -1,3 +1,4 @@
+// App.jsx (com proteção aprimorada por perfil)
 import { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
 
@@ -9,9 +10,17 @@ import GestorDashboard from "./pages/GestorDashboard";
 import CadastroGestor from "./pages/CadastroGestor";
 import AprovacaoInstrutor from "./pages/AprovacaoInstrutor";
 import GestorTurmasMaterias from "./pages/GestorTurmasMaterias";
+import InstrutorPerfil from "./pages/InstrutorPerfil";
 
-function Protected({ usuario, children }) {
+function ProtectedGestor({ usuario, children }) {
   if (!usuario) return <Navigate to="/login" replace />;
+  if (usuario.perfil !== "gestor") return <Navigate to="/perfil-instrutor" replace />;
+  return children;
+}
+
+function ProtectedInstrutor({ usuario, children }) {
+  if (!usuario) return <Navigate to="/login" replace />;
+  if (usuario.perfil !== "instrutor") return <Navigate to="/" replace />;
   return children;
 }
 
@@ -20,7 +29,6 @@ export default function App() {
   const [descricaoPainel, setDescricaoPainel] = useState("");
   const navigate = useNavigate();
 
-  // Mantém o usuário logado mesmo após recarregar
   useEffect(() => {
     const usuarioSalvo = localStorage.getItem("usuario");
     if (usuarioSalvo) {
@@ -31,14 +39,20 @@ export default function App() {
   function handleLogin(usuarioLogado) {
     localStorage.setItem("usuario", JSON.stringify(usuarioLogado));
     setUsuario(usuarioLogado);
-    navigate("/"); // Redireciona para a tela inicial após login
+    if (usuarioLogado.perfil === "gestor") {
+      navigate("/");
+    } else if (usuarioLogado.perfil === "instrutor") {
+      navigate("/perfil-instrutor");
+    }
   }
 
   function handleLogout() {
     localStorage.removeItem("usuario");
     setUsuario(null);
-    navigate("/login"); // Redireciona para o login após logout
+    navigate("/login");
   }
+
+  
 
   return (
     <div className="min-h-screen bg-slate-900 text-white">
@@ -52,7 +66,10 @@ export default function App() {
 
       <div className="flex pt-16">
         {usuario && (
-          <Sidebar perfil={usuario.perfil} setDescricaoPainel={setDescricaoPainel} />
+          <Sidebar
+            perfil={usuario.perfil}
+            setDescricaoPainel={setDescricaoPainel}
+          />
         )}
 
         <main className={`flex-1 p-8 ${usuario ? "ml-56" : ""}`}>
@@ -66,27 +83,48 @@ export default function App() {
             <Route
               path="/"
               element={
-                <Protected usuario={usuario}>
+                <ProtectedGestor usuario={usuario}>
                   <GestorDashboard usuario={usuario} />
-                </Protected>
+                </ProtectedGestor>
               }
             />
+
             <Route
               path="/cadastrar-gestor"
               element={
-                <Protected usuario={usuario}>
+                <ProtectedGestor usuario={usuario}>
                   <CadastroGestor usuario={usuario} />
-                </Protected>
+                </ProtectedGestor>
               }
             />
+
             <Route
               path="/aprovacao"
               element={
-                <Protected usuario={usuario}>
+                <ProtectedGestor usuario={usuario}>
                   <AprovacaoInstrutor usuario={usuario} />
-                </Protected>
+                </ProtectedGestor>
               }
             />
+
+            <Route
+              path="/gestor-turmas-materias"
+              element={
+                <ProtectedGestor usuario={usuario}>
+                  <GestorTurmasMaterias usuario={usuario} />
+                </ProtectedGestor>
+              }
+            />
+
+            <Route
+              path="/perfil-instrutor"
+              element={
+                <ProtectedInstrutor usuario={usuario}>
+                  <InstrutorPerfil usuario={usuario} onUpdate={setUsuario} />
+                </ProtectedInstrutor>
+              }
+            />
+
             <Route
               path="/login"
               element={
@@ -97,29 +135,21 @@ export default function App() {
                 )
               }
             />
+
             <Route
               path="/cadastro-instrutor"
               element={
-                <CadastroInstrutor
-                  onVoltar={() => navigate("/login")}
-                />
+                <CadastroInstrutor onVoltar={() => navigate("/login")} />
               }
             />
-            <Route
-              path="/gestor-turmas-materias"
-              element={
-                <Protected usuario={usuario}>
-                  <GestorTurmasMaterias />
-                </Protected>
-              }
-            />
+
             <Route
               path="*"
-              element={
-                <Navigate to={usuario ? "/" : "/login"} replace />
-              }
+              element={<Navigate to={usuario ? "/" : "/login"} replace />}
             />
           </Routes>
+
+          
         </main>
       </div>
     </div>

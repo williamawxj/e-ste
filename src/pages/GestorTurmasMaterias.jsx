@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
+import { Navigate } from "react-router-dom";
 
-export default function GestorTurmasMaterias() {
+export default function GestorTurmasMaterias({ usuario }) {
   const [turmas, setTurmas] = useState([]);
   const [materias, setMaterias] = useState([]);
   const [turmaNova, setTurmaNova] = useState("");
@@ -61,6 +62,10 @@ export default function GestorTurmasMaterias() {
       novaLista.push({ turma: turmaSelecionada, materias: [materiaSelecionada] });
     }
     salvarAssociacoes(novaLista);
+  }
+
+  if (!usuario || usuario.perfil !== "gestor") {
+    return <Navigate to="/login" />;
   }
 
   return (
