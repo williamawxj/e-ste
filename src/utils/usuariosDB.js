@@ -1,10 +1,13 @@
-// Banco de dados fake para testes, pronto para migrar para backend depois
-
+// src/utils/usuariosDB.js
 const CHAVE = "usuarios-e-ste";
 
-// Sempre inicia com o gestor master
+function normalizarEmail(email) {
+  return (email || "").trim().toLowerCase();
+}
+
+// Gestor master padrão
 const MASTER = {
-  email: "master",
+  email: normalizarEmail("master"),
   senha: "Ad696108",
   nome: "Gestor Master",
   perfil: "gestor",
@@ -14,56 +17,71 @@ const MASTER = {
 // Carregar todos os usuários do localStorage
 export function getUsuarios() {
   const users = JSON.parse(localStorage.getItem(CHAVE)) || [];
-  // Garante que sempre tenha o master
-  if (!users.find(u => u.email === MASTER.email)) {
+
+  // Garante que sempre tenha o gestor master
+  if (!users.find(u => normalizarEmail(u.email) === MASTER.email)) {
     users.push(MASTER);
     localStorage.setItem(CHAVE, JSON.stringify(users));
   }
+
   return users;
 }
 
-// Salvar usuário novo
+// Salvar novo usuário com email normalizado
 export function saveUsuario(usuario) {
   const users = getUsuarios();
-  users.push(usuario);
+
+  const usuarioComEmailLimpo = {
+    ...usuario,
+    email: normalizarEmail(usuario.email)
+  };
+
+  users.push(usuarioComEmailLimpo);
   localStorage.setItem(CHAVE, JSON.stringify(users));
 }
 
-// Atualizar um usuário (por email)
+// Atualizar usuário existente (comparando email já normalizado)
 export function updateUsuario(email, novoUsuario) {
-  let users = getUsuarios().map(u =>
-    u.email === email ? { ...u, ...novoUsuario } : u
+  const emailNormalizado = normalizarEmail(email);
+
+  const usersAtualizados = getUsuarios().map(u =>
+    normalizarEmail(u.email) === emailNormalizado
+      ? { ...u, ...novoUsuario, email: normalizarEmail(novoUsuario.email || u.email) }
+      : u
   );
-  localStorage.setItem(CHAVE, JSON.stringify(users));
+
+  localStorage.setItem(CHAVE, JSON.stringify(usersAtualizados));
 }
 
+// Autenticação com email e senha
 export function autentica(email, senha) {
-  const usuario = getUsuarios().find(u => u.email === email);
+  const emailNormalizado = normalizarEmail(email);
+  const usuario = getUsuarios().find(u => normalizarEmail(u.email) === emailNormalizado);
 
-  if (!usuario) return null; // Usuário não existe
-  if (usuario.senha !== senha) return null; // Senha incorreta
-  if (!usuario.aprovado) return null; // Ainda não aprovado
+  if (!usuario || usuario.senha !== senha || !usuario.aprovado) {
+    return null;
+  }
 
-  return usuario; // Login válido
+  return usuario;
 }
-
 
 // Buscar usuário por email
 export function getUsuario(email) {
-  return getUsuarios().find(u => u.email === email);
+  const emailNormalizado = normalizarEmail(email);
+  return getUsuarios().find(u => normalizarEmail(u.email) === emailNormalizado);
 }
 
-// Lista de instrutores pendentes de aprovação
+// Lista de instrutores pendentes
 export function getInstrutoresPendentes() {
   return getUsuarios().filter(u => u.perfil === "instrutor" && !u.aprovado);
 }
 
-// Lista de gestores (aprovados)
+// Lista de gestores aprovados
 export function getGestores() {
   return getUsuarios().filter(u => u.perfil === "gestor" && u.aprovado);
 }
 
-// Retorna o gestor master
+// Gestor master
 export function getGestorMaster() {
   return MASTER;
 }

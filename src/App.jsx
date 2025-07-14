@@ -11,6 +11,10 @@ import CadastroGestor from "./pages/CadastroGestor";
 import AprovacaoInstrutor from "./pages/AprovacaoInstrutor";
 import GestorTurmasMaterias from "./pages/GestorTurmasMaterias";
 import InstrutorPerfil from "./pages/InstrutorPerfil";
+import PreencherHorarios from "./pages/PreencherHorarios";
+import SelecionarMateriasDesejadas from "./pages/SelecionarMateriasDesejadas";
+
+
 
 function ProtectedGestor({ usuario, children }) {
   if (!usuario) return <Navigate to="/login" replace />;
@@ -88,6 +92,27 @@ export default function App() {
                 </ProtectedGestor>
               }
             />
+            <Route
+              path="/selecionar-materias-desejadas"
+              element={
+                <ProtectedInstrutor usuario={usuario}>
+                  <SelecionarMateriasDesejadas usuario={usuario} />
+                </ProtectedInstrutor>
+              }
+            />
+
+
+            <Route
+              path="/preencher-horarios"
+              element={
+              usuario?.perfil === "gestor" || usuario?.perfil === "instrutor" ? (
+            <PreencherHorarios usuario={usuario} />
+              ) : (
+            <Navigate to="/login" replace />
+              )
+              }
+            />
+
 
             <Route
               path="/cadastrar-gestor"

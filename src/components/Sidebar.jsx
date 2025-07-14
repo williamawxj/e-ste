@@ -1,3 +1,4 @@
+// src/components/Sidebar.jsx
 import { Link } from "react-router-dom";
 
 export default function Sidebar({ perfil, setDescricaoPainel }) {
@@ -5,11 +6,17 @@ export default function Sidebar({ perfil, setDescricaoPainel }) {
     <aside className="fixed top-16 left-0 h-full w-56 bg-slate-800 text-white p-4">
       <h2 className="text-lg font-bold mb-4">Menu</h2>
       <ul className="space-y-2">
+
         {perfil === "gestor" && (
           <>
             <li>
               <Link to="/" onMouseEnter={() => setDescricaoPainel("Painel do Gestor")}>
                 Painel
+              </Link>
+            </li>
+            <li>
+              <Link to="/preencher-horarios" onMouseEnter={() => setDescricaoPainel("Preencher Grade de Horários")}>
+                Preencher Horários
               </Link>
             </li>
             <li>
@@ -31,12 +38,25 @@ export default function Sidebar({ perfil, setDescricaoPainel }) {
         )}
 
         {perfil === "instrutor" && (
-          <li>
-            <Link to="/perfil-instrutor" onMouseEnter={() => setDescricaoPainel("Perfil do Instrutor")}>
-              Meu Perfil
-            </Link>
-          </li>
+          <>
+            <li>
+              <Link to="/perfil-instrutor" onMouseEnter={() => setDescricaoPainel("Perfil do Instrutor")}>
+                Meu Perfil
+              </Link>
+            </li>
+            <li>
+              <Link to="/preencher-horarios" onMouseEnter={() => setDescricaoPainel("Preencher Grade de Horários")}>
+                Preencher Horários
+              </Link>
+            </li>
+            <li>
+              <Link to="/selecionar-materias-desejadas" onMouseEnter={() => setDescricaoPainel("Selecionar Matérias Desejadas")}>
+                Matérias Desejadas
+              </Link>
+            </li>
+          </>
         )}
+        
       </ul>
     </aside>
   );
