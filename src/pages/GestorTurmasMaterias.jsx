@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Navigate } from "react-router-dom";
+import { Navigate, Link } from "react-router-dom";
 
 export default function GestorTurmasMaterias({ usuario }) {
   const [turmas, setTurmas] = useState([]);
@@ -71,6 +71,13 @@ export default function GestorTurmasMaterias({ usuario }) {
   return (
     <div className="text-white max-w-3xl mx-auto">
       <h1 className="text-2xl mb-4 font-bold">Gerenciar Turmas e Matérias</h1>
+
+      <Link
+        to="/gestor-editar-grade"
+        className="inline-block bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded mb-6"
+      >
+        ✏️ Editar Grade de Horários
+      </Link>
 
       <div className="mb-6">
         <h2 className="text-lg font-semibold">Cadastrar nova turma</h2>

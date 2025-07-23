@@ -1,7 +1,7 @@
 // App.jsx (com proteção aprimorada por perfil)
 import { useEffect, useState } from "react";
 import { Routes, Route, Navigate, useNavigate } from "react-router-dom";
-
+import GestorEditarGrade from "./pages/GestorEditarGrade";
 import Sidebar from "./components/Sidebar";
 import Topbar from "./components/Topbar";
 import Login from "./pages/Login";
@@ -101,6 +101,14 @@ export default function App() {
               }
             />
 
+            <Route
+              path="/gestor-editar-grade"
+              element={
+                <ProtectedGestor usuario={usuario}>
+                  <GestorEditarGrade usuario={usuario} />
+                </ProtectedGestor>
+              }
+            />
 
             <Route
               path="/preencher-horarios"
