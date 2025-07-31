@@ -1,6 +1,11 @@
+// src/pages/CadastroInstrutor.jsx
 import { useState } from "react";
 import Button from "../components/Button";
 import { saveUsuario } from "../utils/usuariosDB";
+
+function normalizarEmail(email) {
+  return (email || "").trim().toLowerCase();
+}
 
 export default function CadastroInstrutor({ onVoltar }) {
   const [nome, setNome] = useState("");
@@ -10,13 +15,27 @@ export default function CadastroInstrutor({ onVoltar }) {
 
   function handleCadastro(e) {
     e.preventDefault();
-    saveUsuario({
-      nome,
-      email,
+
+    const emailNormalizado = normalizarEmail(email);
+
+    const novoInstrutor = {
+      nome: nome.trim(),
+      email: emailNormalizado,
       senha,
       perfil: "instrutor",
-      aprovado: false, // Aguarda aprovação do gestor!
-    });
+      aprovado: false,
+      materias: [], // Preparado para armazenar matérias no perfil
+    };
+
+    saveUsuario(novoInstrutor);
+
+    // Atualiza a lista de instrutores aprovados no localStorage
+    const todosUsuarios = JSON.parse(localStorage.getItem("usuarios-e-ste")) || [];
+    const instrutoresAprovados = todosUsuarios.filter(
+      (u) => u.perfil === "instrutor" && u.aprovado
+    );
+    localStorage.setItem("instrutores-aprovados", JSON.stringify(instrutoresAprovados));
+
     setEnviado(true);
   }
 
@@ -32,6 +51,7 @@ export default function CadastroInstrutor({ onVoltar }) {
   return (
     <form onSubmit={handleCadastro} className="w-full max-w-lg mx-auto bg-slate-800 p-6 rounded-lg">
       <h2 className="text-2xl font-bold mb-6 text-center text-blue-400">Cadastro de Instrutor</h2>
+
       <input
         className="w-full mb-3 p-2 rounded bg-slate-700 text-white"
         type="text"
@@ -40,6 +60,7 @@ export default function CadastroInstrutor({ onVoltar }) {
         onChange={e => setNome(e.target.value)}
         required
       />
+
       <input
         className="w-full mb-3 p-2 rounded bg-slate-700 text-white"
         type="email"
@@ -48,6 +69,7 @@ export default function CadastroInstrutor({ onVoltar }) {
         onChange={e => setEmail(e.target.value)}
         required
       />
+
       <input
         className="w-full mb-6 p-2 rounded bg-slate-700 text-white"
         type="password"
@@ -56,8 +78,12 @@ export default function CadastroInstrutor({ onVoltar }) {
         onChange={e => setSenha(e.target.value)}
         required
       />
+
       <Button type="submit" className="w-full font-bold">Enviar cadastro</Button>
-      <button type="button" className="w-full mt-2 text-blue-400 underline" onClick={onVoltar}>Voltar ao login</button>
+
+      <button type="button" className="w-full mt-2 text-blue-400 underline" onClick={onVoltar}>
+        Voltar ao login
+      </button>
     </form>
   );
 }

@@ -5,7 +5,16 @@ export default function GestorDashboard({ usuario }) {
 
   return (
     <div className="text-white text-center mt-20">
-      <h2 className="text-2xl">Selecione uma funcionalidade no menu lateral</h2>
+      <h2 className="text-2xl mb-6">Selecione uma funcionalidade no menu lateral</h2>
+
+      <div className="space-y-4">
+        <a
+          href="/gestor-editar-grade"
+          className="bg-blue-600 hover:bg-blue-700 text-white py-2 px-4 rounded"
+        >
+          Editar Grade de Horários
+        </a>
+      </div>
     </div>
   );
 }

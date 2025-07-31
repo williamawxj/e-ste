@@ -1,3 +1,4 @@
+// CadastroGestor.jsx (com proteção de acesso)
 import { useState } from "react";
 import Button from "../components/Button";
 import { saveUsuario } from "../utils/usuariosDB";
@@ -8,19 +9,13 @@ export default function CadastroGestor({ usuario }) {
   const [senha, setSenha] = useState("");
   const [enviado, setEnviado] = useState(false);
 
-  if (usuario.perfil !== "gestor") {
+  if (!usuario || usuario.perfil !== "gestor") {
     return <div className="text-center mt-10 text-red-400">Acesso restrito!</div>;
   }
 
   function handleCadastro(e) {
     e.preventDefault();
-    saveUsuario({
-      nome,
-      email,
-      senha,
-      perfil: "gestor",
-      aprovado: true,
-    });
+    saveUsuario({ nome, email, senha, perfil: "gestor", aprovado: true });
     setEnviado(true);
   }
 

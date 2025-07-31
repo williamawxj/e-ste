@@ -1,17 +1,16 @@
-export default function Topbar({ nome, perfil, onLogout }) {
+export default function Topbar({ nome, onLogout }) {
   return (
-    <header className="fixed top-0 left-56 h-16 w-[calc(100%-14rem)] bg-slate-800 flex items-center px-8 z-20 shadow">
-      <div className="ml-auto flex items-center gap-4">
-        <span className="text-white text-sm">
-          Usuário: <b>{nome}</b> | Perfil: <b>{perfil === "gestor" ? "Gestor" : "Instrutor"}</b>
-        </span>
+    <div className="fixed top-1 left-1 w-full h-16 bg-slate-700 text-white flex items-center justify-between px-6 shadow z-20">
+      <div className="text-lg font-semibold">E-STE</div>
+      <div className="flex items-center gap-6">
+        <span className="text-sm italic">Logado como: {nome}</span>
         <button
           onClick={onLogout}
-          className="bg-slate-700 hover:bg-slate-600 px-4 py-2 rounded text-white font-bold"
+          className="bg-red-600 hover:bg-red-700 text-white text-sm px-4 py-1 rounded"
         >
-          Sair
+          Trocar de usuário
         </button>
       </div>
-    </header>
+    </div>
   );
 }

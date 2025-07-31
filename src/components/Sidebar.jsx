@@ -1,104 +1,63 @@
-import { useState } from "react";
-import { BrowserRouter as Router, Routes, Route, Navigate } from "react-router-dom";
+// src/components/Sidebar.jsx
+import { Link } from "react-router-dom";
 
-import Sidebar from "./components/Sidebar";
-import Topbar from "./components/Topbar";
-import Login from "./pages/Login";
-import CadastroInstrutor from "./pages/CadastroInstrutor";
-import GestorDashboard from "./pages/GestorDashboard";
-import CadastroGestor from "./pages/CadastroGestor";
-import AprovacaoInstrutor from "./pages/AprovacaoInstrutor";
-
-function Protected({ usuario, children }) {
-  if (!usuario) return <Navigate to="/login" />;
-  return children;
-}
-
-export default function App() {
-  const [usuario, setUsuario] = useState(null);
-  const [descricaoPainel, setDescricaoPainel] = useState("");
-
+export default function Sidebar({ perfil, setDescricaoPainel }) {
   return (
-    <Router>
-      {/* Sidebar e Topbar só aparecem se o usuário estiver logado */}
-      {usuario && <Sidebar perfil={usuario.perfil} setDescricaoPainel={setDescricaoPainel} />}
-      {usuario && (
-        <Topbar
-          nome={usuario.nome}
-          perfil={usuario.perfil}
-          onLogout={() => setUsuario(null)}
-        />
-      )}
+    <aside className="fixed top-16 left-0 h-full w-56 bg-slate-800 text-white p-4">
+      <h2 className="text-lg font-bold mb-4">Menu</h2>
+      <ul className="space-y-2">
 
-      {/* Área principal do conteúdo */}
-      <main
-        className={
-          usuario
-            ? "ml-56 pt-16 min-h-screen bg-slate-900 p-8"
-            : "min-h-screen bg-slate-900 p-8"
-        }
-      >
-        {/* Texto informativo exibido fora da sidebar */}
-        {usuario && descricaoPainel && (
-          <div className="mb-4 text-slate-300 italic text-sm border-b border-slate-600 pb-2">
-            {descricaoPainel}
-          </div>
+        {perfil === "gestor" && (
+          <>
+            <li>
+              <Link to="/" onMouseEnter={() => setDescricaoPainel("Painel do Gestor")}>
+                Painel
+              </Link>
+            </li>
+            <li>
+              <Link to="/preencher-horarios" onMouseEnter={() => setDescricaoPainel("Preencher Grade de Horários")}>
+                Preencher Horários
+              </Link>
+            </li>
+            <li>
+              <Link to="/cadastrar-gestor" onMouseEnter={() => setDescricaoPainel("Cadastrar Gestor")}>
+                Cadastrar Gestor
+              </Link>
+            </li>
+            <li>
+              <Link to="/aprovacao" onMouseEnter={() => setDescricaoPainel("Aprovação de Instrutores")}>
+                Aprovação
+              </Link>
+            </li>
+            <li>
+              <Link to="/gestor-turmas-materias" onMouseEnter={() => setDescricaoPainel("Gerenciar Turmas e Matérias")}>
+                Gerenciar Turmas e Matérias
+              </Link>
+            </li>
+          </>
         )}
 
-        <Routes>
-          {/* Rotas protegidas */}
-          <Route
-            path="/"
-            element={
-              <Protected usuario={usuario}>
-                <GestorDashboard usuario={usuario} />
-              </Protected>
-            }
-          />
-          <Route
-            path="/cadastrar-gestor"
-            element={
-              <Protected usuario={usuario}>
-                <CadastroGestor usuario={usuario} />
-              </Protected>
-            }
-          />
-          <Route
-            path="/aprovacao"
-            element={
-              <Protected usuario={usuario}>
-                <AprovacaoInstrutor usuario={usuario} />
-              </Protected>
-            }
-          />
-
-          {/* Rotas públicas */}
-          <Route
-            path="/login"
-            element={
-              usuario ? (
-                <Navigate to="/" />
-              ) : (
-                <Login onLogin={setUsuario} />
-              )
-            }
-          />
-          <Route
-            path="/cadastro-instrutor"
-            element={
-              <CadastroInstrutor
-                onVoltar={() => (window.location.href = "/login")}
-              />
-            }
-          />
-
-          {/* Rota fallback */}
-          <Route
-            path="*"
-            element={<Navigate to={usuario ? "/" : "/login"} />}
-          />
-        </Routes>
-      </main>
-    </Router>
+        {perfil === "instrutor" && (
+          <>
+            <li>
+              <Link to="/perfil-instrutor" onMouseEnter={() => setDescricaoPainel("Perfil do Instrutor")}>
+                Meu Perfil
+              </Link>
+            </li>
+            <li>
+              <Link to="/preencher-horarios" onMouseEnter={() => setDescricaoPainel("Preencher Grade de Horários")}>
+                Preencher Horários
+              </Link>
+            </li>
+            <li>
+              <Link to="/selecionar-materias-desejadas" onMouseEnter={() => setDescricaoPainel("Selecionar Matérias Desejadas")}>
+                Matérias Desejadas
+              </Link>
+            </li>
+          </>
+        )}
+        
+      </ul>
+    </aside>
   );
 }
