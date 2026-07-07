@@ -495,7 +495,7 @@ export default function PreenchimentoHorarios({ usuario }) {
 
   async function solicitarAuxiliares(item, quantidade) {
     if (horarioTravadoPorConfirmacao(item)) {
-      setMensagem("Esta aula já foi confirmada e está bloqueada para edição.");
+      setMensagem("Esta aula já foi confirmada e está bloqueada para edição. Somente o gestor pode atualizar os auxiliares.");
       return;
     }
     if (item.pendente) {
@@ -938,7 +938,7 @@ function Grade({ horarios, usuario, semana, onPreencher, onAtualizarLocal, onAtu
                         )}
                         {item.tipo === "aula" && item.instrutorId === usuario.id && itemBloqueado && (
                           <div className="mt-2 rounded-lg bg-slate-100 px-2 py-1 text-[11px] font-semibold text-slate-600">
-                            Aula confirmada (bloqueada)
+                            Aula confirmada (bloqueada). Somente o gestor pode atualizar os auxiliares.
                           </div>
                         )}
                       </div>

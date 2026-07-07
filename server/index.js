@@ -3603,7 +3603,7 @@ app.patch("/api/horarios/:id/auxiliares/solicitar", auth, asyncRoute(async (req,
     if (bloqueado) {
       return res.status(403).json({
         ok: false,
-        mensagem: "Esta aula já foi confirmada e está bloqueada para edição. Solicite modificação para a STE.",
+        mensagem: "Esta aula já foi confirmada e está bloqueada para edição. Somente o gestor pode atualizar os auxiliares.",
       });
     }
   }
