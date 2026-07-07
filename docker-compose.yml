@@ -1,0 +1,16 @@
+services:
+  postgres:
+    image: postgres:16
+    container_name: este-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: este
+      POSTGRES_USER: este
+      POSTGRES_PASSWORD: este
+    ports:
+      - "5432:5432"
+    volumes:
+      - este_postgres_data:/var/lib/postgresql/data
+
+volumes:
+  este_postgres_data:
