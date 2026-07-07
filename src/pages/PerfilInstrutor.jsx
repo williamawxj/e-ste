@@ -1,6 +1,7 @@
 ﻿import { useEffect, useState } from "react";
 import Button from "../components/Button";
 import Card from "../components/Card";
+import Field from "../components/Field";
 import MateriasDropdown from "../components/MateriasDropdown";
 import PageShell from "../components/PageShell";
 import { getContatoSte, getContatoSteGestao, getMaterias, salvarContatoSteGestao } from "../utils/academicoDB";
@@ -89,11 +90,21 @@ export default function PerfilInstrutor({ usuario, onUsuarioAtualizado }) {
       <Card className="max-w-xl">
         {mensagem && <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">{mensagem}</div>}
         <form onSubmit={handleSubmit} className="space-y-4">
-          <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" placeholder="Nome completo" value={form.nome} onChange={(e) => atualizar("nome", e.target.value)} required />
-          <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" placeholder="Nome de aparição na grade" value={form.nomeGrade} onChange={(e) => atualizar("nomeGrade", e.target.value)} />
-          <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" placeholder="E-mail/login" value={form.email} onChange={(e) => atualizar("email", e.target.value)} required />
-          <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" placeholder="WhatsApp com DDD" value={form.whatsapp} onChange={(e) => atualizar("whatsapp", e.target.value)} />
-          <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" type="password" placeholder="Nova senha (deixe em branco para manter)" value={form.senha} onChange={(e) => atualizar("senha", e.target.value)} />
+          <Field label="Nome completo">
+            <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" placeholder="Nome completo" value={form.nome} onChange={(e) => atualizar("nome", e.target.value)} required />
+          </Field>
+          <Field label="Nome de aparição na grade">
+            <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" placeholder="Nome de aparição na grade" value={form.nomeGrade} onChange={(e) => atualizar("nomeGrade", e.target.value)} />
+          </Field>
+          <Field label="E-mail/login">
+            <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" placeholder="E-mail/login" value={form.email} onChange={(e) => atualizar("email", e.target.value)} required />
+          </Field>
+          <Field label="WhatsApp com DDD">
+            <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" placeholder="WhatsApp com DDD" value={form.whatsapp} onChange={(e) => atualizar("whatsapp", e.target.value)} />
+          </Field>
+          <Field label="Nova senha (deixe em branco para manter)">
+            <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" type="password" placeholder="Nova senha (deixe em branco para manter)" value={form.senha} onChange={(e) => atualizar("senha", e.target.value)} />
+          </Field>
 
           {usuario.perfil === "gestor" && (
             <label className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700">
@@ -149,13 +160,17 @@ export default function PerfilInstrutor({ usuario, onUsuarioAtualizado }) {
           <div className="mt-1 text-sm text-slate-600">
             Cadastre o WhatsApp da STE para os instrutores usarem no botao "Fale conosco!".
           </div>
-          <form onSubmit={salvarContatoSte} className="mt-3 flex flex-col gap-3 sm:flex-row">
-            <input
-              className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-              placeholder="WhatsApp da STE com DDD"
-              value={whatsappSteGestao}
-              onChange={(event) => setWhatsappSteGestao(event.target.value)}
-            />
+          <form onSubmit={salvarContatoSte} className="mt-3 flex flex-col gap-3 sm:flex-row sm:items-end">
+            <div className="w-full">
+              <Field label="WhatsApp da STE com DDD">
+                <input
+                  className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                  placeholder="WhatsApp da STE com DDD"
+                  value={whatsappSteGestao}
+                  onChange={(event) => setWhatsappSteGestao(event.target.value)}
+                />
+              </Field>
+            </div>
             <Button type="submit">Salvar contato STE</Button>
           </form>
         </Card>
