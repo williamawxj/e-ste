@@ -68,6 +68,14 @@ export default function TurmasMaterias() {
     await recarregar();
   }
 
+  async function excluirMateria(materia) {
+    if (!materia?.id) return;
+    if (!confirm(`Deseja excluir a matéria ${materia.nome}? Ela será removida de todas as turmas vinculadas.`)) return;
+    await removerMateria(materia.id);
+    setMensagem("Matéria excluída com sucesso.");
+    await recarregar();
+  }
+
   function contarMateriasDaTurma(turma) {
     return materias.filter((materia) => (turma.materias || []).includes(materia.id)).length;
   }
@@ -104,7 +112,7 @@ export default function TurmasMaterias() {
                 <span>
                   {materia.nome} {materia.cargaHoraria ? <span className="text-slate-500">({materia.cargaHoraria}h)</span> : null}
                 </span>
-                <Button variant="danger" onClick={async () => { await removerMateria(materia.id); await recarregar(); }}>
+                <Button variant="danger" onClick={() => excluirMateria(materia)}>
                   Remover
                 </Button>
               </div>

@@ -493,13 +493,20 @@ export default function PreenchimentoHorarios({ usuario }) {
     setVersao((v) => v + 1);
   }
 
+  function atualizarAuxiliaresPendente(item, quantidade) {
+    setAulasPendentes((atuais) => atuais.map((aula) => (
+      aula.id === item.id ? { ...aula, auxiliaresSolicitados: quantidade } : aula
+    )));
+    setMensagem("Quantidade de auxiliares registrada. Será enviada ao gestor quando você confirmar os horários.");
+  }
+
   async function solicitarAuxiliares(item, quantidade) {
-    if (horarioTravadoPorConfirmacao(item)) {
-      setMensagem("Esta aula já foi confirmada e está bloqueada para edição. Somente o gestor pode atualizar os auxiliares.");
+    if (item.pendente) {
+      atualizarAuxiliaresPendente(item, quantidade);
       return;
     }
-    if (item.pendente) {
-      setMensagem("Confirme a aula antes de solicitar auxiliares.");
+    if (horarioTravadoPorConfirmacao(item)) {
+      setMensagem("Esta aula já foi confirmada e está bloqueada para edição. Somente o gestor pode atualizar os auxiliares.");
       return;
     }
     const resultado = await solicitarAuxiliaresHorario(item.id, quantidade);
@@ -921,12 +928,10 @@ function Grade({ horarios, usuario, semana, onPreencher, onAtualizarLocal, onAtu
                               />
                               Prova
                             </label>
-                            {!item.pendente && (
-                              <SolicitarAuxiliares
-                                horario={item}
-                                onSolicitar={(quantidade) => onSolicitarAuxiliares(item, quantidade)}
-                              />
-                            )}
+                            <SolicitarAuxiliares
+                              horario={item}
+                              onSolicitar={(quantidade) => onSolicitarAuxiliares(item, quantidade)}
+                            />
                             <button
                               type="button"
                               className="mt-2 rounded-lg bg-red-50 px-2 py-1 text-[11px] font-semibold text-red-700 hover:bg-red-100"

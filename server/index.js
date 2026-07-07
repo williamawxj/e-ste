@@ -2915,6 +2915,7 @@ app.post("/api/horarios/confirmacao", auth, asyncRoute(async (req, res) => {
       const materiaNome = String(aula?.materiaNome || "").trim();
       const local = normalizarLocalInstrucao(aula?.localInstrucao, "aula");
       const prova = Boolean(aula?.prova);
+      const auxiliaresSolicitados = inteiroNaoNegativo(aula?.auxiliaresSolicitados);
 
       if (aulaTurmaId !== turmaId || aulaSemanaId !== semanaId) {
         throw erroConfirmacao(400, "Há aulas pendentes de outra turma/semana. Recarregue a página e tente novamente.");
@@ -2980,7 +2981,7 @@ app.post("/api/horarios/confirmacao", auth, asyncRoute(async (req, res) => {
             instrutor_id, instrutor_nome, tipo, texto, local_instrucao, prova,
             auxiliares, auxiliares_solicitados, auxiliares_autorizados, aula_corrente
           )
-          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'aula', '', $11, $12, '', 0, 0, NULL)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'aula', '', $11, $12, '', $13, 0, NULL)
         `,
         [
           gerarId("horario"),
@@ -2995,6 +2996,7 @@ app.post("/api/horarios/confirmacao", auth, asyncRoute(async (req, res) => {
           req.user.nomeGrade || req.user.nome,
           local,
           prova,
+          auxiliaresSolicitados,
         ]
       );
     }

@@ -12,7 +12,7 @@ import {
   atualizarProvaHorario,
   getHorariosPorTurmaSemana,
   getHorariosPorTurma,
-  getMateriasParaPreenchimento,
+  getMateriasDaTurma,
   getStatusNotificacaoEmail,
   getSemanas,
   getTurmas,
@@ -241,13 +241,13 @@ export default function ModificarHorarios({ usuario }) {
         return;
       }
 
-      const lista = await getMateriasParaPreenchimento(usuario, turmaId);
+      const lista = await getMateriasDaTurma(turmaId);
       setMaterias(lista);
       setMateriaId((atual) => lista.some((materia) => materia.id === atual) ? atual : lista[0]?.id || "");
     }
 
     carregarMaterias().catch(() => setMaterias([]));
-  }, [usuario, turmaId]);
+  }, [turmaId]);
 
   useEffect(() => {
     async function carregarHorarios() {

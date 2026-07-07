@@ -46,6 +46,13 @@ export default function Semanas() {
     await carregar();
   }
 
+  async function excluirSemana(semana) {
+    if (!semana?.id) return;
+    if (!confirm(`Deseja excluir a semana ${semana.nome}? Horários já lançados nessa semana também serão removidos.`)) return;
+    await removerSemana(semana.id);
+    await carregar();
+  }
+
   return (
     <PageShell title="Criação de semanas" subtitle="Cadastre as semanas que serão usadas para preenchimento e visualização da grade.">
       <Card className="max-w-3xl">
@@ -80,7 +87,7 @@ export default function Semanas() {
           <Card key={s.id}>
             <h2 className="font-bold text-slate-950">{s.nome}</h2>
             <p className="mt-1 text-sm text-slate-600">{formatarPeriodoBR(s.inicio, s.fim)}</p>
-            <Button className="mt-4" variant="danger" onClick={async () => { await removerSemana(s.id); await carregar(); }}>Remover</Button>
+            <Button className="mt-4" variant="danger" onClick={() => excluirSemana(s)}>Remover</Button>
           </Card>
         ))}
       </div>
