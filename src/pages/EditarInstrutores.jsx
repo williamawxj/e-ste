@@ -14,6 +14,7 @@ export default function EditarInstrutores({ usuario }) {
   const [chefesMateria, setChefesMateria] = useState([]);
   const [statusMaterias, setStatusMaterias] = useState({});
   const [instrutorAbertoId, setInstrutorAbertoId] = useState("");
+  const [gestorAbertoId, setGestorAbertoId] = useState("");
   const [statusChefia, setStatusChefia] = useState("");
 
   async function recarregar() {
@@ -29,6 +30,9 @@ export default function EditarInstrutores({ usuario }) {
     setChefesMateria(listaChefesMateria);
     setInstrutorAbertoId((atual) => (
       listaInstrutores.some((instrutor) => instrutor.id === atual) ? atual : ""
+    ));
+    setGestorAbertoId((atual) => (
+      listaGestores.some((gestor) => gestor.id === atual) ? atual : ""
     ));
   }
 
@@ -82,6 +86,13 @@ export default function EditarInstrutores({ usuario }) {
         [instrutor.id]: error.message || "Não foi possível salvar as matérias.",
       }));
     }
+  }
+
+  async function atualizarCampoGestor(id, campo, valor) {
+    setGestores((atuais) => atuais.map((gestor) =>
+      gestor.id === id ? { ...gestor, [campo]: valor } : gestor
+    ));
+    await atualizarUsuario(id, { [campo]: valor });
   }
 
   async function excluir(id) {
@@ -325,29 +336,83 @@ export default function EditarInstrutores({ usuario }) {
             <UsersRound size={16} />
             Gestores cadastrados
           </h2>
+          <p className="mt-1 text-sm text-slate-600">
+            Clique no nome do gestor para editar os dados de perfil, incluindo o e-mail cadastrado.
+          </p>
+
           {gestores.length === 0 ? (
             <p className="mt-2 text-sm text-slate-600">Nenhum gestor cadastrado.</p>
           ) : (
             <div className="mt-3 space-y-2">
               {gestores.map((gestor) => (
-                <div
-                  key={gestor.id}
-                  className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800"
-                >
-                  <div>
-                    <div className="font-semibold text-slate-950">{gestor.nome}</div>
-                    <div className="text-xs text-slate-600">
-                      {gestor.email} {gestor.chefeSte ? "| Chefe STE" : "| Gestor"}
-                    </div>
-                  </div>
-                  <Button
+                <div key={gestor.id} className="rounded-xl border border-slate-200 bg-slate-50">
+                  <button
                     type="button"
-                    variant="danger"
-                    onClick={() => excluirGestor(gestor)}
-                    disabled={gestor.id === "master" || gestor.id === usuario?.id}
+                    className="flex w-full items-center justify-between gap-3 px-4 py-3 text-left transition hover:bg-blue-50"
+                    onClick={() => setGestorAbertoId((atual) => atual === gestor.id ? "" : gestor.id)}
                   >
-                    Excluir gestor
-                  </Button>
+                    <div>
+                      <div className="text-sm font-bold text-slate-950">{gestor.nome}</div>
+                      <div className="text-xs text-slate-600">
+                        {gestor.email} {gestor.chefeSte ? "| Chefe STE" : "| Gestor"}
+                      </div>
+                    </div>
+                    <ChevronDown
+                      size={18}
+                      className={`shrink-0 text-slate-600 transition ${gestorAbertoId === gestor.id ? "rotate-180 text-blue-700" : ""}`}
+                    />
+                  </button>
+
+                  {gestorAbertoId === gestor.id && (
+                    <div className="border-t border-slate-200 px-4 py-4">
+                      <div className="grid gap-3 md:grid-cols-2">
+                        <input
+                          className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                          value={gestor.nome}
+                          placeholder="Nome"
+                          onChange={(e) => atualizarCampoGestor(gestor.id, "nome", e.target.value)}
+                        />
+                        <input
+                          className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                          value={gestor.nomeGrade || ""}
+                          placeholder="Nome de aparição na grade"
+                          onChange={(e) => atualizarCampoGestor(gestor.id, "nomeGrade", e.target.value)}
+                        />
+                        <input
+                          className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                          value={gestor.email}
+                          placeholder="E-mail/login"
+                          onChange={(e) => atualizarCampoGestor(gestor.id, "email", e.target.value)}
+                        />
+                        <input
+                          className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                          value={gestor.whatsapp || ""}
+                          placeholder="WhatsApp"
+                          onChange={(e) => atualizarCampoGestor(gestor.id, "whatsapp", e.target.value)}
+                        />
+                      </div>
+
+                      <label className="mt-3 flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm font-semibold text-slate-700">
+                        <input
+                          type="checkbox"
+                          checked={Boolean(gestor.chefeSte)}
+                          onChange={(e) => atualizarCampoGestor(gestor.id, "chefeSte", e.target.checked)}
+                        />
+                        Chefe da STE
+                      </label>
+
+                      <div className="mt-4">
+                        <Button
+                          type="button"
+                          variant="danger"
+                          onClick={() => excluirGestor(gestor)}
+                          disabled={gestor.id === "master" || gestor.id === usuario?.id}
+                        >
+                          Excluir gestor
+                        </Button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

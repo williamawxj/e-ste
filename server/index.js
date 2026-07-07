@@ -928,10 +928,12 @@ async function initDb() {
     `
   );
 
-  const masterEmailConfigurado = getMasterEmailConfig();
-  const existeMaster = masterEmailConfigurado
-    ? await query("SELECT id, senha_hash FROM usuarios WHERE email = $1", [masterEmailConfigurado])
-    : await query("SELECT id, senha_hash FROM usuarios WHERE id = $1", ["master"]);
+  // Busca sempre por id ("master" e a chave primaria fixa da conta) em vez do
+  // e-mail configurado em MASTER_EMAIL: se o gestor master alterar o proprio
+  // e-mail pela tela de perfil, uma busca por e-mail nao encontraria mais a
+  // conta e o INSERT abaixo colidiria com o id "master" ja existente,
+  // derrubando a inicializacao do banco a cada novo cold start.
+  const existeMaster = await query("SELECT id, senha_hash FROM usuarios WHERE id = $1", ["master"]);
 
   if (existeMaster.rowCount === 0) {
     const masterEmail = getMasterEmailConfig({ required: true });
