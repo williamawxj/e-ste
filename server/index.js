@@ -96,7 +96,6 @@ const PORT = Number(process.env.PORT || 3001);
 const SESSION_DAYS = Number(process.env.SESSION_DAYS || 7);
 const LIMITE_BANCO_BYTES = Math.round(1.5 * 1024 * 1024 * 1024);
 const ASSUNTO_EMAIL_AULA_CANCELADA = "E-STE | Aula cancelada";
-const ASSUNTO_EMAIL_AULA_ADICIONADA = "E-STE | Aula adicionada";
 const HORA_MS = 60 * 60 * 1000;
 const DIA_MS = 24 * HORA_MS;
 const DB_KEEPALIVE_INTERVAL_DAYS = inteiroEnvPositivo("DB_KEEPALIVE_INTERVAL_DAYS", 3);
@@ -1427,198 +1426,6 @@ async function getHorarioDetalhadoPorId(id) {
   return result.rows[0] || null;
 }
 
-async function getHorarioDetalhadoPorSlot({ turmaId, semanaId, dia, inicio }) {
-  const result = await query(
-    `
-      SELECT
-        h.*,
-        t.nome AS turma_nome,
-        s.nome AS semana_nome,
-        s.inicio AS semana_inicio,
-        s.fim AS semana_fim,
-        u.email AS instrutor_email,
-        u.whatsapp AS instrutor_whatsapp,
-        u.nome AS usuario_nome,
-        u.nome_grade AS usuario_nome_grade
-      FROM horarios h
-      LEFT JOIN turmas t ON t.id = h.turma_id
-      LEFT JOIN semanas s ON s.id = h.semana_id
-      LEFT JOIN usuarios u ON u.id = h.instrutor_id
-      WHERE h.turma_id = $1
-        AND h.semana_id = $2
-        AND h.dia = $3
-        AND h.inicio = $4
-    `,
-    [turmaId, semanaId, dia, inicio]
-  );
-  return result.rows[0] || null;
-}
-
-async function notificarInstrutorPorEmailEMensagem({
-  row,
-  titulo,
-  tipo,
-  texto,
-  enviarEmail = false,
-  subject,
-}) {
-  if (!row?.instrutor_id) return;
-
-  await criarMensagemInterna({
-    usuarioId: row.instrutor_id,
-    titulo,
-    texto,
-    tipo,
-  });
-
-  if (!enviarEmail) return;
-
-  const email = String(row.instrutor_email || "").trim();
-  await enviarEmailSeguro({
-    to: email,
-    subject: subject || `E-STE | ${titulo}`,
-    text: texto,
-    contexto: tipo || "notificacao_instrutor",
-  });
-}
-
-async function notificarAulaRemovida(row, autorNome, { enviarEmail = false } = {}) {
-  if (!row?.instrutor_id) return;
-
-  const texto = [
-    "Aula cancelada pela STE.",
-    "",
-    descreverAula(row, { incluirDiaSemanaNaData: true }),
-    "",
-    ...linhasOrientacaoCancelamentoAula(),
-    "",
-    `Alteração registrada por: ${autorNome}.`,
-  ].join("\n");
-
-  await notificarInstrutorPorEmailEMensagem({
-    row,
-    titulo: "Aula cancelada",
-    tipo: "cancelamento_aula",
-    texto,
-    enviarEmail,
-    subject: ASSUNTO_EMAIL_AULA_CANCELADA,
-  });
-}
-
-async function notificarAulaAlterada(rowAntes, rowDepois, autorNome) {
-  if (!rowAntes?.instrutor_id) return;
-
-  const turmaNome = rowDepois?.turma_nome || rowAntes?.turma_nome || rowAntes?.turma_id || "Turma";
-  const texto = [
-    "Foi atualizada uma aula em seu nome:",
-    "",
-    "Antes:",
-    descreverAula(rowAntes),
-    "",
-    "Depois:",
-    descreverAula(rowDepois),
-    "",
-    `Alteracao registrada por: ${autorNome}.`,
-    "Acesse o E-STE para consultar a grade atualizada.",
-  ].join("\n");
-
-  await notificarInstrutorPorEmailEMensagem({
-    row: rowAntes,
-    titulo: "Aula alterada",
-    tipo: "alteracao_aula",
-    texto,
-    enviarEmail: false,
-  });
-}
-
-async function notificarAulaAtribuida(row, autorNome) {
-  if (!row?.instrutor_id) return;
-
-  const turmaNome = row.turma_nome || row.turma_id || "Turma";
-  const semanaNome = row.semana_nome || row.semana_id || "Semana";
-  const linkAgenda = criarLinkGoogleAgendaPeriodoAulas([row]);
-  const texto = [
-    "Foi adicionada uma aula em seu nome pela STE.",
-    "",
-    descreverAula(row),
-    "",
-    ...(linkAgenda ? [`Adicionar ao Google Agenda: ${linkAgenda}`, ""] : []),
-    `Vinculada por: ${autorNome}.`,
-    "Acesse o E-STE para consultar a grade atualizada.",
-  ].join("\n");
-
-  await notificarInstrutorPorEmailEMensagem({
-    row,
-    titulo: "Aula adicionada",
-    tipo: "atribuicao_aula",
-    texto,
-    enviarEmail: false,
-    subject: `${ASSUNTO_EMAIL_AULA_ADICIONADA} - ${turmaNome} - ${semanaNome}`,
-  });
-}
-
-function isAulaComInstrutor(row) {
-  return row?.tipo === "aula" && Boolean(row?.instrutor_id);
-}
-
-function aulaFoiAlterada(antes, depois) {
-  if (!antes || !depois) return false;
-  const campos = [
-    "turma_id",
-    "semana_id",
-    "dia",
-    "inicio",
-    "fim",
-    "materia_id",
-    "materia_nome",
-    "instrutor_id",
-    "instrutor_nome",
-    "tipo",
-    "texto",
-    "local_instrucao",
-    "auxiliares",
-  ];
-
-  if (Boolean(antes.prova) !== Boolean(depois.prova)) return true;
-  if (Number(antes.auxiliares_autorizados || 0) !== Number(depois.auxiliares_autorizados || 0)) return true;
-  return campos.some((campo) => String(antes[campo] || "") !== String(depois[campo] || ""));
-}
-
-async function notificarAlteracaoDeDetalhes({ antes, depois, gestor }) {
-  if (gestor?.perfil !== "gestor") return;
-  if (!isAulaComInstrutor(antes)) return;
-  if (!aulaFoiAlterada(antes, depois)) return;
-  await notificarAulaAlterada(antes, depois, gestor?.nome || "Gestor");
-}
-
-async function notificarMudancaDeAula({ antes, depois, usuario, enviarEmailCancelamento = false }) {
-  if (usuario?.perfil !== "gestor") return;
-
-  const autorNome = usuario?.nome || usuario?.nomeGrade || "Usuário";
-  const notificacoes = [];
-  const antesEraAula = isAulaComInstrutor(antes);
-  const depoisEhAula = isAulaComInstrutor(depois);
-
-  if (antesEraAula) {
-    if (!depoisEhAula || antes.instrutor_id !== depois.instrutor_id) {
-      if (usuario?.perfil === "gestor") {
-        notificacoes.push(notificarAulaRemovida(antes, autorNome, { enviarEmail: enviarEmailCancelamento }));
-      }
-    } else if (aulaFoiAlterada(antes, depois)) {
-      notificacoes.push(notificarAulaAlterada(antes, depois, autorNome));
-    }
-  }
-
-  if (depoisEhAula && (!antesEraAula || antes.instrutor_id !== depois.instrutor_id)) {
-    notificacoes.push(notificarAulaAtribuida(depois, autorNome));
-  }
-
-  const resultados = await Promise.allSettled(notificacoes);
-  resultados
-    .filter((resultado) => resultado.status === "rejected")
-    .forEach((resultado) => console.error("Falha ao registrar/enviar notificacao:", resultado.reason));
-}
-
 async function enviarEmailConfirmacaoInstrutor({ turmaId, semanaId, instrutor }) {
   if (!turmaId || !semanaId || !instrutor?.id) return { ok: false, motivo: "parametros_invalidos" };
 
@@ -1988,6 +1795,14 @@ async function enviarEmailsConfirmacaoQts({
     const dados = dadosInstrutoresNotificados.get(instrutorId);
     if (!dados) continue;
 
+    const textoCancelamento = textoEmailAulasCanceladasQts(aulasDoInstrutor);
+    await criarMensagemInterna({
+      usuarioId: instrutorId,
+      titulo: "Aula(s) cancelada(s)",
+      texto: textoCancelamento,
+      tipo: "cancelamento_aula",
+    });
+
     const email = String(dados.email || "").trim();
     if (!smtpAtivo || !isEmailValido(email)) continue;
     instrutoresComEmailValidoSet.add(instrutorId);
@@ -1995,7 +1810,7 @@ async function enviarEmailsConfirmacaoQts({
     const envio = await enviarEmailSeguro({
       to: email,
       subject: ASSUNTO_EMAIL_AULA_CANCELADA,
-      text: textoEmailAulasCanceladasQts(aulasDoInstrutor),
+      text: textoCancelamento,
       contexto: "confirmacao_qts_cancelamento",
     });
     if (envio.ok) emailsEnviados += 1;
@@ -2005,10 +1820,6 @@ async function enviarEmailsConfirmacaoQts({
     const instrutorId = grupo.instrutor.instrutor_id;
     if (!instrutoresAlteradosSet.has(instrutorId)) continue;
     if (aulasCanceladasPorInstrutor.has(instrutorId)) continue;
-
-    const email = String(grupo.instrutor.instrutor_email || "").trim();
-    if (!smtpAtivo || !isEmailValido(email)) continue;
-    instrutoresComEmailValidoSet.add(instrutorId);
 
     const nomeInstrutor = grupo.instrutor.usuario_nome_grade || grupo.instrutor.usuario_nome || "Instrutor";
     const turmaNome = grupo.instrutor.turma_nome || turmaNomeBase;
@@ -2059,6 +1870,17 @@ async function enviarEmailsConfirmacaoQts({
       "Acesse o E-STE para consultar a grade completa.",
     ].join("\n");
 
+    await criarMensagemInterna({
+      usuarioId: instrutorId,
+      titulo: "QTS confirmado",
+      texto,
+      tipo: "confirmacao_qts",
+    });
+
+    const email = String(grupo.instrutor.instrutor_email || "").trim();
+    if (!smtpAtivo || !isEmailValido(email)) continue;
+    instrutoresComEmailValidoSet.add(instrutorId);
+
     const envio = await enviarEmailSeguro({
       to: email,
       subject: `E-STE | QTS confirmado - ${turmaNome} - ${semanaNome}`,
@@ -2074,10 +1896,6 @@ async function enviarEmailsConfirmacaoQts({
     const dados = dadosInstrutoresNotificados.get(instrutorId);
     if (!dados) continue;
 
-    const email = String(dados.email || "").trim();
-    if (!smtpAtivo || !isEmailValido(email)) continue;
-    instrutoresComEmailValidoSet.add(instrutorId);
-
     const nomeInstrutor = dados.nome_grade || dados.nome || "Instrutor";
     const texto = [
       "O QTS foi confirmado pela STE.",
@@ -2091,6 +1909,17 @@ async function enviarEmailsConfirmacaoQts({
       "",
       `Confirmado por: ${gestorNome}`,
     ].join("\n");
+
+    await criarMensagemInterna({
+      usuarioId: instrutorId,
+      titulo: "Aula(s) cancelada(s)",
+      texto,
+      tipo: "cancelamento_aula",
+    });
+
+    const email = String(dados.email || "").trim();
+    if (!smtpAtivo || !isEmailValido(email)) continue;
+    instrutoresComEmailValidoSet.add(instrutorId);
 
     const envio = await enviarEmailSeguro({
       to: email,
@@ -3431,14 +3260,6 @@ app.post("/api/horarios", auth, asyncRoute(async (req, res) => {
   }
 
   const substituir = Boolean(registro.substituir && isGestor);
-  const antes = substituir
-    ? await getHorarioDetalhadoPorSlot({
-        turmaId: registro.turmaId,
-        semanaId: registro.semanaId,
-        dia: registro.dia,
-        inicio: registro.inicio,
-      })
-    : null;
 
   if (!isGestor) {
     registro.tipo = "aula";
@@ -3565,11 +3386,6 @@ app.post("/api/horarios", auth, asyncRoute(async (req, res) => {
 
     const horario = mapHorario(result.rows[0]);
 
-    const depois = await getHorarioDetalhadoPorId(result.rows[0].id);
-    if (isGestor) {
-      await notificarMudancaDeAula({ antes, depois, usuario: req.user });
-    }
-
     res.status(201).json({ ok: true, horario });
   } catch (error) {
     if (error.code === "23505") {
@@ -3658,9 +3474,6 @@ app.patch("/api/horarios/:id/auxiliares", auth, requireGestor, asyncRoute(async 
     [auxiliares, auxiliaresAutorizados, localInstrucao, prova, aulaCorrente, req.params.id]
   );
 
-  const depois = await getHorarioDetalhadoPorId(req.params.id);
-  await notificarAlteracaoDeDetalhes({ antes, depois, gestor: req.user });
-
   res.json({ ok: true, horario: mapHorario(result.rows[0]) });
 }));
 
@@ -3694,8 +3507,6 @@ app.patch("/api/horarios/:id/local", auth, asyncRoute(async (req, res) => {
     "UPDATE horarios SET local_instrucao = $1 WHERE id = $2 RETURNING *",
     [localInstrucao, req.params.id]
   );
-  const depois = await getHorarioDetalhadoPorId(req.params.id);
-  await notificarAlteracaoDeDetalhes({ antes: horario, depois, gestor: req.user });
 
   res.json({ ok: true, horario: mapHorario(result.rows[0]) });
 }));
@@ -3733,8 +3544,6 @@ app.patch("/api/horarios/:id/prova", auth, asyncRoute(async (req, res) => {
     "UPDATE horarios SET prova = $1 WHERE id = $2 RETURNING *",
     [Boolean(req.body.prova), req.params.id]
   );
-  const depois = await getHorarioDetalhadoPorId(req.params.id);
-  await notificarAlteracaoDeDetalhes({ antes: horario, depois, gestor: req.user });
 
   res.json({ ok: true, horario: mapHorario(result.rows[0]) });
 }));
@@ -3769,14 +3578,6 @@ app.delete("/api/horarios/:id", auth, asyncRoute(async (req, res) => {
   }
 
   await query("DELETE FROM horarios WHERE id = $1", [req.params.id]);
-  if (isGestor) {
-    await notificarMudancaDeAula({
-      antes,
-      depois: null,
-      usuario: req.user,
-      enviarEmailCancelamento: req.body?.enviarEmailCancelamento === true,
-    });
-  }
   res.json({ ok: true });
 }));
 

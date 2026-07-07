@@ -18,7 +18,8 @@ export default function Topbar({
   const navigate = useNavigate();
   const [mensagens, setMensagens] = useState([]);
   const [aberto, setAberto] = useState(false);
-  const naoLidas = mensagens.filter((mensagem) => !mensagem.lida).length;
+  const mensagensNaoLidas = mensagens.filter((mensagem) => !mensagem.lida);
+  const naoLidas = mensagensNaoLidas.length;
 
   useEffect(() => {
     let ativo = true;
@@ -119,30 +120,28 @@ export default function Topbar({
               </div>
 
               <div className="max-h-[calc(100vh-9rem)] overflow-y-auto sm:max-h-96">
-                {mensagens.length === 0 ? (
-                  <div className="px-4 py-5 text-sm text-slate-500">Nenhuma mensagem.</div>
+                {mensagensNaoLidas.length === 0 ? (
+                  <div className="px-4 py-5 text-sm text-slate-500">Nenhuma mensagem nova.</div>
                 ) : (
-                  mensagens.map((mensagem) => (
-                    <div key={mensagem.id} className={`border-b border-slate-100 px-4 py-3 last:border-0 ${mensagem.lida ? "bg-white" : "bg-blue-50"}`}>
+                  mensagensNaoLidas.map((mensagem) => (
+                    <div key={mensagem.id} className="border-b border-slate-100 bg-blue-50 px-4 py-3 last:border-0">
                       <div className="flex items-start gap-3">
                         <div className="min-w-0 flex-1">
                           <div className="flex items-center gap-2">
                             <div className="truncate text-sm font-semibold text-slate-950">{mensagem.titulo}</div>
-                            {!mensagem.lida && <span className="h-2 w-2 rounded-full bg-blue-600" />}
+                            <span className="h-2 w-2 rounded-full bg-blue-600" />
                           </div>
                           <div className="mt-1 whitespace-pre-line text-xs leading-relaxed text-slate-600">{mensagem.texto}</div>
                           <div className="mt-2 text-[11px] font-semibold text-slate-400">{formatarDataBR(mensagem.criadoEm)}</div>
                         </div>
-                        {!mensagem.lida && (
-                          <button
-                            type="button"
-                            className="mt-0.5 rounded-lg border border-slate-200 bg-white p-1.5 text-slate-600 hover:border-blue-200 hover:text-blue-700"
-                            onClick={() => marcarComoLida(mensagem.id)}
-                            aria-label="Marcar como lida"
-                          >
-                            <Check size={14} />
-                          </button>
-                        )}
+                        <button
+                          type="button"
+                          className="mt-0.5 rounded-lg border border-slate-200 bg-white p-1.5 text-slate-600 hover:border-blue-200 hover:text-blue-700"
+                          onClick={() => marcarComoLida(mensagem.id)}
+                          aria-label="Marcar como lida"
+                        >
+                          <Check size={14} />
+                        </button>
                       </div>
                     </div>
                   ))
