@@ -182,6 +182,11 @@ export async function solicitarAuxiliaresHorario(id, quantidade) {
   }
 }
 
+export async function getAuxiliaresPendentes() {
+  const response = await apiFetch("/horarios/auxiliares-pendentes");
+  return response.horarios;
+}
+
 export async function atualizarAuxiliaresHorario(id, dados) {
   try {
     const response = await apiFetch(`/horarios/${id}/auxiliares`, {

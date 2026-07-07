@@ -7,6 +7,16 @@ import { getMensagens, marcarMensagemComoLida, marcarMensagensComoLidas } from "
 
 const topbarIconClass = "h-8 w-8 sm:h-7 sm:w-7";
 
+const ROTA_POR_TIPO_MENSAGEM = {
+  cadastro_instrutor_pendente: "/aprovacao",
+  solicitacao_modificacao_horario: "/solicitar-modificacao-ste",
+  confirmacao_horario: "/modificar-horarios",
+  cancelamento_aula: "/horarios-por-turma",
+  confirmacao_qts: "/horarios-por-turma",
+  solicitacao_gestor_aulas: "/comunicacoes-gestor",
+  solicitacao_auxiliares: "/auxiliares-pendentes",
+};
+
 export default function Topbar({
   nome,
   perfil,
@@ -46,6 +56,13 @@ export default function Topbar({
     setMensagens((atuais) => atuais.map((mensagem) => (
       mensagem.id === id ? { ...mensagem, ...atualizada } : mensagem
     )));
+  }
+
+  function abrirNotificacao(mensagem) {
+    marcarComoLida(mensagem.id);
+    setAberto(false);
+    const rota = ROTA_POR_TIPO_MENSAGEM[mensagem.tipo];
+    if (rota) navigate(rota);
   }
 
   async function marcarTodasComoLidas() {
@@ -123,28 +140,38 @@ export default function Topbar({
                 {mensagensNaoLidas.length === 0 ? (
                   <div className="px-4 py-5 text-sm text-slate-500">Nenhuma mensagem nova.</div>
                 ) : (
-                  mensagensNaoLidas.map((mensagem) => (
-                    <div key={mensagem.id} className="border-b border-slate-100 bg-blue-50 px-4 py-3 last:border-0">
-                      <div className="flex items-start gap-3">
-                        <div className="min-w-0 flex-1">
-                          <div className="flex items-center gap-2">
-                            <div className="truncate text-sm font-semibold text-slate-950">{mensagem.titulo}</div>
-                            <span className="h-2 w-2 rounded-full bg-blue-600" />
-                          </div>
-                          <div className="mt-1 whitespace-pre-line text-xs leading-relaxed text-slate-600">{mensagem.texto}</div>
-                          <div className="mt-2 text-[11px] font-semibold text-slate-400">{formatarDataBR(mensagem.criadoEm)}</div>
+                  mensagensNaoLidas.map((mensagem) => {
+                    const temAcao = Boolean(ROTA_POR_TIPO_MENSAGEM[mensagem.tipo]);
+                    return (
+                      <div key={mensagem.id} className="border-b border-slate-100 bg-blue-50 px-4 py-3 last:border-0">
+                        <div className="flex items-start gap-3">
+                          <button
+                            type="button"
+                            className={`min-w-0 flex-1 text-left ${temAcao ? "cursor-pointer" : "cursor-default"}`}
+                            onClick={() => abrirNotificacao(mensagem)}
+                          >
+                            <div className="flex items-center gap-2">
+                              <div className="truncate text-sm font-semibold text-slate-950">{mensagem.titulo}</div>
+                              <span className="h-2 w-2 rounded-full bg-blue-600" />
+                            </div>
+                            <div className="mt-1 whitespace-pre-line text-xs leading-relaxed text-slate-600">{mensagem.texto}</div>
+                            <div className="mt-2 text-[11px] font-semibold text-slate-400">{formatarDataBR(mensagem.criadoEm)}</div>
+                            {temAcao && (
+                              <div className="mt-1 text-[11px] font-semibold text-blue-700">Clique para abrir</div>
+                            )}
+                          </button>
+                          <button
+                            type="button"
+                            className="mt-0.5 shrink-0 rounded-lg border border-slate-200 bg-white p-1.5 text-slate-600 hover:border-blue-200 hover:text-blue-700"
+                            onClick={() => marcarComoLida(mensagem.id)}
+                            aria-label="Marcar como lida"
+                          >
+                            <Check size={14} />
+                          </button>
                         </div>
-                        <button
-                          type="button"
-                          className="mt-0.5 rounded-lg border border-slate-200 bg-white p-1.5 text-slate-600 hover:border-blue-200 hover:text-blue-700"
-                          onClick={() => marcarComoLida(mensagem.id)}
-                          aria-label="Marcar como lida"
-                        >
-                          <Check size={14} />
-                        </button>
                       </div>
-                    </div>
-                  ))
+                    );
+                  })
                 )}
               </div>
             </div>

@@ -17,6 +17,7 @@ const EditarInstrutores = lazy(() => import("./pages/EditarInstrutores"));
 const TurmasMaterias = lazy(() => import("./pages/TurmasMaterias"));
 const Semanas = lazy(() => import("./pages/Semanas"));
 const ModificarHorarios = lazy(() => import("./pages/ModificarHorarios"));
+const AuxiliaresPendentes = lazy(() => import("./pages/AuxiliaresPendentes"));
 const PreenchimentoHorarios = lazy(() => import("./pages/PreenchimentoHorarios"));
 const HorariosPorTurma = lazy(() => import("./pages/HorariosPorTurma"));
 const EditarPerfilGestor = lazy(() => import("./pages/EditarPerfilGestor"));
@@ -190,6 +191,7 @@ export default function App() {
           <Route path="/turmas-materias" element={<RotaGestor usuario={usuario}><TurmasMaterias usuario={usuario} /></RotaGestor>} />
           <Route path="/carga-horaria" element={<RotaGestor usuario={usuario}><CargaHorariaTurmas usuario={usuario} /></RotaGestor>} />
           <Route path="/modificar-horarios" element={<RotaGestor usuario={usuario}><ModificarHorarios usuario={usuario} /></RotaGestor>} />
+          <Route path="/auxiliares-pendentes" element={<RotaGestor usuario={usuario}><AuxiliaresPendentes usuario={usuario} /></RotaGestor>} />
           <Route path="/semanas" element={<RotaGestor usuario={usuario}><Semanas usuario={usuario} /></RotaGestor>} />
           <Route path="/banco-dados" element={<RotaGestor usuario={usuario}><BancoDadosGestao usuario={usuario} /></RotaGestor>} />
           <Route path="/comunicacoes-gestor" element={<RotaGestor usuario={usuario}><ComunicacoesGestor usuario={usuario} /></RotaGestor>} />

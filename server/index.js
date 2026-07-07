@@ -3447,6 +3447,33 @@ app.patch("/api/horarios/:id/auxiliares/solicitar", auth, asyncRoute(async (req,
   res.json({ ok: true, horario: mapHorario(result.rows[0]) });
 }));
 
+app.get("/api/horarios/auxiliares-pendentes", auth, requireGestor, asyncRoute(async (_req, res) => {
+  const result = await query(
+    `
+      SELECT
+        h.*,
+        t.nome AS turma_nome,
+        s.nome AS semana_nome
+      FROM horarios h
+      JOIN turmas t ON t.id = h.turma_id
+      JOIN semanas s ON s.id = h.semana_id
+      WHERE h.tipo = 'aula'
+        AND h.auxiliares_solicitados > 0
+        AND h.auxiliares_autorizados < h.auxiliares_solicitados
+      ORDER BY s.inicio DESC, h.dia, h.inicio
+    `
+  );
+
+  res.json({
+    ok: true,
+    horarios: result.rows.map((row) => ({
+      ...mapHorario(row),
+      turmaNome: row.turma_nome,
+      semanaNome: row.semana_nome,
+    })),
+  });
+}));
+
 app.patch("/api/horarios/:id/auxiliares", auth, requireGestor, asyncRoute(async (req, res) => {
   const antes = await getHorarioDetalhadoPorId(req.params.id);
   if (!antes) {

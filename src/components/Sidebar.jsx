@@ -12,6 +12,7 @@ import {
   Home,
   Mail,
   Settings,
+  UserPlus,
   UserRound,
   UsersRound,
 } from "lucide-react";
@@ -94,6 +95,7 @@ export default function Sidebar({ perfil, visivel = true, onNavigate }) {
 
               <SectionLabel>Operação</SectionLabel>
               <NavLink to="/modificar-horarios" className={linkClass}><CalendarDays size={16} /> Modificar horários</NavLink>
+              <NavLink to="/auxiliares-pendentes" className={linkClass}><UserPlus size={16} /> Auxiliares pendentes</NavLink>
               <NavLink to="/carga-horaria" className={linkClass}><BarChart3 size={16} /> Carga horária</NavLink>
               <NavLink to="/comunicacoes-gestor" className={linkClass}><Mail size={16} /> Comunicações</NavLink>
               <NavLink to="/banco-dados" className={linkClass}><Database size={16} /> Banco e backup</NavLink>
