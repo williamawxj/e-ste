@@ -2905,6 +2905,7 @@ app.post("/api/horarios/confirmacao", auth, asyncRoute(async (req, res) => {
     await client.query("BEGIN");
 
     const chavesPendentes = new Set();
+    const aulasComAuxiliares = [];
     for (const aula of aulasPendentes) {
       const aulaTurmaId = String(aula?.turmaId || turmaId).trim();
       const aulaSemanaId = String(aula?.semanaId || semanaId).trim();
@@ -2916,6 +2917,9 @@ app.post("/api/horarios/confirmacao", auth, asyncRoute(async (req, res) => {
       const local = normalizarLocalInstrucao(aula?.localInstrucao, "aula");
       const prova = Boolean(aula?.prova);
       const auxiliaresSolicitados = inteiroNaoNegativo(aula?.auxiliaresSolicitados);
+      if (auxiliaresSolicitados > 0) {
+        aulasComAuxiliares.push({ dia, inicio, fim, materiaNome, quantidade: auxiliaresSolicitados });
+      }
 
       if (aulaTurmaId !== turmaId || aulaSemanaId !== semanaId) {
         throw erroConfirmacao(400, "Há aulas pendentes de outra turma/semana. Recarregue a página e tente novamente.");
@@ -3069,6 +3073,26 @@ app.post("/api/horarios/confirmacao", auth, asyncRoute(async (req, res) => {
       "Após a confirmação é necessário contatar a STE para realizar modificações na grade.",
     ].join("\n"),
   });
+
+  if (aulasComAuxiliares.length > 0) {
+    const linhasAuxiliares = aulasComAuxiliares.map((item) => (
+      `- ${item.dia} ${item.inicio} - ${item.fim} | ${item.materiaNome || "Aula"} | Quantidade: ${item.quantidade}`
+    ));
+    await criarMensagemParaGestores({
+      titulo: "Solicitação de auxiliares",
+      tipo: "solicitacao_auxiliares",
+      texto: [
+        `${req.user.nome} solicitou auxiliares ao confirmar horários.`,
+        "",
+        `Turma: ${turmaNome}`,
+        `Semana: ${semanaNome}`,
+        "",
+        ...linhasAuxiliares,
+        "",
+        "Acesse Auxiliares pendentes para autorizar a quantidade.",
+      ].join("\n"),
+    });
+  }
 
   const envioEmailInstrutor = await enviarEmailConfirmacaoInstrutor({
     turmaId,
