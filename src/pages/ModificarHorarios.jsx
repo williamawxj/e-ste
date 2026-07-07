@@ -170,6 +170,15 @@ export default function ModificarHorarios({ usuario }) {
       const listaTurmas = turmasRes.value || [];
       const listaSemanas = semanasRes.value || [];
       const listaInstrutores = instrutoresRes.value || [];
+      if (usuario?.perfil === "gestor" && !listaInstrutores.some((item) => item.id === usuario.id)) {
+        listaInstrutores.push({
+          id: usuario.id,
+          nome: usuario.nome,
+          nomeGrade: usuario.nomeGrade || usuario.nome,
+          whatsapp: usuario.whatsapp || "",
+          materias: usuario.materias || [],
+        });
+      }
       const email = emailRes.status === "fulfilled"
         ? emailRes.value
         : {

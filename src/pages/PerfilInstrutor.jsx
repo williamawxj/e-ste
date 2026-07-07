@@ -102,9 +102,11 @@ export default function PerfilInstrutor({ usuario, onUsuarioAtualizado }) {
             </label>
           )}
 
-          {usuario.perfil === "instrutor" && (
+          {(usuario.perfil === "instrutor" || usuario.perfil === "gestor") && (
             <div>
-              <p className="mb-2 text-sm font-semibold text-slate-700">Matérias que leciona</p>
+              <p className="mb-2 text-sm font-semibold text-slate-700">
+                {usuario.perfil === "gestor" ? "Matérias que também leciona" : "Matérias que leciona"}
+              </p>
               <MateriasDropdown
                 materias={materias}
                 selecionadas={form.materias}

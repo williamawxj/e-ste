@@ -1040,7 +1040,7 @@ async function instrutorPodeLecionarMateria(instrutorId, materiaId) {
       JOIN usuario_materias um ON um.usuario_id = u.id
       WHERE u.id = $1
         AND um.materia_id = $2
-        AND u.perfil = 'instrutor'
+        AND u.perfil IN ('instrutor', 'gestor')
         AND u.aprovado = TRUE
       LIMIT 1
     `,
