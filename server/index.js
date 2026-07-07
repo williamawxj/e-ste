@@ -2900,12 +2900,12 @@ app.post("/api/horarios/confirmacao", auth, asyncRoute(async (req, res) => {
   };
 
   let result;
+  const aulasComAuxiliares = [];
   const client = await pool.connect();
   try {
     await client.query("BEGIN");
 
     const chavesPendentes = new Set();
-    const aulasComAuxiliares = [];
     for (const aula of aulasPendentes) {
       const aulaTurmaId = String(aula?.turmaId || turmaId).trim();
       const aulaSemanaId = String(aula?.semanaId || semanaId).trim();
