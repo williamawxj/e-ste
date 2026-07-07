@@ -88,7 +88,7 @@ export default function PreenchimentoHorarios({ usuario }) {
 
   const turmaSelecionada = turmas.find((turma) => turma.id === turmaId);
   const semanaSelecionada = semanas.find((semana) => semana.id === semanaId);
-  const ehInstrutor = usuario?.perfil === "instrutor";
+  const ehInstrutor = usuario?.perfil === "instrutor" || usuario?.perfil === "gestor";
   const temAulasPendentes = ehInstrutor && aulasPendentes.length > 0;
   const horariosVisiveis = useMemo(
     () => combinarHorariosComPendentes(horarios, aulasPendentes),

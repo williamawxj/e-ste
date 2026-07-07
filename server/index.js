@@ -3036,8 +3036,8 @@ app.get("/api/horarios/confirmacao", auth, asyncRoute(async (req, res) => {
     return res.status(400).json({ ok: false, mensagem: "Informe turma e semana para consultar confirmação." });
   }
 
-  const instrutorId = req.user.perfil === "gestor"
-    ? String(req.query.instrutorId || "")
+  const instrutorId = req.query.instrutorId
+    ? String(req.query.instrutorId)
     : req.user.id;
 
   if (!instrutorId) {
@@ -3053,7 +3053,7 @@ app.get("/api/horarios/confirmacao", auth, asyncRoute(async (req, res) => {
 }));
 
 app.post("/api/horarios/confirmacao", auth, asyncRoute(async (req, res) => {
-  if (req.user.perfil !== "instrutor") {
+  if (req.user.perfil !== "instrutor" && req.user.perfil !== "gestor") {
     return res.status(403).json({ ok: false, mensagem: "Somente instrutores podem confirmar horários." });
   }
 
