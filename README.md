@@ -1,4 +1,6 @@
 # E-STE - versao reconstruida
+<!-- teste-git-vercel-autodeploy -->
+
 
 Sistema React + Vite + Tailwind para gestao de horarios, instrutores e gestores.
 
