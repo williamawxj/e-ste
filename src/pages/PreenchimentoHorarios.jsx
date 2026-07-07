@@ -611,6 +611,7 @@ export default function PreenchimentoHorarios({ usuario }) {
         materiaNome: aula.materiaNome,
         localInstrucao: aula.localInstrucao,
         prova: Boolean(aula.prova),
+        auxiliaresSolicitados: aula.auxiliaresSolicitados,
       })),
     });
     setConfirmando(false);
