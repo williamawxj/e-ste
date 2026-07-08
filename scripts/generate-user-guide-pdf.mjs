@@ -217,7 +217,7 @@ function addToc() {
     ensureSpace(8);
     const title = cleanInline(item.title);
     doc.text(title, page.marginX, y);
-    doc.text(String(item.page + 1), page.width - page.marginX, y, { align: "right" });
+    doc.text(String(item.page), page.width - page.marginX, y, { align: "right" });
     y += 6.2;
   });
 }
@@ -323,7 +323,33 @@ const markdown = fs.readFileSync(sourcePath, "utf8");
 addCover();
 newPage();
 parseMarkdown(markdown);
+
+// Desenha um rascunho do sumario ao final so para medir quantas paginas ele
+// ocupa (depende da quantidade de secoes, calculada durante o parse acima).
+const totalPaginasConteudo = doc.getNumberOfPages();
 addToc();
+const paginasSumario = doc.getNumberOfPages() - totalPaginasConteudo;
+
+// Remove o rascunho: o sumario real sera desenhado logo apos a capa, nao
+// no final do documento.
+for (let i = 0; i < paginasSumario; i += 1) {
+  doc.deletePage(totalPaginasConteudo + 1);
+}
+
+// Como o sumario passa a ocupar paginas logo apos a capa, o conteudo (e os
+// numeros de pagina ja registrados em cada secao) e empurrado para frente.
+toc.forEach((item) => {
+  item.page += paginasSumario;
+});
+
+addToc();
+
+// Move as paginas do sumario recem-desenhadas (no final) para logo apos a
+// capa, preservando a ordem entre elas.
+for (let i = 0; i < paginasSumario; i += 1) {
+  doc.movePage(doc.getNumberOfPages(), 2);
+}
+
 addHeadersAndFooters();
 
 doc.save(outputPath);

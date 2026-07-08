@@ -597,10 +597,9 @@ export default function ModificarHorarios({ usuario }) {
       return;
     }
 
-    // A confirmacao pode ter padronizado numeros de "aula corrente" no
-    // servidor (server/index.js: padronizarNumeracaoAulasQts). Busca os
-    // horarios atualizados antes de gerar o PDF e atualizar a tela, para nao
-    // exportar/exibir numeracao desatualizada.
+    // A confirmacao pode ter aplicado exclusoes pendentes no servidor. Busca
+    // os horarios atualizados antes de gerar o PDF e atualizar a tela, para
+    // nao exportar/exibir dados desatualizados.
     const [horariosSemanaAtualizados, horariosTurmaAtualizados] = await Promise.all([
       getHorariosPorTurmaSemana(turmaId, semanaId),
       getHorariosPorTurma(turmaId),
