@@ -149,6 +149,20 @@ CREATE TABLE IF NOT EXISTS redefinicoes_senha (
 CREATE INDEX IF NOT EXISTS idx_redefinicoes_senha_usuario_id
   ON redefinicoes_senha (usuario_id);
 
+CREATE TABLE IF NOT EXISTS registros_auditoria (
+  id TEXT PRIMARY KEY,
+  usuario_id TEXT REFERENCES usuarios(id) ON DELETE SET NULL,
+  usuario_nome TEXT NOT NULL DEFAULT '',
+  acao TEXT NOT NULL,
+  detalhes JSONB NOT NULL DEFAULT '{}'::jsonb,
+  criado_em TIMESTAMPTZ NOT NULL DEFAULT NOW()
+);
+
+CREATE INDEX IF NOT EXISTS idx_registros_auditoria_criado_em
+  ON registros_auditoria (criado_em DESC);
+CREATE INDEX IF NOT EXISTS idx_registros_auditoria_acao
+  ON registros_auditoria (acao);
+
 CREATE TABLE IF NOT EXISTS configuracoes_sistema (
   chave TEXT PRIMARY KEY,
   valor TEXT NOT NULL DEFAULT '',

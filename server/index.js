@@ -1342,6 +1342,21 @@ function mapSolicitacaoModificacaoHorario(row) {
   };
 }
 
+// Registro somente de bastidor (nao ha tela no menu para consultar isso
+// hoje): guarda quem fez o que, para acelerar investigacoes futuras sobre
+// acoes sensiveis. Nunca deve interromper a acao principal se falhar.
+async function registrarAuditoria({ usuarioId = null, usuarioNome = "", acao, detalhes = {} }) {
+  try {
+    await query(
+      `INSERT INTO registros_auditoria (id, usuario_id, usuario_nome, acao, detalhes)
+       VALUES ($1, $2, $3, $4, $5)`,
+      [gerarId("auditoria"), usuarioId, usuarioNome, acao, JSON.stringify(detalhes)]
+    );
+  } catch (error) {
+    console.error("Falha ao registrar auditoria:", error);
+  }
+}
+
 async function criarMensagemInterna({ usuarioId, titulo, texto, tipo = "info", referenciaId = "" }) {
   if (!usuarioId) return;
   await query(
@@ -2179,6 +2194,12 @@ app.post("/api/auth/redefinir-senha", asyncRoute(async (req, res) => {
   await query("UPDATE usuarios SET senha_hash = $1 WHERE id = $2", [await hashPassword(senha), usuarioId]);
   await query("UPDATE redefinicoes_senha SET usado_em = NOW() WHERE token_hash = $1", [tokenHash]);
   await query("DELETE FROM sessoes WHERE usuario_id = $1", [usuarioId]);
+  await registrarAuditoria({
+    usuarioId,
+    usuarioNome: "",
+    acao: "redefinir_senha",
+    detalhes: { via: "link_email" },
+  });
 
   res.json({ ok: true, mensagem: "Senha redefinida com sucesso. Faça login com a nova senha." });
 }));
@@ -2657,6 +2678,7 @@ app.patch("/api/usuarios/:id", auth, asyncRoute(async (req, res) => {
     return res.status(403).json({ ok: false, mensagem: "Acesso negado." });
   }
 
+  const antes = await getUsuarioPorId(req.params.id);
   const campos = [];
   const valores = [];
   const addCampo = (coluna, valor) => {
@@ -2666,7 +2688,8 @@ app.patch("/api/usuarios/:id", auth, asyncRoute(async (req, res) => {
 
   if (req.body.nome !== undefined) addCampo("nome", String(req.body.nome).trim());
   if (req.body.nomeGrade !== undefined) addCampo("nome_grade", String(req.body.nomeGrade).trim());
-  if (req.body.email !== undefined) addCampo("email", normalizarEmail(req.body.email));
+  const novoEmail = req.body.email !== undefined ? normalizarEmail(req.body.email) : undefined;
+  if (novoEmail !== undefined) addCampo("email", novoEmail);
   if (req.body.whatsapp !== undefined) addCampo("whatsapp", String(req.body.whatsapp || "").trim());
   if (req.body.senha) addCampo("senha_hash", await hashPassword(req.body.senha));
   if (req.user.perfil === "gestor" && req.body.chefeSte !== undefined) addCampo("chefe_ste", Boolean(req.body.chefeSte));
@@ -2686,6 +2709,20 @@ app.patch("/api/usuarios/:id", auth, asyncRoute(async (req, res) => {
 
   if (req.body.materias !== undefined) {
     await setUsuarioMaterias(req.params.id, req.body.materias);
+  }
+
+  if (novoEmail !== undefined && novoEmail !== antes?.email) {
+    await registrarAuditoria({
+      usuarioId: req.user.id,
+      usuarioNome: req.user.nome,
+      acao: "alterar_email",
+      detalhes: {
+        alvoId: req.params.id,
+        alvoNome: antes?.nome || "",
+        emailAnterior: antes?.email || "",
+        emailNovo: novoEmail,
+      },
+    });
   }
 
   res.json({ ok: true, usuario: await getUsuarioPorId(req.params.id) });
@@ -2712,8 +2749,20 @@ app.delete("/api/usuarios/:id", auth, requireGestor, asyncRoute(async (req, res)
   if (req.params.id === "master") {
     return res.status(400).json({ ok: false, mensagem: "O gestor master não pode ser removido." });
   }
+  const alvo = await getUsuarioPorId(req.params.id);
   await resolverAlertasCadastroInstrutor(req.params.id);
   await query("DELETE FROM usuarios WHERE id = $1", [req.params.id]);
+  await registrarAuditoria({
+    usuarioId: req.user.id,
+    usuarioNome: req.user.nome,
+    acao: "excluir_usuario",
+    detalhes: {
+      alvoId: req.params.id,
+      alvoNome: alvo?.nome || "",
+      alvoEmail: alvo?.email || "",
+      alvoPerfil: alvo?.perfil || "",
+    },
+  });
   res.json({ ok: true });
 }));
 
@@ -3834,6 +3883,23 @@ app.delete("/api/horarios/:id", auth, asyncRoute(async (req, res) => {
   }
 
   await query("DELETE FROM horarios WHERE id = $1", [req.params.id]);
+  await registrarAuditoria({
+    usuarioId: req.user.id,
+    usuarioNome: req.user.nome,
+    acao: "excluir_horario",
+    detalhes: {
+      horarioId: req.params.id,
+      turmaId: antes.turma_id,
+      turmaNome: antes.turma_nome,
+      semanaId: antes.semana_id,
+      semanaNome: antes.semana_nome,
+      dia: antes.dia,
+      inicio: antes.inicio,
+      tipo: antes.tipo,
+      materiaNome: antes.materia_nome,
+      instrutorId: antes.instrutor_id,
+    },
+  });
   res.json({ ok: true });
 }));
 
@@ -4140,6 +4206,12 @@ app.post("/api/admin/banco/esvaziar-grades", auth, requireGestor, asyncRoute(asy
 
   const removidos = await limparGradesPreenchidas();
   const status = await getStatusArmazenamentoBanco();
+  await registrarAuditoria({
+    usuarioId: req.user.id,
+    usuarioNome: req.user.nome,
+    acao: "esvaziar_grades",
+    detalhes: removidos,
+  });
 
   res.json({
     ok: true,
