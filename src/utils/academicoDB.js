@@ -364,6 +364,17 @@ export async function solicitarModificacaoHorario({ turmaId, semanaId, motivo })
   }
 }
 
+export async function alternarStatusSolicitacaoModificacao(id) {
+  try {
+    const response = await apiFetch(`/solicitacoes-modificacao-horario/${id}/status`, {
+      method: "PATCH",
+    });
+    return { ok: true, solicitacao: response.solicitacao };
+  } catch (error) {
+    return { ok: false, mensagem: error.message };
+  }
+}
+
 export async function localizarHorario({ turmaId, semanaId, dia, inicio }) {
   const horarios = await getHorariosPorTurmaSemana(turmaId, semanaId);
   return horarios.find((horario) => horario.dia === dia && horario.inicio === inicio);

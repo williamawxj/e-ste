@@ -3,6 +3,7 @@ import Button from "../components/Button";
 import Card from "../components/Card";
 import PageShell from "../components/PageShell";
 import {
+  alternarStatusSolicitacaoModificacao,
   getSemanas,
   getSolicitacoesModificacaoHorario,
   getTurmas,
@@ -17,14 +18,12 @@ import {
 } from "../utils/dateUtils";
 
 function corStatus(status) {
-  if (status === "atendida") return "border-emerald-200 bg-emerald-50 text-emerald-700";
-  if (status === "negada") return "border-red-200 bg-red-50 text-red-700";
+  if (status === "resolvida") return "border-emerald-200 bg-emerald-50 text-emerald-700";
   return "border-amber-200 bg-amber-50 text-amber-700";
 }
 
 function textoStatus(status) {
-  if (status === "atendida") return "Atendida";
-  if (status === "negada") return "Negada";
+  if (status === "resolvida") return "Resolvida";
   return "Pendente";
 }
 
@@ -39,6 +38,7 @@ export default function SolicitarModificacaoSTE({ usuario }) {
   const [motivo, setMotivo] = useState("");
   const [mensagem, setMensagem] = useState("");
   const [carregando, setCarregando] = useState(false);
+  const [alternandoId, setAlternandoId] = useState("");
 
   const opcoesMes = useMemo(() => listarMesesDasSemanas(semanas), [semanas]);
   const semanasFiltradasFormulario = useMemo(
@@ -48,6 +48,9 @@ export default function SolicitarModificacaoSTE({ usuario }) {
   const turmaSelecionada = turmas.find((turma) => turma.id === turmaId);
   const semanaSelecionada = semanas.find((semana) => semana.id === semanaId);
   const podeSolicitar = usuario?.perfil === "instrutor";
+  const ehGestor = usuario?.perfil === "gestor";
+  const solicitacoesPendentes = solicitacoes.filter((item) => item.status !== "resolvida");
+  const solicitacoesResolvidas = solicitacoes.filter((item) => item.status === "resolvida");
 
   useEffect(() => {
     async function carregarBase() {
@@ -93,6 +96,19 @@ export default function SolicitarModificacaoSTE({ usuario }) {
     }
   }
 
+  async function alternarStatus(solicitacao) {
+    setAlternandoId(solicitacao.id);
+    const resultado = await alternarStatusSolicitacaoModificacao(solicitacao.id);
+    setAlternandoId("");
+    if (!resultado.ok) {
+      setMensagem(resultado.mensagem || "Não foi possível atualizar a solicitação.");
+      return;
+    }
+    setSolicitacoes((atuais) => atuais.map((item) => (
+      item.id === solicitacao.id ? resultado.solicitacao : item
+    )));
+  }
+
   useEffect(() => {
     recarregarSolicitacoes(mesSolicitacoes);
   }, [mesSolicitacoes]);
@@ -118,6 +134,44 @@ export default function SolicitarModificacaoSTE({ usuario }) {
     setMensagem("Solicitação enviada para a STE com sucesso.");
     setMotivo("");
     await recarregarSolicitacoes(mesSolicitacoes);
+  }
+
+  function renderSolicitacao(solicitacao) {
+    return (
+      <div key={solicitacao.id} className="rounded-xl border border-slate-200 bg-white p-3">
+        <div className="flex flex-wrap items-center justify-between gap-2">
+          <div className="flex flex-wrap items-center gap-2">
+            <span className={`rounded-lg border px-2 py-1 text-xs font-bold ${corStatus(solicitacao.status)}`}>
+              {textoStatus(solicitacao.status)}
+            </span>
+            <span className="text-xs font-semibold text-slate-500">
+              {formatarDataBR(solicitacao.criadoEm)}
+            </span>
+            {ehGestor && (
+              <span className="text-xs font-semibold text-slate-700">
+                Instrutor: {solicitacao.instrutorNome || solicitacao.instrutorId}
+              </span>
+            )}
+          </div>
+          {ehGestor && (
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={() => alternarStatus(solicitacao)}
+              disabled={alternandoId === solicitacao.id}
+            >
+              {alternandoId === solicitacao.id
+                ? "Salvando..."
+                : (solicitacao.status === "resolvida" ? "Marcar como pendente" : "Marcar como resolvida")}
+            </Button>
+          )}
+        </div>
+        <div className="mt-1 text-sm font-semibold text-slate-900">
+          {solicitacao.turmaNome} | {solicitacao.semanaNome}
+        </div>
+        <div className="mt-2 whitespace-pre-line text-sm text-slate-700">{solicitacao.motivo}</div>
+      </div>
+    );
   }
 
   return (
@@ -212,32 +266,47 @@ export default function SolicitarModificacaoSTE({ usuario }) {
             ))}
           </select>
         </div>
-        {solicitacoes.length === 0 ? (
-          <p className="mt-3 text-sm text-slate-600">Nenhuma solicitação registrada.</p>
-        ) : (
-          <div className="mt-3 space-y-3">
-            {solicitacoes.map((solicitacao) => (
-              <div key={solicitacao.id} className="rounded-xl border border-slate-200 bg-white p-3">
-                <div className="flex flex-wrap items-center gap-2">
-                  <span className={`rounded-lg border px-2 py-1 text-xs font-bold ${corStatus(solicitacao.status)}`}>
-                    {textoStatus(solicitacao.status)}
-                  </span>
-                  <span className="text-xs font-semibold text-slate-500">
-                    {formatarDataBR(solicitacao.criadoEm)}
-                  </span>
-                  {usuario?.perfil === "gestor" && (
-                    <span className="text-xs font-semibold text-slate-700">
-                      Instrutor: {solicitacao.instrutorNome || solicitacao.instrutorId}
-                    </span>
-                  )}
-                </div>
-                <div className="mt-1 text-sm font-semibold text-slate-900">
-                  {solicitacao.turmaNome} | {solicitacao.semanaNome}
-                </div>
-                <div className="mt-2 whitespace-pre-line text-sm text-slate-700">{solicitacao.motivo}</div>
-              </div>
-            ))}
+        {mensagem && !podeSolicitar && (
+          <div className="mb-3 rounded-xl border border-blue-200 bg-blue-50 p-3 text-sm text-blue-700">
+            {mensagem}
           </div>
+        )}
+
+        {ehGestor ? (
+          <div className="space-y-6">
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                Pendentes ({solicitacoesPendentes.length})
+              </h3>
+              {solicitacoesPendentes.length === 0 ? (
+                <p className="mt-2 text-sm text-slate-600">Nenhuma solicitação pendente.</p>
+              ) : (
+                <div className="mt-2 space-y-3">
+                  {solicitacoesPendentes.map(renderSolicitacao)}
+                </div>
+              )}
+            </div>
+            <div>
+              <h3 className="text-xs font-bold uppercase tracking-wide text-slate-500">
+                Resolvidas ({solicitacoesResolvidas.length})
+              </h3>
+              {solicitacoesResolvidas.length === 0 ? (
+                <p className="mt-2 text-sm text-slate-600">Nenhuma solicitação resolvida.</p>
+              ) : (
+                <div className="mt-2 space-y-3">
+                  {solicitacoesResolvidas.map(renderSolicitacao)}
+                </div>
+              )}
+            </div>
+          </div>
+        ) : (
+          solicitacoes.length === 0 ? (
+            <p className="mt-3 text-sm text-slate-600">Nenhuma solicitação registrada.</p>
+          ) : (
+            <div className="mt-3 space-y-3">
+              {solicitacoes.map(renderSolicitacao)}
+            </div>
+          )
         )}
       </Card>
     </PageShell>

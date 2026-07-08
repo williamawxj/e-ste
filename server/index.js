@@ -3324,6 +3324,51 @@ app.post("/api/solicitacoes-modificacao-horario", auth, asyncRoute(async (req, r
   });
 }));
 
+app.patch("/api/solicitacoes-modificacao-horario/:id/status", auth, requireGestor, asyncRoute(async (req, res) => {
+  const atual = await query(
+    "SELECT status FROM solicitacoes_modificacao_horario WHERE id = $1 LIMIT 1",
+    [req.params.id]
+  );
+  if (atual.rowCount === 0) {
+    return res.status(404).json({ ok: false, mensagem: "Solicitação não encontrada." });
+  }
+
+  const novoStatus = atual.rows[0].status === "resolvida" ? "pendente" : "resolvida";
+
+  const result = await query(
+    `
+      UPDATE solicitacoes_modificacao_horario
+      SET status = $1,
+          atualizado_em = NOW()
+      WHERE id = $2
+      RETURNING *
+    `,
+    [novoStatus, req.params.id]
+  );
+
+  const solicitacao = await query(
+    `
+      SELECT
+        smh.*,
+        t.nome AS turma_nome,
+        s.nome AS semana_nome,
+        u.nome_grade AS instrutor_nome
+      FROM solicitacoes_modificacao_horario smh
+      JOIN turmas t ON t.id = smh.turma_id
+      JOIN semanas s ON s.id = smh.semana_id
+      JOIN usuarios u ON u.id = smh.instrutor_id
+      WHERE smh.id = $1
+      LIMIT 1
+    `,
+    [result.rows[0].id]
+  );
+
+  res.json({
+    ok: true,
+    solicitacao: mapSolicitacaoModificacaoHorario(solicitacao.rows[0]),
+  });
+}));
+
 app.post("/api/qts/confirmacao", auth, requireGestor, asyncRoute(async (req, res) => {
   const turmaId = String(req.body.turmaId || "");
   const semanaId = String(req.body.semanaId || "");
