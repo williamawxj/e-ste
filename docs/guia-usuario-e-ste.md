@@ -93,7 +93,7 @@ No relatório de horas/aula, cada aula lançada conta como 1 hora/aula. A refer�
 
 ### E-mails automáticos de confirmação
 
-O sistema envia e-mails automáticos em dois momentos, desde que o SMTP esteja configurado:
+O sistema envia e-mails automáticos em dois momentos, desde que o envio automático de e-mail esteja ativo:
 
 - Quando o instrutor confirma seus próprios horários, ele recebe um e-mail com a confirmação da grade.
 - Quando o gestor confirma o QTS, cada instrutor cuja grade tiver mudado desde a última confirmação recebe um e-mail avisando da alteração. Instrutores sem mudança na grade não recebem esse e-mail.
@@ -452,7 +452,7 @@ Esse relatório ajuda a acompanhar a carga mensal de cada instrutor.
 
 ### Comunicações
 
-A tela **Comunicações** permite disparar e-mails, desde que o SMTP esteja configurado no ambiente do sistema.
+A tela **Comunicações** permite disparar e-mails, desde que o envio automático de e-mail esteja ativo no sistema.
 
 Opções disponíveis:
 
@@ -466,7 +466,7 @@ Para enviar:
 3. Escreva uma observação opcional.
 4. Clique no botão de disparo.
 
-> **Observação:** quando o e-mail automático estiver desativado, o sistema avisa que SMTP_HOST, SMTP_FROM, SMTP_USER e SMTP_PASS precisam estar configurados.
+> **Observação:** quando o envio automático de e-mail estiver desativado, o sistema avisa que é preciso configurar o envio de e-mail no ambiente. Nesse caso, contate quem administra o sistema.
 
 ### Banco de dados e backup
 
@@ -581,7 +581,7 @@ Verifique:
 
 ### O e-mail automático está desativado
 
-O sistema precisa de configuração SMTP no ambiente. Enquanto isso, use os avisos por WhatsApp ou comunique manualmente.
+O envio automático de e-mail precisa ser ativado por quem administra o sistema. Enquanto isso, use os avisos por WhatsApp ou comunique manualmente.
 
 ### O banco está perto do limite
 
