@@ -1146,7 +1146,7 @@ async function getCargaMateriaNaTurma({ turmaId, materiaId }) {
 // Ao confirmar o QTS de uma turma/semana, garante que a numeracao de
 // "aula corrente" de cada materia nunca decresca ao longo da grade: se um
 // gestor sobrescreveu manualmente o numero de uma aula da semana confirmada
-// com um valor menor ou igual ao da aula anterior (na mesma materia, em
+// com um valor menor que o da aula anterior (na mesma materia, em
 // ordem cronologica na turma), o valor e corrigido para (anterior + 1).
 // Aulas sem sobrescrita manual nao sao tocadas, pois a numeracao ao vivo ja
 // resolve corretamente esse caso. A carga horaria total cadastrada da
@@ -1207,7 +1207,7 @@ async function padronizarNumeracaoAulasQts({ turmaId, semanaId }) {
     for (const aula of ordenadas) {
       const manual = Number.parseInt(aula.aula_corrente, 10);
       const manualValido = Number.isFinite(manual) && manual > 0;
-      const violaSequencia = manualValido && manual <= sequencial;
+      const violaSequencia = manualValido && manual < sequencial;
       const atual = manualValido && !violaSequencia ? manual : (sequencial + 1);
       sequencial = atual;
 
