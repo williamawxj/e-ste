@@ -36,13 +36,13 @@ export default function Login({ onLogin }) {
 
         <form onSubmit={handleSubmit} className="space-y-4" autoComplete="off">
           <label className="block">
-            <span className="mb-1 block text-sm text-slate-700">E-mail ou usuário</span>
+            <span className="mb-1 block text-sm text-slate-700">E-mail</span>
             <input
               className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
               name="este_usuario_manual"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="master ou e-mail cadastrado"
+              placeholder="Digite seu e-mail"
               autoComplete="off"
               autoCorrect="off"
               autoCapitalize="none"
