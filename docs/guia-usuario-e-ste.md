@@ -119,6 +119,7 @@ O menu lateral fica à esquerda. Em telas pequenas, use o botão da barra superi
 - Aprovar instrutores
 - Cadastrar instrutor
 - Alterar instrutores/gestores
+- Chefia de pasta
 - Cadastrar gestor
 - Criar semanas
 - Matérias por turma
@@ -326,13 +327,17 @@ Na mesma tela, a lista **Gestores cadastrados** também é editável: clique no 
 
 ### Definir chefe de pasta por matéria
 
-Na tela **Alterar instrutores/gestores**, use a área **Chefia de pasta por matéria**.
+Essa configuração fica em uma tela própria, separada de **Alterar instrutores/gestores**: acesse **Chefia de pasta** no menu do gestor.
 
-1. Localize a matéria.
-2. Escolha o instrutor responsável.
-3. O sistema salva a chefia de pasta.
+1. Acesse **Chefia de pasta**.
+2. Use o campo de busca para encontrar rapidamente uma matéria pelo nome.
+3. Localize a matéria.
+4. Escolha o instrutor responsável.
+5. O sistema salva a chefia de pasta.
 
 Só aparecem candidatos vinculados à matéria.
+
+> **Observação:** as duas telas têm buscas diferentes: em **Alterar instrutores/gestores** a busca é pelo nome da pessoa (instrutor ou gestor); em **Chefia de pasta** a busca é pelo nome da matéria.
 
 ### Criar matérias
 
