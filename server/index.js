@@ -3586,6 +3586,65 @@ app.get("/api/horarios/auxiliares-pendentes", auth, requireGestor, asyncRoute(as
   });
 }));
 
+// Quando o gestor edita manualmente o numero de "aula corrente" de uma
+// aula, as aulas seguintes da mesma materia (em ordem cronologica na
+// turma) sao recalculadas em sequencia a partir desse novo numero,
+// substituindo qualquer numero (automatico ou manual) que elas tivessem
+// antes. Isso mantem a grade sempre consistente a partir do ponto editado,
+// sem esperar a confirmacao do QTS.
+async function cascatearAulaCorrente({ turmaId, aulaEditadaId, materiaId, materiaNome, novoValor }) {
+  const aulasResult = await query(
+    `
+      SELECT
+        h.id,
+        h.dia,
+        h.inicio,
+        h.fim,
+        h.materia_id,
+        h.materia_nome,
+        s.inicio AS semana_inicio
+      FROM horarios h
+      LEFT JOIN semanas s ON s.id = h.semana_id
+      WHERE h.turma_id = $1
+        AND h.tipo = 'aula'
+        AND (h.materia_id = $2 OR h.materia_nome = $3)
+    `,
+    [turmaId, materiaId, materiaNome]
+  );
+
+  const semanaTimestamp = (valor) => {
+    const data = valor instanceof Date
+      ? valor
+      : new Date(`${String(valor || "").slice(0, 10)}T00:00:00.000Z`);
+    const tempo = data.getTime();
+    return Number.isFinite(tempo) ? tempo : Number.MAX_SAFE_INTEGER;
+  };
+
+  const ordenadas = [...aulasResult.rows].sort((a, b) => {
+    const diffSemana = semanaTimestamp(a.semana_inicio) - semanaTimestamp(b.semana_inicio);
+    if (diffSemana !== 0) return diffSemana;
+    const diffDia = diaOffset(a.dia) - diaOffset(b.dia);
+    if (diffDia !== 0) return diffDia;
+    const diffInicio = horarioParaMinutos(a.inicio) - horarioParaMinutos(b.inicio);
+    if (diffInicio !== 0) return diffInicio;
+    const diffFim = horarioParaMinutos(a.fim) - horarioParaMinutos(b.fim);
+    if (diffFim !== 0) return diffFim;
+    return String(a.id || "").localeCompare(String(b.id || ""), "pt-BR");
+  });
+
+  const indice = ordenadas.findIndex((aula) => aula.id === aulaEditadaId);
+  if (indice === -1) return 0;
+
+  let sequencial = novoValor;
+  let atualizadas = 0;
+  for (let i = indice + 1; i < ordenadas.length; i += 1) {
+    sequencial += 1;
+    await query("UPDATE horarios SET aula_corrente = $1 WHERE id = $2", [sequencial, ordenadas[i].id]);
+    atualizadas += 1;
+  }
+  return atualizadas;
+}
+
 app.patch("/api/horarios/:id/auxiliares", auth, requireGestor, asyncRoute(async (req, res) => {
   const antes = await getHorarioDetalhadoPorId(req.params.id);
   if (!antes) {
@@ -3600,7 +3659,8 @@ app.patch("/api/horarios/:id/auxiliares", auth, requireGestor, asyncRoute(async 
   const prova = antes.tipo === "aula" && req.body.prova !== undefined
     ? Boolean(req.body.prova)
     : Boolean(antes.prova);
-  const aulaCorrente = antes.tipo === "aula" && req.body.aulaCorrente !== undefined
+  const aulaCorrenteAlterada = antes.tipo === "aula" && req.body.aulaCorrente !== undefined;
+  const aulaCorrente = aulaCorrenteAlterada
     ? inteiroPositivoOuNulo(req.body.aulaCorrente)
     : antes.aula_corrente;
   const result = await query(
@@ -3614,6 +3674,16 @@ app.patch("/api/horarios/:id/auxiliares", auth, requireGestor, asyncRoute(async 
      RETURNING *`,
     [auxiliares, auxiliaresAutorizados, localInstrucao, prova, aulaCorrente, req.params.id]
   );
+
+  if (aulaCorrenteAlterada && aulaCorrente !== null && (antes.materia_id || antes.materia_nome)) {
+    await cascatearAulaCorrente({
+      turmaId: antes.turma_id,
+      aulaEditadaId: antes.id,
+      materiaId: antes.materia_id,
+      materiaNome: antes.materia_nome,
+      novoValor: aulaCorrente,
+    });
+  }
 
   res.json({ ok: true, horario: mapHorario(result.rows[0]) });
 }));

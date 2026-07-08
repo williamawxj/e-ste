@@ -402,7 +402,7 @@ Na tela **Modificar horários**, o botão **Excluir** marca a aula para exclusã
 
 Ao confirmar, o sistema também consolida exclusões pendentes e pode registrar mensagens aos instrutores envolvidos.
 
-> **Atenção:** a numeração de aula de cada matéria (o número mostrado em "8(20)") é calculada automaticamente por padrão, mas pode ser sobrescrita manualmente em qualquer aula (campo "Aula corrente" em Editar aula/prova). O valor digitado é sempre respeitado como está — inclusive se repetir ou ficar menor que o número de uma aula anterior — e não é alterado automaticamente ao confirmar o QTS. A carga horária total cadastrada da matéria (o "total" mostrado entre parênteses) também nunca é alterada automaticamente.
+> **Atenção:** a numeração de aula de cada matéria (o número mostrado em "8(20)") é calculada automaticamente por padrão, mas pode ser sobrescrita manualmente em qualquer aula (campo "Aula corrente" em Editar aula/prova). Ao salvar um número manual, todas as aulas seguintes dessa matéria (em ordem cronológica na turma) são recalculadas automaticamente a partir desse número, mesmo que já tivessem um número manual definido antes. As aulas anteriores à editada nunca são alteradas. A carga horária total cadastrada da matéria (o "total" mostrado entre parênteses) nunca é alterada automaticamente.
 
 ### Exportar grade
 
