@@ -29,11 +29,21 @@ O mesmo login atende gestores e instrutores. O sistema identifica o perfil do us
 ### Solicitar cadastro como instrutor
 
 1. Na tela de login, clique em **Solicitar cadastro de instrutor**.
-2. Preencha nome completo, nome que aparecerá na grade, e-mail, WhatsApp com DDD e senha.
+2. Preencha nome completo, nome que aparecerá na grade, e-mail, WhatsApp com DDD, senha e confirmação de senha.
 3. Clique em **Enviar cadastro**.
 4. Aguarde a aprovação de um gestor.
 
 Depois da aprovação, o instrutor consegue entrar normalmente pelo login.
+
+### Esqueci minha senha
+
+1. Na tela de login, clique em **Esqueci minha senha**.
+2. Informe o e-mail cadastrado e clique em **Enviar link de redefinição**.
+3. Se o e-mail estiver cadastrado, um link de redefinição é enviado (válido por 1 hora).
+4. Abra o e-mail e clique no link recebido.
+5. Na tela de redefinição, informe a nova senha e a confirmação e clique em **Redefinir senha**.
+
+> **Atenção:** por segurança, o sistema sempre mostra a mesma mensagem de confirmação no passo 2, mesmo que o e-mail informado não esteja cadastrado. Depois de redefinir a senha, os acessos já abertos em outros dispositivos são encerrados.
 
 ### Sair do sistema
 
@@ -138,8 +148,9 @@ Sempre confira esses filtros antes de salvar, exportar, confirmar ou excluir.
 
 1. Acesse **Editar perfil**.
 2. Atualize nome completo, nome de aparição na grade, e-mail/login, WhatsApp ou senha.
-3. Se desejar manter a senha atual, deixe o campo de nova senha em branco.
-4. Clique em **Salvar alterações**.
+3. Se desejar manter a senha atual, deixe os campos de nova senha e confirmação em branco.
+4. Se digitar uma nova senha, repita-a no campo **Confirmar nova senha**. As duas precisam ser idênticas para salvar.
+5. Clique em **Salvar alterações**.
 
 O WhatsApp é usado para gerar links de aviso e contato. Informe o número com DDD.
 
