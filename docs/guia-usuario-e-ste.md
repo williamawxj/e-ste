@@ -201,6 +201,8 @@ Depois da confirmação, as aulas já gravadas ficam bloqueadas para edição di
 
 > **Atenção:** depois de confirmar, alterações em aulas já lançadas devem ser solicitadas à STE.
 
+O instrutor recebe um e-mail automático em dois momentos depois disso: quando a STE aprovar o QTS dessa turma/semana, e também caso a STE precise realizar alguma alteração de horários na grade do instrutor.
+
 ### Remover aula antes da confirmação
 
 Enquanto a aula ainda estiver editável, use **Remover aula** dentro da célula preenchida. O sistema pode pedir confirmação antes de remover.
