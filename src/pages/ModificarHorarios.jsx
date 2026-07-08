@@ -597,14 +597,29 @@ export default function ModificarHorarios({ usuario }) {
       return;
     }
 
+    // A confirmacao pode ter padronizado numeros de "aula corrente" no
+    // servidor (server/index.js: padronizarNumeracaoAulasQts). Busca os
+    // dados atualizados antes de gerar o PDF e atualizar a tela, para nao
+    // exportar/exibir numeracao desatualizada.
+    const [horariosSemanaAtualizados, horariosTurmaAtualizados] = await Promise.all([
+      getHorariosPorTurmaSemana(turmaId, semanaId),
+      getHorariosPorTurma(turmaId),
+    ]);
+    const cargasAtualizadas = criarMapaCargaAulasPorHorario({
+      horarios: horariosTurmaAtualizados,
+      materias,
+      semanas,
+    });
+
     await exportarQtsPDF({
-      horarios: horariosConfirmacao.filter((item) => !chavesRemocoesPendentes.has(chaveHorario(item))),
+      horarios: horariosSemanaAtualizados.filter((item) => !chavesRemocoesPendentes.has(chaveHorario(item))),
       turma,
       semana,
       usuario,
-      cargaAulasPorHorario: cargasPorHorario,
+      cargaAulasPorHorario: cargasAtualizadas,
     });
-    atualizarGrade();
+    setHorarios(horariosSemanaAtualizados);
+    setHorariosDaTurma(horariosTurmaAtualizados);
     const resumoRemocoes = totalRemovidas > 0 ? ` ${totalRemovidas} aula(s) removida(s) na confirmação.` : "";
     setMensagem(`QTS confirmado e PDF gerado.${resumoRemocoes} ${resultadoConfirmacao.mensagem}`);
   }
