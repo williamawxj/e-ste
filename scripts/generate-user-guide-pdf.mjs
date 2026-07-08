@@ -328,3 +328,8 @@ addHeadersAndFooters();
 
 doc.save(outputPath);
 console.log(`PDF gerado em ${outputPath}`);
+
+const publicPath = path.join(rootDir, "public", "guia-usuario-e-ste.pdf");
+fs.mkdirSync(path.dirname(publicPath), { recursive: true });
+fs.copyFileSync(outputPath, publicPath);
+console.log(`Copia publicada em ${publicPath}`);

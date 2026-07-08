@@ -174,7 +174,24 @@
     background: rgba(255,255,255,0.06);
     border-radius: 100px;
     padding: 0.32rem 0.85rem;
+    display: inline-flex;
+    align-items: center;
   }
+  .cover-meta .download {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    border: 1px solid var(--brass);
+    background: var(--brass);
+    color: #241d0c;
+    border-radius: 100px;
+    padding: 0.32rem 0.9rem 0.32rem 0.75rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: filter 0.15s ease;
+  }
+  .cover-meta .download:hover { filter: brightness(1.08); }
+  .cover-meta .download svg { width: 14px; height: 14px; flex: none; }
 
   /* ---------- Layout ---------- */
   .layout {
@@ -566,6 +583,10 @@
   <div class="cover-meta">
     <span>Versão: julho de 2026</span>
     <span>e-ste.vercel.app</span>
+    <a class="download" href="/guia-usuario-e-ste.pdf" download>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12" /><path d="M7 10l5 5 5-5" /><path d="M4 20h16" /></svg>
+      Baixar PDF
+    </a>
   </div>
 </div>
 
