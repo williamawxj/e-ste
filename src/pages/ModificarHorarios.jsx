@@ -597,17 +597,20 @@ export default function ModificarHorarios({ usuario }) {
       return;
     }
 
-    // A confirmacao pode ter padronizado numeros de "aula corrente" no
-    // servidor (server/index.js: padronizarNumeracaoAulasQts). Busca os
-    // dados atualizados antes de gerar o PDF e atualizar a tela, para nao
-    // exportar/exibir numeracao desatualizada.
-    const [horariosSemanaAtualizados, horariosTurmaAtualizados] = await Promise.all([
+    // A confirmacao pode ter padronizado numeros de "aula corrente" e
+    // elevado a carga horaria de materias no servidor (server/index.js:
+    // padronizarNumeracaoAulasQts). Busca os dados atualizados antes de
+    // gerar o PDF e atualizar a tela, para nao exportar/exibir numeracao ou
+    // carga horaria desatualizada.
+    const [horariosSemanaAtualizados, horariosTurmaAtualizados, materiasAtualizadas] = await Promise.all([
       getHorariosPorTurmaSemana(turmaId, semanaId),
       getHorariosPorTurma(turmaId),
+      getMateriasDaTurma(turmaId),
     ]);
+    setMaterias(materiasAtualizadas);
     const cargasAtualizadas = criarMapaCargaAulasPorHorario({
       horarios: horariosTurmaAtualizados,
-      materias,
+      materias: materiasAtualizadas,
       semanas,
     });
 
