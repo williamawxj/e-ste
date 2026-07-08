@@ -124,6 +124,7 @@ O menu lateral fica à esquerda. Em telas pequenas, use o botão da barra superi
 - Matérias por turma
 - Modificar horários
 - Auxiliares pendentes
+- Solicitações de modificação
 - Carga horária
 - Comunicações
 - Banco e backup
@@ -309,10 +310,11 @@ Somente gestores podem cadastrar outros gestores.
 ### Alterar instrutores e gestores
 
 1. Acesse **Alterar instrutores/gestores**.
-2. Clique no nome do instrutor para abrir as opções.
-3. Atualize nome, nome na grade, e-mail ou WhatsApp.
-4. Marque ou desmarque matérias.
-5. Clique em **Salvar matérias** quando alterar as matérias.
+2. Use o campo de busca para encontrar rapidamente um instrutor ou gestor pelo nome ou e-mail. A busca filtra as duas listas ao mesmo tempo.
+3. Clique no nome do instrutor para abrir as opções.
+4. Atualize nome, nome na grade, e-mail ou WhatsApp.
+5. Marque ou desmarque matérias.
+6. Clique em **Salvar matérias** quando alterar as matérias.
 
 Também é possível:
 
