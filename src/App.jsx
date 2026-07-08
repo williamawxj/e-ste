@@ -16,6 +16,7 @@ const AprovacaoInstrutor = lazy(() => import("./pages/AprovacaoInstrutor"));
 const PerfilInstrutor = lazy(() => import("./pages/PerfilInstrutor"));
 const GestorCadastroInstrutor = lazy(() => import("./pages/GestorCadastroInstrutor"));
 const EditarInstrutores = lazy(() => import("./pages/EditarInstrutores"));
+const ChefiaPastas = lazy(() => import("./pages/ChefiaPastas"));
 const TurmasMaterias = lazy(() => import("./pages/TurmasMaterias"));
 const Semanas = lazy(() => import("./pages/Semanas"));
 const ModificarHorarios = lazy(() => import("./pages/ModificarHorarios"));
@@ -198,6 +199,7 @@ export default function App() {
           <Route path="/cadastrar-gestor" element={<RotaGestor usuario={usuario}><CadastroGestor usuario={usuario} /></RotaGestor>} />
           <Route path="/aprovacao" element={<RotaGestor usuario={usuario}><AprovacaoInstrutor usuario={usuario} /></RotaGestor>} />
           <Route path="/editar-instrutores" element={<RotaGestor usuario={usuario}><EditarInstrutores usuario={usuario} /></RotaGestor>} />
+          <Route path="/chefia-pastas" element={<RotaGestor usuario={usuario}><ChefiaPastas usuario={usuario} /></RotaGestor>} />
           <Route path="/turmas-materias" element={<RotaGestor usuario={usuario}><TurmasMaterias usuario={usuario} /></RotaGestor>} />
           <Route path="/carga-horaria" element={<RotaGestor usuario={usuario}><CargaHorariaTurmas usuario={usuario} /></RotaGestor>} />
           <Route path="/modificar-horarios" element={<RotaGestor usuario={usuario}><ModificarHorarios usuario={usuario} /></RotaGestor>} />

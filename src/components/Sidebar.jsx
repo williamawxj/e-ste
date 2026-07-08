@@ -87,6 +87,7 @@ export default function Sidebar({ perfil, visivel = true, onNavigate }) {
               <NavLink to="/aprovacao" className={linkClass}><ClipboardList size={16} /> Aprovar instrutores</NavLink>
               <NavLink to="/cadastrar-instrutor" className={linkClass}><GraduationCap size={16} /> Cadastrar instrutor</NavLink>
               <NavLink to="/editar-instrutores" className={linkClass}><UsersRound size={16} /> Alterar instrutores/gestores</NavLink>
+              <NavLink to="/chefia-pastas" className={linkClass}><UsersRound size={16} /> Chefia de pasta</NavLink>
               <NavLink to="/cadastrar-gestor" className={linkClass}><UsersRound size={16} /> Cadastrar gestor</NavLink>
 
               <SectionLabel>Planejamento</SectionLabel>

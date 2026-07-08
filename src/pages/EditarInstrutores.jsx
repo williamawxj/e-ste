@@ -4,7 +4,7 @@ import Button from "../components/Button";
 import Card from "../components/Card";
 import MateriasDropdown from "../components/MateriasDropdown";
 import PageShell from "../components/PageShell";
-import { definirChefeMateria, getChefesMateria, getMaterias } from "../utils/academicoDB";
+import { getMaterias } from "../utils/academicoDB";
 import { atualizarMateriasUsuario, atualizarUsuario, getGestores, getInstrutores, removerUsuario } from "../utils/usuariosDB";
 
 function normalizarBusca(valor) {
@@ -19,11 +19,9 @@ export default function EditarInstrutores({ usuario }) {
   const [instrutores, setInstrutores] = useState([]);
   const [gestores, setGestores] = useState([]);
   const [materias, setMaterias] = useState([]);
-  const [chefesMateria, setChefesMateria] = useState([]);
   const [statusMaterias, setStatusMaterias] = useState({});
   const [instrutorAbertoId, setInstrutorAbertoId] = useState("");
   const [gestorAbertoId, setGestorAbertoId] = useState("");
-  const [statusChefia, setStatusChefia] = useState("");
   const [busca, setBusca] = useState("");
 
   const buscaNormalizada = normalizarBusca(busca);
@@ -45,16 +43,14 @@ export default function EditarInstrutores({ usuario }) {
   }, [gestores, buscaNormalizada]);
 
   async function recarregar() {
-    const [listaInstrutores, listaGestores, listaMaterias, listaChefesMateria] = await Promise.all([
+    const [listaInstrutores, listaGestores, listaMaterias] = await Promise.all([
       getInstrutores(),
       getGestores(),
       getMaterias(),
-      getChefesMateria(),
     ]);
     setInstrutores(listaInstrutores);
     setGestores(listaGestores);
     setMaterias(listaMaterias);
-    setChefesMateria(listaChefesMateria);
     setInstrutorAbertoId((atual) => (
       listaInstrutores.some((instrutor) => instrutor.id === atual) ? atual : ""
     ));
@@ -144,29 +140,10 @@ export default function EditarInstrutores({ usuario }) {
     await recarregar();
   }
 
-  function obterChefeMateria(materiaId) {
-    return chefesMateria.find((item) => item.materiaId === materiaId) || null;
-  }
-
-  function obterInstrutoresDaMateria(materiaId) {
-    return instrutores.filter((instrutor) => (instrutor.materias || []).includes(materiaId));
-  }
-
   function textoMateriasChefe(instrutor) {
     const nomes = (instrutor.materiasChefe || []).map((item) => item.materiaNome).filter(Boolean);
     if (nomes.length === 0) return "";
     return nomes.join(", ");
-  }
-
-  async function atualizarChefiaMateria(materiaId, instrutorId) {
-    setStatusChefia("Atualizando chefia de pasta...");
-    const resultado = await definirChefeMateria(materiaId, instrutorId);
-    if (!resultado.ok) {
-      setStatusChefia(resultado.mensagem || "Não foi possível atualizar a chefia da pasta.");
-      return;
-    }
-    setStatusChefia(resultado.mensagem || "Chefia de pasta atualizada.");
-    await recarregar();
   }
 
   return (
@@ -208,59 +185,6 @@ export default function EditarInstrutores({ usuario }) {
             <p className="mt-2 text-xs text-slate-600">
               {instrutoresFiltrados.length} instrutor(es) e {gestoresFiltrados.length} gestor(es) encontrados.
             </p>
-          )}
-        </Card>
-
-        <Card>
-          <h2 className="flex items-center gap-2 text-sm font-bold text-slate-950">
-            <UsersRound size={16} />
-            Chefia de pasta por matéria
-          </h2>
-          <p className="mt-1 text-sm text-slate-600">
-            Cada matéria pode ter somente um chefe da pasta. Escolha abaixo o instrutor responsável por cada matéria.
-          </p>
-
-          <div className="mt-4 space-y-3">
-            {materias.length === 0 && (
-              <div className="rounded-xl border border-dashed border-slate-300 bg-slate-50 p-4 text-sm text-slate-600">
-                Nenhuma matéria cadastrada para definir chefia de pasta.
-              </div>
-            )}
-
-            {materias.map((materia) => {
-              const candidatos = obterInstrutoresDaMateria(materia.id);
-              const chefeAtual = obterChefeMateria(materia.id);
-
-              return (
-                <div key={materia.id} className="grid gap-2 rounded-xl border border-slate-200 bg-slate-50 p-3 md:grid-cols-[1fr_360px] md:items-center">
-                  <div>
-                    <div className="font-semibold text-slate-950">{materia.nome}</div>
-                    <div className="text-xs text-slate-600">{candidatos.length} instrutor(es) vinculado(s)</div>
-                  </div>
-                  <select
-                    className="rounded-xl border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
-                    value={chefeAtual?.instrutorId || ""}
-                    onChange={(event) => atualizarChefiaMateria(materia.id, event.target.value)}
-                    disabled={candidatos.length === 0}
-                  >
-                    <option value="">
-                      {candidatos.length === 0 ? "Sem instrutor vinculado à matéria" : "Sem chefe da pasta definido"}
-                    </option>
-                    {candidatos.map((instrutor) => (
-                      <option key={instrutor.id} value={instrutor.id}>
-                        {instrutor.nomeGrade || instrutor.nome}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-              );
-            })}
-          </div>
-
-          {statusChefia && (
-            <div className="mt-3 rounded-xl border border-blue-200 bg-blue-50 px-3 py-2 text-sm text-blue-700">
-              {statusChefia}
-            </div>
           )}
         </Card>
 
