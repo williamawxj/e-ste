@@ -74,6 +74,12 @@ export default function Login({ onLogin }) {
             Solicitar cadastro de instrutor
           </Link>
         </div>
+
+        <div className="mt-3 text-center text-sm">
+          <a href="/guia.html" target="_blank" rel="noreferrer" className="font-semibold text-blue-700 hover:text-blue-800">
+            Guia de Uso do Sistema E-STE
+          </a>
+        </div>
       </div>
     </div>
   );
