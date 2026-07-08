@@ -241,8 +241,7 @@ Use esta tela quando precisar alterar algo após a confirmação ou quando houve
 Status possíveis:
 
 - Pendente
-- Aprovada
-- Rejeitada
+- Resolvida
 
 ### Visualizar horários
 
@@ -435,6 +434,20 @@ A tela **Auxiliares pendentes** reúne todas as aulas com pedido de auxiliares a
 4. Clique em **Autorizar**.
 
 Depois de autorizada a quantidade solicitada, a aula sai da lista de pendentes. Somente o gestor pode autorizar ou alterar auxiliares depois que a aula estiver confirmada.
+
+### Gerenciar solicitações de modificação
+
+Na tela **Solicitar modificação STE**, o gestor vê todas as solicitações enviadas pelos instrutores, separadas em duas áreas:
+
+- **Pendentes:** solicitações que ainda precisam de atenção da STE.
+- **Resolvidas:** solicitações já tratadas.
+
+Para mover uma solicitação de uma área para a outra:
+
+1. Localize a solicitação na área correspondente.
+2. Clique no botão **Marcar como resolvida** (se estiver pendente) ou **Marcar como pendente** (se estiver resolvida).
+
+A solicitação muda de área imediatamente após o clique.
 
 ### Acompanhar carga horária
 
