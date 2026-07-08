@@ -63,6 +63,12 @@ export default function Login({ onLogin }) {
             />
           </label>
 
+          <div className="text-right text-sm">
+            <Link to="/esqueci-senha" className="font-semibold text-blue-700 hover:text-blue-800">
+              Esqueci minha senha
+            </Link>
+          </div>
+
           <Button type="submit" className="w-full" disabled={carregando}>
             {carregando ? "Entrando..." : "Entrar"}
           </Button>

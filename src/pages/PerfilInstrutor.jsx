@@ -25,10 +25,12 @@ export default function PerfilInstrutor({ usuario, onUsuarioAtualizado }) {
     email: usuario.email || "",
     whatsapp: usuario.whatsapp || "",
     senha: "",
+    confirmarSenha: "",
     materias: usuario.materias || [],
     chefeSte: Boolean(usuario.chefeSte),
   });
   const [mensagem, setMensagem] = useState("");
+  const [erro, setErro] = useState("");
 
   useEffect(() => {
     getMaterias().then(setMaterias).catch(() => setMaterias([]));
@@ -58,15 +60,29 @@ export default function PerfilInstrutor({ usuario, onUsuarioAtualizado }) {
 
   async function handleSubmit(e) {
     e.preventDefault();
+    setErro("");
+    setMensagem("");
+
+    if (form.senha.trim() && form.senha !== form.confirmarSenha) {
+      setErro("As senhas não coincidem.");
+      return;
+    }
+
     const dados = { nome: form.nome, nomeGrade: form.nomeGrade, email: form.email, whatsapp: form.whatsapp, materias: form.materias };
     if (usuario.perfil === "gestor") dados.chefeSte = form.chefeSte;
     if (form.senha.trim()) dados.senha = form.senha;
-    const atualizado = await atualizarUsuario(usuario.id, dados);
-    salvarSessao(atualizado);
-    const semSenha = { ...atualizado };
-    delete semSenha.senha;
-    onUsuarioAtualizado(semSenha);
-    setMensagem("Perfil atualizado com sucesso.");
+
+    try {
+      const atualizado = await atualizarUsuario(usuario.id, dados);
+      salvarSessao(atualizado);
+      const semSenha = { ...atualizado };
+      delete semSenha.senha;
+      onUsuarioAtualizado(semSenha);
+      setForm((f) => ({ ...f, senha: "", confirmarSenha: "" }));
+      setMensagem("Perfil atualizado com sucesso.");
+    } catch (error) {
+      setErro(error.message || "Não foi possível atualizar o perfil.");
+    }
   }
 
   async function salvarContatoSte(event) {
@@ -88,6 +104,7 @@ export default function PerfilInstrutor({ usuario, onUsuarioAtualizado }) {
   return (
     <PageShell title={usuario.perfil === "gestor" ? "Perfil" : "Perfil do instrutor"} subtitle="Atualize seus dados de acesso e informações usadas na grade.">
       <Card className="max-w-xl">
+        {erro && <div className="mb-4 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-700">{erro}</div>}
         {mensagem && <div className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-700">{mensagem}</div>}
         <form onSubmit={handleSubmit} className="space-y-4">
           <Field label="Nome completo">
@@ -103,7 +120,10 @@ export default function PerfilInstrutor({ usuario, onUsuarioAtualizado }) {
             <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" placeholder="WhatsApp com DDD" value={form.whatsapp} onChange={(e) => atualizar("whatsapp", e.target.value)} />
           </Field>
           <Field label="Nova senha (deixe em branco para manter)">
-            <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" type="password" placeholder="Nova senha (deixe em branco para manter)" value={form.senha} onChange={(e) => atualizar("senha", e.target.value)} />
+            <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" type="password" placeholder="Nova senha (deixe em branco para manter)" value={form.senha} onChange={(e) => atualizar("senha", e.target.value)} autoComplete="new-password" />
+          </Field>
+          <Field label="Confirmar nova senha">
+            <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" type="password" placeholder="Confirmar nova senha" value={form.confirmarSenha} onChange={(e) => atualizar("confirmarSenha", e.target.value)} autoComplete="new-password" />
           </Field>
 
           {usuario.perfil === "gestor" && (

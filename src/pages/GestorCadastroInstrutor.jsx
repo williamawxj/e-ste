@@ -8,7 +8,7 @@ import { getMaterias } from "../utils/academicoDB";
 import { cadastrarInstrutorPeloGestor } from "../utils/usuariosDB";
 
 export default function GestorCadastroInstrutor() {
-  const [form, setForm] = useState({ nome: "", nomeGrade: "", email: "", whatsapp: "", senha: "", materias: [] });
+  const [form, setForm] = useState({ nome: "", nomeGrade: "", email: "", whatsapp: "", senha: "", confirmarSenha: "", materias: [] });
   const [mensagem, setMensagem] = useState("");
   const [erro, setErro] = useState("");
   const [materias, setMaterias] = useState([]);
@@ -33,6 +33,12 @@ export default function GestorCadastroInstrutor() {
     e.preventDefault();
     setErro("");
     setMensagem("");
+
+    if (form.senha !== form.confirmarSenha) {
+      setErro("As senhas não coincidem.");
+      return;
+    }
+
     setCarregando(true);
     const resultado = await cadastrarInstrutorPeloGestor(form);
     setCarregando(false);
@@ -41,7 +47,7 @@ export default function GestorCadastroInstrutor() {
       return;
     }
     setMensagem("Instrutor cadastrado e aprovado com sucesso.");
-    setForm({ nome: "", nomeGrade: "", email: "", whatsapp: "", senha: "", materias: [] });
+    setForm({ nome: "", nomeGrade: "", email: "", whatsapp: "", senha: "", confirmarSenha: "", materias: [] });
   }
 
   return (
@@ -63,7 +69,10 @@ export default function GestorCadastroInstrutor() {
             <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" placeholder="WhatsApp com DDD" value={form.whatsapp} onChange={(e) => atualizar("whatsapp", e.target.value)} />
           </Field>
           <Field label="Senha">
-            <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" type="password" placeholder="Senha" value={form.senha} onChange={(e) => atualizar("senha", e.target.value)} required />
+            <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" type="password" placeholder="Senha" value={form.senha} onChange={(e) => atualizar("senha", e.target.value)} autoComplete="new-password" required />
+          </Field>
+          <Field label="Confirmar senha">
+            <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" type="password" placeholder="Confirmar senha" value={form.confirmarSenha} onChange={(e) => atualizar("confirmarSenha", e.target.value)} autoComplete="new-password" required />
           </Field>
 
           <div>

@@ -43,6 +43,39 @@ export async function autenticar(email, senha) {
   return { ok: false, mensagem: ultimoErro?.message || "Não foi possível concluir o login." };
 }
 
+export async function solicitarRedefinicaoSenha(email) {
+  try {
+    const response = await apiFetch("/auth/esqueci-senha", {
+      method: "POST",
+      body: { email },
+    });
+    return { ok: true, mensagem: response.mensagem };
+  } catch (error) {
+    return { ok: false, mensagem: error.message };
+  }
+}
+
+export async function validarTokenRedefinicaoSenha(token) {
+  try {
+    await apiFetch(`/auth/redefinir-senha/${encodeURIComponent(token)}`);
+    return { ok: true };
+  } catch (error) {
+    return { ok: false, mensagem: error.message };
+  }
+}
+
+export async function redefinirSenhaComToken(token, senha) {
+  try {
+    const response = await apiFetch("/auth/redefinir-senha", {
+      method: "POST",
+      body: { token, senha },
+    });
+    return { ok: true, mensagem: response.mensagem };
+  } catch (error) {
+    return { ok: false, mensagem: error.message };
+  }
+}
+
 export function getSessao() {
   return getStoredUser();
 }

@@ -148,6 +148,10 @@ function senhaMasterInsegura(senha) {
   return valor.length < 12 || SENHAS_MASTER_BLOQUEADAS.has(valor.toLowerCase());
 }
 
+function getAppBaseUrl() {
+  return String(process.env.APP_URL || "https://e-ste.vercel.app").replace(/\/+$/, "");
+}
+
 function getMasterEmailConfig({ required = false } = {}) {
   const email = normalizarEmail(process.env.MASTER_EMAIL);
   if (!email) {
@@ -484,6 +488,10 @@ async function hashPassword(password) {
   const salt = crypto.randomBytes(16).toString("hex");
   const derived = await scryptAsync(String(password), salt, 64);
   return `scrypt:${salt}:${derived.toString("hex")}`;
+}
+
+function hashToken(token) {
+  return crypto.createHash("sha256").update(String(token || "")).digest("hex");
 }
 
 async function verifyPassword(password, storedHash) {
@@ -2095,6 +2103,84 @@ app.get("/api/auth/me", auth, (req, res) => {
 app.post("/api/auth/logout", auth, asyncRoute(async (req, res) => {
   await query("DELETE FROM sessoes WHERE token = $1", [req.authToken]);
   res.json({ ok: true });
+}));
+
+app.post("/api/auth/esqueci-senha", asyncRoute(async (req, res) => {
+  const email = normalizarEmail(req.body.email);
+  const mensagemGenerica = "Se o e-mail informado estiver cadastrado, enviaremos um link para redefinição de senha.";
+
+  if (!isEmailValido(email)) {
+    return res.json({ ok: true, mensagem: mensagemGenerica });
+  }
+
+  const result = await query("SELECT id, nome, nome_grade, email FROM usuarios WHERE email = $1", [email]);
+  const usuario = result.rows[0];
+
+  if (usuario) {
+    await query("DELETE FROM redefinicoes_senha WHERE usuario_id = $1", [usuario.id]);
+
+    const token = crypto.randomBytes(32).toString("hex");
+    const expiraEm = new Date(Date.now() + HORA_MS);
+    await query(
+      "INSERT INTO redefinicoes_senha (token_hash, usuario_id, expira_em) VALUES ($1, $2, $3)",
+      [hashToken(token), usuario.id, expiraEm]
+    );
+
+    const nome = usuario.nome_grade || usuario.nome || "usuário";
+    const link = `${getAppBaseUrl()}/redefinir-senha?token=${token}`;
+    await enviarEmailSeguro({
+      to: usuario.email,
+      subject: "E-STE | Redefinição de senha",
+      text: [
+        `Olá, ${nome}.`,
+        "",
+        "Recebemos uma solicitação para redefinir a senha da sua conta no E-STE.",
+        "Acesse o link abaixo para escolher uma nova senha. O link é válido por 1 hora:",
+        link,
+        "",
+        "Se você não solicitou essa alteração, ignore este e-mail e sua senha continuará a mesma.",
+      ].join("\n"),
+      contexto: "redefinicao_senha",
+    });
+  }
+
+  res.json({ ok: true, mensagem: mensagemGenerica });
+}));
+
+app.get("/api/auth/redefinir-senha/:token", asyncRoute(async (req, res) => {
+  const result = await query(
+    "SELECT usuario_id FROM redefinicoes_senha WHERE token_hash = $1 AND usado_em IS NULL AND expira_em > NOW()",
+    [hashToken(req.params.token)]
+  );
+  if (result.rowCount === 0) {
+    return res.status(400).json({ ok: false, mensagem: "Link inválido ou expirado. Solicite uma nova redefinição de senha." });
+  }
+  res.json({ ok: true });
+}));
+
+app.post("/api/auth/redefinir-senha", asyncRoute(async (req, res) => {
+  const token = String(req.body.token || "");
+  const senha = String(req.body.senha || "");
+
+  if (!token || !senha.trim()) {
+    return res.status(400).json({ ok: false, mensagem: "Informe a nova senha." });
+  }
+
+  const tokenHash = hashToken(token);
+  const result = await query(
+    "SELECT usuario_id FROM redefinicoes_senha WHERE token_hash = $1 AND usado_em IS NULL AND expira_em > NOW()",
+    [tokenHash]
+  );
+  if (result.rowCount === 0) {
+    return res.status(400).json({ ok: false, mensagem: "Link inválido ou expirado. Solicite uma nova redefinição de senha." });
+  }
+
+  const usuarioId = result.rows[0].usuario_id;
+  await query("UPDATE usuarios SET senha_hash = $1 WHERE id = $2", [await hashPassword(senha), usuarioId]);
+  await query("UPDATE redefinicoes_senha SET usado_em = NOW() WHERE token_hash = $1", [tokenHash]);
+  await query("DELETE FROM sessoes WHERE usuario_id = $1", [usuarioId]);
+
+  res.json({ ok: true, mensagem: "Senha redefinida com sucesso. Faça login com a nova senha." });
 }));
 
 app.get("/api/mensagens", auth, asyncRoute(async (req, res) => {

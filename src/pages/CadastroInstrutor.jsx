@@ -6,7 +6,7 @@ import { cadastrarInstrutor } from "../utils/usuariosDB";
 
 export default function CadastroInstrutor() {
   const navigate = useNavigate();
-  const [form, setForm] = useState({ nome: "", nomeGrade: "", email: "", whatsapp: "", senha: "" });
+  const [form, setForm] = useState({ nome: "", nomeGrade: "", email: "", whatsapp: "", senha: "", confirmarSenha: "" });
   const [mensagem, setMensagem] = useState("");
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
@@ -19,6 +19,12 @@ export default function CadastroInstrutor() {
     e.preventDefault();
     setErro("");
     setMensagem("");
+
+    if (form.senha !== form.confirmarSenha) {
+      setErro("As senhas não coincidem.");
+      return;
+    }
+
     setCarregando(true);
     const resultado = await cadastrarInstrutor(form);
     setCarregando(false);
@@ -27,7 +33,7 @@ export default function CadastroInstrutor() {
       return;
     }
     setMensagem("Cadastro enviado com sucesso. Aguarde a aprovação de um gestor para conseguir acessar o sistema.");
-    setForm({ nome: "", nomeGrade: "", email: "", whatsapp: "", senha: "" });
+    setForm({ nome: "", nomeGrade: "", email: "", whatsapp: "", senha: "", confirmarSenha: "" });
   }
 
   return (
@@ -53,7 +59,10 @@ export default function CadastroInstrutor() {
             <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" placeholder="WhatsApp com DDD" value={form.whatsapp} onChange={(e) => atualizar("whatsapp", e.target.value)} />
           </Field>
           <Field label="Senha">
-            <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" type="password" placeholder="Senha" value={form.senha} onChange={(e) => atualizar("senha", e.target.value)} required />
+            <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" type="password" placeholder="Senha" value={form.senha} onChange={(e) => atualizar("senha", e.target.value)} autoComplete="new-password" required />
+          </Field>
+          <Field label="Confirmar senha">
+            <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" type="password" placeholder="Confirmar senha" value={form.confirmarSenha} onChange={(e) => atualizar("confirmarSenha", e.target.value)} autoComplete="new-password" required />
           </Field>
           <div className="flex gap-3">
             <Button type="submit" className="flex-1" disabled={carregando}>

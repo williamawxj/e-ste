@@ -138,6 +138,17 @@ CREATE TABLE IF NOT EXISTS sessoes (
   expira_em TIMESTAMPTZ NOT NULL
 );
 
+CREATE TABLE IF NOT EXISTS redefinicoes_senha (
+  token_hash TEXT PRIMARY KEY,
+  usuario_id TEXT NOT NULL REFERENCES usuarios(id) ON DELETE CASCADE,
+  criado_em TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+  expira_em TIMESTAMPTZ NOT NULL,
+  usado_em TIMESTAMPTZ
+);
+
+CREATE INDEX IF NOT EXISTS idx_redefinicoes_senha_usuario_id
+  ON redefinicoes_senha (usuario_id);
+
 CREATE TABLE IF NOT EXISTS configuracoes_sistema (
   chave TEXT PRIMARY KEY,
   valor TEXT NOT NULL DEFAULT '',

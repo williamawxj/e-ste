@@ -7,6 +7,8 @@ import { subscribeApiLoading } from "./utils/apiClient";
 import { atualizarSessaoDoServidor, encerrarSessao, getSessao } from "./utils/usuariosDB";
 
 const Login = lazy(() => import("./pages/Login"));
+const EsqueciSenha = lazy(() => import("./pages/EsqueciSenha"));
+const RedefinirSenha = lazy(() => import("./pages/RedefinirSenha"));
 const CadastroInstrutor = lazy(() => import("./pages/CadastroInstrutor"));
 const GestorDashboard = lazy(() => import("./pages/GestorDashboard"));
 const CadastroGestor = lazy(() => import("./pages/CadastroGestor"));
@@ -162,6 +164,14 @@ export default function App() {
           <Route
             path="/cadastro-instrutor"
             element={<CadastroInstrutor />}
+          />
+          <Route
+            path="/esqueci-senha"
+            element={usuario ? <Navigate to="/" replace /> : <EsqueciSenha />}
+          />
+          <Route
+            path="/redefinir-senha"
+            element={usuario ? <Navigate to="/" replace /> : <RedefinirSenha />}
           />
 
           <Route

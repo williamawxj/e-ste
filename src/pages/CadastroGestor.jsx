@@ -6,7 +6,7 @@ import PageShell from "../components/PageShell";
 import { cadastrarGestor } from "../utils/usuariosDB";
 
 export default function CadastroGestor() {
-  const [form, setForm] = useState({ nome: "", email: "", senha: "", chefeSte: false });
+  const [form, setForm] = useState({ nome: "", email: "", senha: "", confirmarSenha: "", chefeSte: false });
   const [mensagem, setMensagem] = useState("");
   const [erro, setErro] = useState("");
   const [carregando, setCarregando] = useState(false);
@@ -19,6 +19,12 @@ export default function CadastroGestor() {
     e.preventDefault();
     setErro("");
     setMensagem("");
+
+    if (form.senha !== form.confirmarSenha) {
+      setErro("As senhas não coincidem.");
+      return;
+    }
+
     setCarregando(true);
     const resultado = await cadastrarGestor(form);
     setCarregando(false);
@@ -27,7 +33,7 @@ export default function CadastroGestor() {
       return;
     }
     setMensagem("Gestor cadastrado com sucesso.");
-    setForm({ nome: "", email: "", senha: "", chefeSte: false });
+    setForm({ nome: "", email: "", senha: "", confirmarSenha: "", chefeSte: false });
   }
 
   return (
@@ -43,7 +49,10 @@ export default function CadastroGestor() {
             <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" placeholder="E-mail ou login" value={form.email} onChange={(e) => atualizar("email", e.target.value)} required />
           </Field>
           <Field label="Senha">
-            <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" type="password" placeholder="Senha" value={form.senha} onChange={(e) => atualizar("senha", e.target.value)} required />
+            <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" type="password" placeholder="Senha" value={form.senha} onChange={(e) => atualizar("senha", e.target.value)} autoComplete="new-password" required />
+          </Field>
+          <Field label="Confirmar senha">
+            <input className="w-full rounded-xl border border-slate-300 bg-white px-4 py-3 text-slate-900 outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100" type="password" placeholder="Confirmar senha" value={form.confirmarSenha} onChange={(e) => atualizar("confirmarSenha", e.target.value)} autoComplete="new-password" required />
           </Field>
           <label className="flex items-center gap-2 rounded-xl border border-slate-200 bg-slate-50 px-3 py-2 text-sm font-semibold text-slate-700">
             <input type="checkbox" checked={form.chefeSte} onChange={(e) => atualizar("chefeSte", e.target.checked)} />
