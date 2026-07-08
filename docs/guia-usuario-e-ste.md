@@ -2,7 +2,7 @@
 
 Manual operacional para gestores e instrutores
 
-Versão: junho de 2026
+Versão: julho de 2026
 
 ## Apresentação
 
@@ -44,7 +44,8 @@ Use o botão **Sair** no canto superior direito. Em computadores, o nome do usu�
 O sino da barra superior abre a área de mensagens. Ali aparecem avisos gerados pelo sistema, como solicitações de auxiliares, alterações ou comunicações importantes.
 
 - Mensagens não lidas ficam destacadas.
-- É possível marcar uma mensagem como lida.
+- Ao clicar no texto de uma mensagem, o sistema marca a mensagem como lida e leva diretamente para a tela relacionada ao assunto (por exemplo, uma solicitação de auxiliares abre em **Auxiliares pendentes**). Quando isso for possível, aparece o aviso **Clique para abrir**.
+- Também é possível marcar uma mensagem como lida sem abrir a tela, usando o botão de marcar (ícone de check) ao lado do texto.
 - Quando houver várias mensagens, use **Marcar todas**.
 
 ## Conceitos básicos
@@ -53,6 +54,8 @@ O sino da barra superior abre a área de mensagens. Ali aparecem avisos gerados 
 
 - **Instrutor:** preenche suas aulas, confirma horários, atualiza perfil, consulta grades e solicita ajustes à STE.
 - **Gestor:** administra usuários, turmas, matérias, semanas, QTS, relatórios, comunicações e backup.
+
+> **Gestor também pode lecionar:** um gestor pode selecionar matérias próprias em **Editar perfil gestor**, na mesma área usada pelos instrutores ("Matérias que também leciona"). Depois disso, o gestor aparece como opção de instrutor em **Preencher horários** e em **Modificar horários**, podendo preencher e confirmar suas próprias aulas normalmente.
 
 ### Turma
 
@@ -101,6 +104,7 @@ O menu lateral fica à esquerda. Em telas pequenas, use o botão da barra superi
 - Criar semanas
 - Matérias por turma
 - Modificar horários
+- Auxiliares pendentes
 - Carga horária
 - Comunicações
 - Banco e backup
@@ -190,13 +194,17 @@ Nas aulas do próprio instrutor, enquanto não estiverem bloqueadas:
 
 ### Solicitar auxiliares
 
-Em uma aula já gravada, o instrutor pode informar a quantidade desejada de auxiliares:
+O instrutor pode informar a quantidade desejada de auxiliares tanto em uma aula ainda pendente (antes de confirmar) quanto em uma aula já gravada:
 
 1. Localize a aula na grade.
 2. Informe a quantidade no campo de auxiliares.
 3. Clique em **Solicitar auxiliares**.
 
-O pedido gera aviso para os gestores avaliarem e autorizarem.
+Se a aula ainda estiver pendente, o pedido é enviado automaticamente aos gestores no momento em que o instrutor confirmar os horários. Se a aula já estiver gravada, o pedido é enviado assim que o instrutor clicar em **Solicitar auxiliares**.
+
+Em ambos os casos, o gestor recebe uma notificação e autoriza a quantidade em **Auxiliares pendentes**.
+
+> **Atenção:** depois que a aula é confirmada, o instrutor não pode mais alterar a quantidade de auxiliares solicitados. Qualquer ajuste depois da confirmação precisa ser feito pelo gestor.
 
 ### Solicitar modificação à STE
 
@@ -290,7 +298,8 @@ Também é possível:
 - Selecionar todas as matérias para um instrutor.
 - Limpar todas as matérias.
 - Excluir instrutor.
-- Excluir gestor, exceto o gestor master e o próprio usuário logado.
+
+Na mesma tela, a lista **Gestores cadastrados** também é editável: clique no nome do gestor para abrir os campos de nome, nome na grade, e-mail, WhatsApp e o marcador **Chefe da STE**. É possível excluir um gestor por ali, exceto o gestor master e o próprio usuário logado.
 
 ### Definir chefe de pasta por matéria
 
@@ -392,6 +401,17 @@ Gestores podem exportar:
 
 Os botões ficam em **Modificar horários** e **Visualizar horários**.
 
+### Autorizar auxiliares
+
+A tela **Auxiliares pendentes** reúne todas as aulas com pedido de auxiliares ainda não totalmente autorizado, feito por qualquer instrutor.
+
+1. Acesse **Auxiliares pendentes**.
+2. Confira turma, semana, dia, horário e matéria de cada pedido.
+3. Informe a quantidade de auxiliares autorizada.
+4. Clique em **Autorizar**.
+
+Depois de autorizada a quantidade solicitada, a aula sai da lista de pendentes. Somente o gestor pode autorizar ou alterar auxiliares depois que a aula estiver confirmada.
+
 ### Acompanhar carga horária
 
 1. Acesse **Carga horária**.
@@ -453,9 +473,12 @@ Essa limpeza remove horários, confirmações e solicitações de modificação.
 ### Editar perfil do gestor
 
 1. Acesse **Editar perfil gestor**.
-2. Atualize dados de acesso e senha, se necessário.
+2. Atualize nome, nome na grade, **e-mail/login**, WhatsApp e senha, se necessário.
 3. Marque **Chefe da STE** quando aplicável.
-4. Cadastre o WhatsApp da STE para habilitar o botão de contato dos instrutores.
+4. Se também lecionar, selecione as matérias em **Matérias que também leciona**.
+5. Cadastre o WhatsApp da STE para habilitar o botão de contato dos instrutores.
+
+O e-mail cadastrado aqui é o mesmo usado para login. Ao trocar o e-mail, use o novo endereço no próximo acesso.
 
 ## Rotinas recomendadas
 
@@ -572,6 +595,7 @@ O sistema precisa de configuração SMTP no ambiente. Enquanto isso, use os avis
 - Modificar QTS.
 - Confirmar QTS e gerar PDF.
 - Exportar grade.
+- Autorizar auxiliares pendentes.
 - Consultar carga horária.
 - Consultar horas/aula.
 - Fazer backup.

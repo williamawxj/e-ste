@@ -126,7 +126,7 @@ function addCover() {
   doc.text("Conteúdo do guia", page.width / 2, 149, { align: "center" });
   setFont("normal", 10, colors.slate);
   doc.text("Acesso, preenchimento, QTS, relatórios, comunicações e backup", page.width / 2, 161, { align: "center" });
-  doc.text("Versão: junho de 2026", page.width / 2, 173, { align: "center" });
+  doc.text("Versão: julho de 2026", page.width / 2, 173, { align: "center" });
 
   setFont("normal", 9, colors.gray);
   doc.text("Seção de Treinamento e Ensino", page.width / 2, page.height - 26, { align: "center" });
