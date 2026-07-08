@@ -1149,35 +1149,29 @@ async function getCargaMateriaNaTurma({ turmaId, materiaId }) {
 // com um valor menor ou igual ao da aula anterior (na mesma materia, em
 // ordem cronologica na turma), o valor e corrigido para (anterior + 1).
 // Aulas sem sobrescrita manual nao sao tocadas, pois a numeracao ao vivo ja
-// resolve corretamente esse caso. Tambem eleva a carga horaria cadastrada da
-// materia quando o ultimo numero de aula da turma ultrapassa o total atual,
-// para que o indicador "atual(total)" e o saldo continuem fazendo sentido.
+// resolve corretamente esse caso. A carga horaria total cadastrada da
+// materia (o "total" entre parenteses) nunca e alterada por essa rotina.
 async function padronizarNumeracaoAulasQts({ turmaId, semanaId }) {
-  const [aulasResult, materiasResult] = await Promise.all([
-    query(
-      `
-        SELECT
-          h.id,
-          h.semana_id,
-          h.dia,
-          h.inicio,
-          h.fim,
-          h.materia_id,
-          h.materia_nome,
-          h.aula_corrente,
-          s.inicio AS semana_inicio
-        FROM horarios h
-        LEFT JOIN semanas s ON s.id = h.semana_id
-        WHERE h.turma_id = $1
-          AND h.tipo = 'aula'
-          AND (h.materia_id IS NOT NULL OR h.materia_nome <> '')
-      `,
-      [turmaId]
-    ),
-    query("SELECT id, COALESCE(carga_horaria, 0)::int AS carga_horaria FROM materias"),
-  ]);
-
-  const cargaHorariaPorMateria = new Map(materiasResult.rows.map((row) => [row.id, row.carga_horaria]));
+  const aulasResult = await query(
+    `
+      SELECT
+        h.id,
+        h.semana_id,
+        h.dia,
+        h.inicio,
+        h.fim,
+        h.materia_id,
+        h.materia_nome,
+        h.aula_corrente,
+        s.inicio AS semana_inicio
+      FROM horarios h
+      LEFT JOIN semanas s ON s.id = h.semana_id
+      WHERE h.turma_id = $1
+        AND h.tipo = 'aula'
+        AND (h.materia_id IS NOT NULL OR h.materia_nome <> '')
+    `,
+    [turmaId]
+  );
 
   const semanaTimestamp = (valor) => {
     const data = valor instanceof Date
@@ -1196,7 +1190,6 @@ async function padronizarNumeracaoAulasQts({ turmaId, semanaId }) {
   }
 
   const correcoes = [];
-  const atualizacoesCargaHoraria = [];
   for (const linhas of grupos.values()) {
     const ordenadas = [...linhas].sort((a, b) => {
       const diffSemana = semanaTimestamp(a.semana_inicio) - semanaTimestamp(b.semana_inicio);
@@ -1222,24 +1215,13 @@ async function padronizarNumeracaoAulasQts({ turmaId, semanaId }) {
         correcoes.push({ id: aula.id, aulaCorrente: atual });
       }
     }
-
-    const materiaIdGrupo = ordenadas.find((item) => item.materia_id)?.materia_id;
-    if (materiaIdGrupo && cargaHorariaPorMateria.has(materiaIdGrupo)) {
-      const cargaAtual = cargaHorariaPorMateria.get(materiaIdGrupo);
-      if (sequencial > cargaAtual) {
-        atualizacoesCargaHoraria.push({ materiaId: materiaIdGrupo, cargaHoraria: sequencial });
-      }
-    }
   }
 
   for (const correcao of correcoes) {
     await query("UPDATE horarios SET aula_corrente = $1 WHERE id = $2", [correcao.aulaCorrente, correcao.id]);
   }
-  for (const atualizacao of atualizacoesCargaHoraria) {
-    await query("UPDATE materias SET carga_horaria = $1 WHERE id = $2", [atualizacao.cargaHoraria, atualizacao.materiaId]);
-  }
 
-  return { aulasRenumeradas: correcoes.length, materiasAtualizadas: atualizacoesCargaHoraria.length };
+  return { aulasRenumeradas: correcoes.length, materiasAtualizadas: 0 };
 }
 
 async function getConfirmacaoHorariosInstrutor({ turmaId, semanaId, instrutorId }) {
@@ -3434,7 +3416,7 @@ app.post("/api/qts/confirmacao", auth, requireGestor, asyncRoute(async (req, res
     return res.status(400).json({ ok: false, mensagem: "Informe turma e semana para confirmar o QTS." });
   }
 
-  const { aulasRenumeradas, materiasAtualizadas } = await padronizarNumeracaoAulasQts({ turmaId, semanaId });
+  const { aulasRenumeradas } = await padronizarNumeracaoAulasQts({ turmaId, semanaId });
 
   const envio = await enviarEmailsConfirmacaoQts({
     turmaId,
@@ -3448,20 +3430,16 @@ app.post("/api/qts/confirmacao", auth, requireGestor, asyncRoute(async (req, res
   const sufixoRenumeracao = aulasRenumeradas > 0
     ? ` Numeração de ${aulasRenumeradas} aula(s) padronizada para manter a sequência crescente.`
     : "";
-  const sufixoCargaHoraria = materiasAtualizadas > 0
-    ? ` Carga horária de ${materiasAtualizadas} matéria(s) atualizada para acompanhar a última aula numerada.`
-    : "";
 
   const mensagem = (envio.configurado
     ? `QTS confirmado. E-mails enviados para ${envio.emailsEnviados} de ${envio.instrutoresComEmailValido} instrutor(es) alterado(s) com e-mail válido.`
-    : `QTS confirmado. SMTP não configurado, e-mails não enviados (instrutores alterados: ${envio.instrutoresAlterados || 0}).`) + sufixoRenumeracao + sufixoCargaHoraria;
+    : `QTS confirmado. SMTP não configurado, e-mails não enviados (instrutores alterados: ${envio.instrutoresAlterados || 0}).`) + sufixoRenumeracao;
 
   res.json({
     ok: true,
     mensagem,
     email: envio,
     aulasRenumeradas,
-    materiasAtualizadas,
   });
 }));
 
