@@ -91,6 +91,15 @@ No relatório de horas/aula, cada aula lançada conta como 1 hora/aula. A refer�
 
 É o instrutor responsável por uma matéria. Cada matéria pode ter apenas um chefe de pasta. Essa configuração fica na tela de instrutores e gestores.
 
+### E-mails automáticos de confirmação
+
+O sistema envia e-mails automáticos em dois momentos, desde que o SMTP esteja configurado:
+
+- Quando o instrutor confirma seus próprios horários, ele recebe um e-mail com a confirmação da grade.
+- Quando o gestor confirma o QTS, cada instrutor cuja grade tiver mudado desde a última confirmação recebe um e-mail avisando da alteração. Instrutores sem mudança na grade não recebem esse e-mail.
+
+Em ambos os e-mails, para cada dia com aula, o sistema inclui um link para adicionar aquele período diretamente ao Google Agenda, caso o instrutor queira.
+
 ## Navegação geral
 
 ### Menu lateral
