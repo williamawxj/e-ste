@@ -24,549 +24,115 @@
     --serif: Georgia, "Iowan Old Style", "Palatino Linotype", "Book Antiqua", serif;
     --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   }
-
   @media (prefers-color-scheme: dark) {
     :root {
-      --bg: #0a1120;
-      --surface: #101a2d;
-      --surface-2: #0d1626;
-      --ink: #e7ecf7;
-      --ink-soft: #a3b1cc;
-      --ink-faint: #7688a8;
-      --accent: #85a8ff;
-      --accent-deep: #cddcff;
-      --accent-soft: #16233d;
-      --brass: #d9ab5f;
-      --brass-soft: #241d10;
-      --warn: #e2825d;
-      --warn-soft: #2c1710;
-      --line: #24314c;
+      --bg: #0a1120; --surface: #101a2d; --surface-2: #0d1626; --ink: #e7ecf7;
+      --ink-soft: #a3b1cc; --ink-faint: #7688a8; --accent: #85a8ff; --accent-deep: #cddcff;
+      --accent-soft: #16233d; --brass: #d9ab5f; --brass-soft: #241d10; --warn: #e2825d;
+      --warn-soft: #2c1710; --line: #24314c;
     }
   }
-
   :root[data-theme="dark"] {
-    --bg: #0a1120;
-    --surface: #101a2d;
-    --surface-2: #0d1626;
-    --ink: #e7ecf7;
-    --ink-soft: #a3b1cc;
-    --ink-faint: #7688a8;
-    --accent: #85a8ff;
-    --accent-deep: #cddcff;
-    --accent-soft: #16233d;
-    --brass: #d9ab5f;
-    --brass-soft: #241d10;
-    --warn: #e2825d;
-    --warn-soft: #2c1710;
-    --line: #24314c;
+    --bg: #0a1120; --surface: #101a2d; --surface-2: #0d1626; --ink: #e7ecf7;
+    --ink-soft: #a3b1cc; --ink-faint: #7688a8; --accent: #85a8ff; --accent-deep: #cddcff;
+    --accent-soft: #16233d; --brass: #d9ab5f; --brass-soft: #241d10; --warn: #e2825d;
+    --warn-soft: #2c1710; --line: #24314c;
   }
-
   :root[data-theme="light"] {
-    --bg: #eef1f7;
-    --surface: #ffffff;
-    --surface-2: #f6f8fc;
-    --ink: #182238;
-    --ink-soft: #56637c;
-    --ink-faint: #8391a9;
-    --accent: #1d4ed8;
-    --accent-deep: #0c2559;
-    --accent-soft: #e3ebfd;
-    --brass: #93691f;
-    --brass-soft: #f6ecda;
-    --warn: #a8391b;
-    --warn-soft: #fbe9e0;
-    --line: #d7deea;
+    --bg: #eef1f7; --surface: #ffffff; --surface-2: #f6f8fc; --ink: #182238;
+    --ink-soft: #56637c; --ink-faint: #8391a9; --accent: #1d4ed8; --accent-deep: #0c2559;
+    --accent-soft: #e3ebfd; --brass: #93691f; --brass-soft: #f6ecda; --warn: #a8391b;
+    --warn-soft: #fbe9e0; --line: #d7deea;
   }
-
   * { box-sizing: border-box; }
-
-  html {
-    scroll-behavior: smooth;
-  }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-  }
-
-  body {
-    margin: 0;
-    background: var(--bg);
-    color: var(--ink);
-    font-family: var(--sans);
-    font-size: 16px;
-    line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-  }
-
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body { margin: 0; background: var(--bg); color: var(--ink); font-family: var(--sans); font-size: 16px; line-height: 1.6; -webkit-font-smoothing: antialiased; }
   a { color: var(--accent); }
-  a:focus-visible, button:focus-visible, summary:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
-
-  /* ---------- Cover ---------- */
+  a:focus-visible, button:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .cover {
-    background:
-      linear-gradient(180deg, var(--accent-deep) 0%, #12306e 62%, var(--accent-deep) 100%);
-    color: #eef2ff;
-    padding: 3.6rem 1.5rem 3.1rem;
-    text-align: center;
-    position: relative;
-    overflow: hidden;
+    background: linear-gradient(180deg, var(--accent-deep) 0%, #12306e 62%, var(--accent-deep) 100%);
+    color: #eef2ff; padding: 3.6rem 1.5rem 3.1rem; text-align: center; position: relative; overflow: hidden;
   }
   .cover::before {
-    content: "";
-    position: absolute;
-    inset: 0;
+    content: ""; position: absolute; inset: 0;
     background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.035) 0 2px, transparent 2px 26px);
     pointer-events: none;
   }
-  .cover-crests {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    gap: 1.4rem;
-    margin-bottom: 1.3rem;
-    position: relative;
+  .cover-back {
+    position: relative; display: inline-flex; align-items: center; gap: 0.4rem; margin-bottom: 1.6rem;
+    font-size: 0.82rem; font-weight: 600; color: #d3ddf8; text-decoration: none;
+    border: 1px solid rgba(255,255,255,0.28); border-radius: 100px; padding: 0.35rem 0.9rem 0.35rem 0.7rem;
   }
-  .cover-crests img {
-    height: 74px;
-    width: auto;
-    filter: drop-shadow(0 3px 10px rgba(0,0,0,0.35));
-  }
-  .cover-eyebrow {
-    position: relative;
-    font-family: var(--sans);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.16em;
-    text-transform: uppercase;
-    color: #b9c9f5;
-    margin: 0 0 0.6rem;
-  }
-  .cover h1 {
-    position: relative;
-    font-family: var(--serif);
-    font-weight: 700;
-    font-size: clamp(2.2rem, 5vw, 3.2rem);
-    letter-spacing: 0.01em;
-    margin: 0 0 0.5rem;
-    text-wrap: balance;
-  }
-  .cover p.tagline {
-    position: relative;
-    font-size: 1.05rem;
-    color: #d3ddf8;
-    margin: 0 auto 1.6rem;
-    max-width: 34rem;
-    text-wrap: balance;
-  }
-  .cover-meta {
-    position: relative;
-    display: inline-flex;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-    justify-content: center;
-    font-size: 0.78rem;
-    letter-spacing: 0.03em;
-  }
-  .cover-meta span {
-    border: 1px solid rgba(255,255,255,0.28);
-    background: rgba(255,255,255,0.06);
-    border-radius: 100px;
-    padding: 0.32rem 0.85rem;
-    display: inline-flex;
-    align-items: center;
-  }
+  .cover-back:hover { color: #fff; border-color: rgba(255,255,255,0.5); }
+  .cover-crests { display: flex; justify-content: center; align-items: center; gap: 1.4rem; margin-bottom: 1.3rem; position: relative; }
+  .cover-crests img { height: 74px; width: auto; filter: drop-shadow(0 3px 10px rgba(0,0,0,0.35)); }
+  .cover-eyebrow { position: relative; font-family: var(--sans); font-size: 0.72rem; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: #b9c9f5; margin: 0 0 0.6rem; }
+  .cover h1 { position: relative; font-family: var(--serif); font-weight: 700; font-size: clamp(2.2rem, 5vw, 3.2rem); letter-spacing: 0.01em; margin: 0 0 0.5rem; text-wrap: balance; }
+  .cover p.tagline { position: relative; font-size: 1.05rem; color: #d3ddf8; margin: 0 auto 1.6rem; max-width: 34rem; text-wrap: balance; }
+  .cover-meta { position: relative; display: inline-flex; gap: 0.6rem; flex-wrap: wrap; justify-content: center; font-size: 0.78rem; letter-spacing: 0.03em; }
+  .cover-meta span { border: 1px solid rgba(255,255,255,0.28); background: rgba(255,255,255,0.06); border-radius: 100px; padding: 0.32rem 0.85rem; display: inline-flex; align-items: center; }
   .cover-meta .download {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    border: 1px solid var(--brass);
-    background: var(--brass);
-    color: #241d0c;
-    border-radius: 100px;
-    padding: 0.32rem 0.9rem 0.32rem 0.75rem;
-    font-weight: 700;
-    text-decoration: none;
+    display: inline-flex; align-items: center; gap: 0.4rem; border: 1px solid var(--brass); background: var(--brass);
+    color: #241d0c; border-radius: 100px; padding: 0.32rem 0.9rem 0.32rem 0.75rem; font-weight: 700; text-decoration: none;
     transition: filter 0.15s ease;
   }
   .cover-meta .download:hover { filter: brightness(1.08); }
   .cover-meta .download svg { width: 14px; height: 14px; flex: none; }
-
-  /* ---------- Layout ---------- */
-  .layout {
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 2.4rem 1.5rem 5rem;
-    display: grid;
-    grid-template-columns: 250px minmax(0, 1fr);
-    gap: 2.6rem;
-    align-items: start;
-  }
-  @media (max-width: 900px) {
-    .layout { grid-template-columns: 1fr; padding-top: 1.4rem; }
-  }
-
-  .toc {
-    position: sticky;
-    top: 1.4rem;
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 12px;
-    padding: 1.1rem 1.1rem 1.3rem;
-    max-height: calc(100vh - 2.8rem);
-    overflow-y: auto;
-  }
-  @media (max-width: 900px) {
-    .toc { position: static; max-height: none; }
-  }
-  .toc-title {
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    margin: 0 0 0.7rem;
-  }
-  .toc ol {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    counter-reset: toc;
-  }
-  .toc > ol > li {
-    counter-increment: toc;
-    margin-bottom: 0.15rem;
-  }
-  .toc a {
-    display: block;
-    text-decoration: none;
-    color: var(--ink-soft);
-    font-size: 0.86rem;
-    padding: 0.32rem 0.4rem;
-    border-radius: 6px;
-  }
-  .toc > ol > li > a {
-    font-weight: 600;
-    color: var(--ink);
-  }
-  .toc > ol > li > a::before {
-    content: counter(toc) ". ";
-    color: var(--accent);
-    font-variant-numeric: tabular-nums;
-  }
+  .layout { max-width: 1180px; margin: 0 auto; padding: 2.4rem 1.5rem 5rem; display: grid; grid-template-columns: 250px minmax(0, 1fr); gap: 2.6rem; align-items: start; }
+  @media (max-width: 900px) { .layout { grid-template-columns: 1fr; padding-top: 1.4rem; } }
+  .toc { position: sticky; top: 1.4rem; background: var(--surface); border: 1px solid var(--line); border-radius: 12px; padding: 1.1rem 1.1rem 1.3rem; max-height: calc(100vh - 2.8rem); overflow-y: auto; }
+  @media (max-width: 900px) { .toc { position: static; max-height: none; } }
+  .toc-title { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--ink-faint); margin: 0 0 0.7rem; }
+  .toc ol { list-style: none; margin: 0; padding: 0; counter-reset: toc; }
+  .toc > ol > li { counter-increment: toc; margin-bottom: 0.15rem; }
+  .toc a { display: block; text-decoration: none; color: var(--ink-soft); font-size: 0.86rem; padding: 0.32rem 0.4rem; border-radius: 6px; }
+  .toc > ol > li > a { font-weight: 600; color: var(--ink); }
+  .toc > ol > li > a::before { content: counter(toc) ". "; color: var(--accent); font-variant-numeric: tabular-nums; }
   .toc a:hover { background: var(--surface-2); color: var(--accent); }
-  .toc .sub {
-    list-style: none;
-    margin: 0.1rem 0 0.4rem 0.95rem;
-    padding: 0;
-    border-left: 1px solid var(--line);
-  }
-  .toc .sub li a {
-    font-size: 0.79rem;
-    padding-left: 0.7rem;
-  }
-
+  .toc .sub { list-style: none; margin: 0.1rem 0 0.4rem 0.95rem; padding: 0; border-left: 1px solid var(--line); }
+  .toc .sub li a { font-size: 0.79rem; padding-left: 0.7rem; }
   main.content { min-width: 0; }
-
-  section.doc-section {
-    background: var(--surface);
-    border: 1px solid var(--line);
-    border-radius: 14px;
-    padding: 2rem 2.1rem 2.2rem;
-    margin-bottom: 1.6rem;
-    scroll-margin-top: 1.2rem;
-  }
-  @media (max-width: 560px) {
-    section.doc-section { padding: 1.5rem 1.2rem 1.7rem; }
-  }
-
-  .eyebrow {
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.14em;
-    text-transform: uppercase;
-    padding: 0.24rem 0.65rem;
-    border-radius: 100px;
-    margin-bottom: 0.9rem;
-  }
+  section.doc-section { background: var(--surface); border: 1px solid var(--line); border-radius: 14px; padding: 2rem 2.1rem 2.2rem; margin-bottom: 1.6rem; scroll-margin-top: 1.2rem; }
+  @media (max-width: 560px) { section.doc-section { padding: 1.5rem 1.2rem 1.7rem; } }
+  .eyebrow { display: inline-flex; align-items: center; gap: 0.4rem; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 0.24rem 0.65rem; border-radius: 100px; margin-bottom: 0.9rem; }
   .eyebrow.geral { color: var(--ink-soft); background: var(--surface-2); border: 1px solid var(--line); }
   .eyebrow.instrutor { color: var(--accent-deep); background: var(--accent-soft); }
   .eyebrow.gestor { color: var(--brass); background: var(--brass-soft); }
-
-  h2 {
-    font-family: var(--serif);
-    font-size: 1.7rem;
-    font-weight: 700;
-    color: var(--ink);
-    margin: 0 0 0.3rem;
-    text-wrap: balance;
-  }
-  .section-rule {
-    height: 3px;
-    width: 46px;
-    background: var(--brass);
-    border-radius: 2px;
-    margin: 0.7rem 0 1.5rem;
-  }
-  h3 {
-    font-family: var(--serif);
-    font-size: 1.18rem;
-    font-weight: 700;
-    color: var(--accent-deep);
-    margin: 2rem 0 0.7rem;
-  }
+  h2 { font-family: var(--serif); font-size: 1.7rem; font-weight: 700; color: var(--ink); margin: 0 0 0.3rem; text-wrap: balance; }
+  .section-rule { height: 3px; width: 46px; background: var(--brass); border-radius: 2px; margin: 0.7rem 0 1.5rem; }
+  h3 { font-family: var(--serif); font-size: 1.18rem; font-weight: 700; color: var(--accent-deep); margin: 2rem 0 0.7rem; }
   section.doc-section > h3:first-of-type { margin-top: 0.4rem; }
-
   p { margin: 0 0 0.9rem; max-width: 66ch; color: var(--ink); }
-  p.lede { color: var(--ink-soft); }
-
   strong { color: var(--ink); font-weight: 700; }
-  code {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
-    background: var(--surface-2);
-    border: 1px solid var(--line);
-    border-radius: 4px;
-    padding: 0.05rem 0.35rem;
-    font-size: 0.88em;
-  }
-
-  ul.bullets, ul.plain {
-    margin: 0 0 1rem;
-    padding: 0;
-    list-style: none;
-    max-width: 66ch;
-  }
-  ul.bullets li {
-    position: relative;
-    padding-left: 1.2rem;
-    margin-bottom: 0.5rem;
-    color: var(--ink);
-  }
-  ul.bullets li::before {
-    content: "";
-    position: absolute;
-    left: 0.15rem;
-    top: 0.62rem;
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--brass);
-  }
-
-  ol.steps {
-    list-style: none;
-    margin: 0 0 1.1rem;
-    padding: 0;
-    max-width: 66ch;
-    counter-reset: step;
-  }
-  ol.steps li {
-    counter-increment: step;
-    position: relative;
-    padding-left: 2.4rem;
-    margin-bottom: 0.7rem;
-    min-height: 1.6rem;
-  }
+  code { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; background: var(--surface-2); border: 1px solid var(--line); border-radius: 4px; padding: 0.05rem 0.35rem; font-size: 0.88em; }
+  ul.bullets { margin: 0 0 1rem; padding: 0; list-style: none; max-width: 66ch; }
+  ul.bullets li { position: relative; padding-left: 1.2rem; margin-bottom: 0.5rem; color: var(--ink); }
+  ul.bullets li::before { content: ""; position: absolute; left: 0.15rem; top: 0.62rem; width: 5px; height: 5px; border-radius: 50%; background: var(--brass); }
+  ol.steps { list-style: none; margin: 0 0 1.1rem; padding: 0; max-width: 66ch; counter-reset: step; }
+  ol.steps li { counter-increment: step; position: relative; padding-left: 2.4rem; margin-bottom: 0.7rem; min-height: 1.6rem; }
   ol.steps li::before {
-    content: counter(step);
-    position: absolute;
-    left: 0;
-    top: -0.05rem;
-    width: 1.65rem;
-    height: 1.65rem;
-    border-radius: 50%;
-    background: var(--accent-soft);
-    color: var(--accent-deep);
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: 0.78rem;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-variant-numeric: tabular-nums;
+    content: counter(step); position: absolute; left: 0; top: -0.05rem; width: 1.65rem; height: 1.65rem; border-radius: 50%;
+    background: var(--accent-soft); color: var(--accent-deep); font-family: var(--sans); font-weight: 700; font-size: 0.78rem;
+    display: flex; align-items: center; justify-content: center; font-variant-numeric: tabular-nums;
   }
-  ol.steps ul.nested {
-    list-style: none;
-    margin: 0.4rem 0 0.2rem;
-    padding: 0;
-  }
-  ol.steps ul.nested li {
-    padding-left: 0;
-    min-height: 0;
-    margin-bottom: 0.25rem;
-    font-size: 0.92em;
-    color: var(--ink-soft);
-  }
+  ol.steps ul.nested { list-style: none; margin: 0.4rem 0 0.2rem; padding: 0; border-left: 2px solid var(--line); padding-left: 0.8rem; }
+  ol.steps ul.nested li { padding-left: 0; min-height: 0; margin-bottom: 0.25rem; font-size: 0.92em; color: var(--ink-soft); }
   ol.steps ul.nested li::before { content: none; }
-  ol.steps ul.nested li::after {
-    content: "";
-  }
-  ol.steps ul.nested {
-    border-left: 2px solid var(--line);
-    padding-left: 0.8rem;
-  }
-
-  ul.checklist {
-    list-style: none;
-    margin: 0 0 1rem;
-    padding: 0;
-    max-width: 66ch;
-  }
-  ul.checklist li {
-    position: relative;
-    padding-left: 1.7rem;
-    margin-bottom: 0.55rem;
-  }
-  ul.checklist li::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 0.15rem;
-    width: 1.05rem;
-    height: 1.05rem;
-    border: 1.5px solid var(--brass);
-    border-radius: 4px;
-    background: var(--surface);
-  }
-
-  ul.chips {
-    list-style: none;
-    margin: 0 0 1rem;
-    padding: 0;
-    display: flex;
-    flex-wrap: wrap;
-    gap: 0.5rem;
-  }
-  ul.chips li {
-    font-size: 0.83rem;
-    padding: 0.32rem 0.75rem;
-    background: var(--surface-2);
-    border: 1px solid var(--line);
-    border-radius: 100px;
-    color: var(--ink-soft);
-  }
-
-  .callout {
-    border-left: 3px solid var(--brass);
-    background: var(--brass-soft);
-    border-radius: 0 10px 10px 0;
-    padding: 0.9rem 1.1rem;
-    margin: 1.1rem 0 1.3rem;
-    max-width: 66ch;
-  }
-  .callout.warn {
-    border-left-color: var(--warn);
-    background: var(--warn-soft);
-  }
-  .callout-label {
-    display: block;
-    font-size: 0.68rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    margin-bottom: 0.3rem;
-    color: var(--brass);
-  }
+  .callout { border-left: 3px solid var(--brass); background: var(--brass-soft); border-radius: 0 10px 10px 0; padding: 0.9rem 1.1rem; margin: 1.1rem 0 1.3rem; max-width: 66ch; }
+  .callout.warn { border-left-color: var(--warn); background: var(--warn-soft); }
+  .callout-label { display: block; font-size: 0.68rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 0.3rem; color: var(--brass); }
   .callout.warn .callout-label { color: var(--warn); }
   .callout p { margin: 0; color: var(--ink); }
-
-  .two-col {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1.6rem 2rem;
-  }
-  @media (max-width: 640px) {
-    .two-col { grid-template-columns: 1fr; }
-  }
-  .two-col h4 {
-    font-family: var(--sans);
-    font-size: 0.72rem;
-    font-weight: 700;
-    letter-spacing: 0.1em;
-    text-transform: uppercase;
-    color: var(--ink-faint);
-    margin: 0 0 0.6rem;
-  }
-
-  .status-row {
-    display: flex;
-    gap: 0.6rem;
-    flex-wrap: wrap;
-    margin-bottom: 1rem;
-  }
-  .status-pill {
-    font-size: 0.78rem;
-    font-weight: 600;
-    padding: 0.3rem 0.8rem;
-    border-radius: 100px;
-  }
-  .status-pill.pendente { background: var(--brass-soft); color: var(--brass); }
-  .status-pill.aprovada { background: #dcf3e6; color: #1f7a44; }
-  .status-pill.rejeitada { background: var(--warn-soft); color: var(--warn); }
-  @media (prefers-color-scheme: dark) {
-    .status-pill.aprovada { background: #103322; color: #6fd79a; }
-  }
-  :root[data-theme="dark"] .status-pill.aprovada { background: #103322; color: #6fd79a; }
-
-  footer.doc-footer {
-    max-width: 1180px;
-    margin: 0 auto;
-    padding: 0 1.5rem 3rem;
-    color: var(--ink-faint);
-    font-size: 0.82rem;
-    text-align: center;
-  }
+  footer.doc-footer { max-width: 1180px; margin: 0 auto; padding: 0 1.5rem 3rem; color: var(--ink-faint); font-size: 0.82rem; text-align: center; }
   footer.doc-footer p { max-width: none; margin: 0 0 0.4rem; }
-  footer.doc-footer .credit {
-    font-size: 0.74rem;
-    letter-spacing: 0.02em;
-    color: var(--ink-faint);
-    margin-bottom: 0;
-  }
-  footer.doc-footer .rule {
-    height: 1px;
-    background: var(--line);
-    margin: 0 0 1.4rem;
-  }
-
+  footer.doc-footer .credit { font-size: 0.74rem; letter-spacing: 0.02em; color: var(--ink-faint); margin-bottom: 0; }
+  footer.doc-footer .rule { height: 1px; background: var(--line); margin: 0 0 1.4rem; }
   .back-to-top {
-    position: fixed;
-    right: 1.1rem;
-    bottom: 1.1rem;
-    width: 2.6rem;
-    height: 2.6rem;
-    border-radius: 50%;
-    background: var(--accent);
-    color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    text-decoration: none;
-    font-size: 1.1rem;
+    position: fixed; right: 1.1rem; bottom: 1.1rem; width: 2.6rem; height: 2.6rem; border-radius: 50%; background: var(--accent);
+    color: #fff; display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1.1rem;
     box-shadow: 0 6px 18px rgba(12, 37, 89, 0.28);
   }
-
-  .wrap-table { overflow-x: auto; }
-
-  .cover-back {
-    position: relative;
-    display: inline-flex;
-    align-items: center;
-    gap: 0.4rem;
-    margin-bottom: 1.6rem;
-    font-size: 0.82rem;
-    font-weight: 600;
-    color: #d3ddf8;
-    text-decoration: none;
-    border: 1px solid rgba(255,255,255,0.28);
-    border-radius: 100px;
-    padding: 0.35rem 0.9rem 0.35rem 0.7rem;
-  }
-  .cover-back:hover { color: #fff; border-color: rgba(255,255,255,0.5); }
 </style>
 </head>
 <body id="top">
@@ -593,605 +159,554 @@
 <div class="layout">
   <nav class="toc" aria-label="Sumário">
     <p class="toc-title">Sumário</p>
-    <ol>
-      <li><a href="#apresentacao">Apresentação</a></li>
-      <li><a href="#acesso-ao-sistema">Acesso ao sistema</a></li>
-      <li><a href="#conceitos-basicos">Conceitos básicos</a></li>
-      <li><a href="#navegacao-geral">Navegação geral</a></li>
-      <li>
-        <a href="#guia-instrutor">Guia rápido do instrutor</a>
-        <ul class="sub">
-          <li><a href="#preencher-horarios">Preencher horários</a></li>
-          <li><a href="#confirmar-horarios">Confirmar horários</a></li>
-          <li><a href="#solicitar-auxiliares">Solicitar auxiliares</a></li>
-          <li><a href="#solicitar-modificacao-ste">Solicitar modificação STE</a></li>
-        </ul>
-      </li>
-      <li>
-        <a href="#guia-gestor">Guia rápido do gestor</a>
-        <ul class="sub">
-          <li><a href="#fluxo-preparacao">Fluxo de preparação</a></li>
-          <li><a href="#alterar-instrutores-gestores">Alterar instrutores/gestores</a></li>
-          <li><a href="#modificar-horarios-qts">Modificar horários e QTS</a></li>
-          <li><a href="#confirmar-qts">Confirmar QTS</a></li>
-          <li><a href="#autorizar-auxiliares">Autorizar auxiliares</a></li>
-          <li><a href="#banco-backup">Banco de dados e backup</a></li>
-          <li><a href="#editar-perfil-gestor">Editar perfil do gestor</a></li>
-        </ul>
-      </li>
-      <li><a href="#rotinas-recomendadas">Rotinas recomendadas</a></li>
-      <li><a href="#boas-praticas">Boas práticas</a></li>
-      <li><a href="#problemas-comuns">Problemas comuns</a></li>
-      <li><a href="#checklist-treinamento">Checklist de treinamento</a></li>
-      <li><a href="#encerramento">Encerramento</a></li>
-    </ol>
+    <ol><li><a href="#apresentacao">Apresentação</a></li>
+<li><a href="#acesso-ao-sistema">Acesso ao sistema</a><ul class="sub"><li><a href="#entrar-no-e-ste">Entrar no E-STE</a></li><li><a href="#solicitar-cadastro-como-instrutor">Solicitar cadastro como instrutor</a></li><li><a href="#esqueci-minha-senha">Esqueci minha senha</a></li><li><a href="#sair-do-sistema">Sair do sistema</a></li><li><a href="#mensagens">Mensagens</a></li></ul></li>
+<li><a href="#conceitos-basicos">Conceitos básicos</a><ul class="sub"><li><a href="#perfis">Perfis</a></li><li><a href="#turma">Turma</a></li><li><a href="#materia">Matéria</a></li><li><a href="#semana">Semana</a></li><li><a href="#qts">QTS</a></li><li><a href="#hora-aula">Hora/aula</a></li><li><a href="#chefe-da-pasta">Chefe da pasta</a></li></ul></li>
+<li><a href="#navegacao-geral">Navegação geral</a><ul class="sub"><li><a href="#menu-lateral">Menu lateral</a></li><li><a href="#filtros-principais">Filtros principais</a></li></ul></li>
+<li><a href="#guia-rapido-do-instrutor">Guia rápido do instrutor</a><ul class="sub"><li><a href="#primeiro-acesso-do-instrutor">Primeiro acesso do instrutor</a></li><li><a href="#atualizar-perfil">Atualizar perfil</a></li><li><a href="#selecionar-materias">Selecionar matérias</a></li><li><a href="#preencher-horarios">Preencher horários</a></li><li><a href="#aulas-pendentes-de-confirmacao">Aulas pendentes de confirmação</a></li><li><a href="#confirmar-horarios">Confirmar horários</a></li><li><a href="#remover-aula-antes-da-confirmacao">Remover aula antes da confirmação</a></li><li><a href="#alterar-local-ou-marcar-prova">Alterar local ou marcar prova</a></li><li><a href="#solicitar-auxiliares">Solicitar auxiliares</a></li><li><a href="#solicitar-modificacao-a-ste">Solicitar modificação à STE</a></li><li><a href="#visualizar-horarios">Visualizar horários</a></li><li><a href="#consultar-horas-aula">Consultar horas/aula</a></li><li><a href="#falar-com-a-ste">Falar com a STE</a></li></ul></li>
+<li><a href="#guia-rapido-do-gestor">Guia rápido do gestor</a><ul class="sub"><li><a href="#fluxo-recomendado-de-preparacao">Fluxo recomendado de preparação</a></li><li><a href="#aprovar-instrutores">Aprovar instrutores</a></li><li><a href="#cadastrar-instrutor-pelo-gestor">Cadastrar instrutor pelo gestor</a></li><li><a href="#cadastrar-gestor">Cadastrar gestor</a></li><li><a href="#alterar-instrutores-e-gestores">Alterar instrutores e gestores</a></li><li><a href="#definir-chefe-de-pasta-por-materia">Definir chefe de pasta por matéria</a></li><li><a href="#criar-materias">Criar matérias</a></li><li><a href="#criar-turmas">Criar turmas</a></li><li><a href="#vincular-materias-as-turmas">Vincular matérias às turmas</a></li><li><a href="#criar-semanas">Criar semanas</a></li><li><a href="#modificar-horarios-e-qts">Modificar horários e QTS</a></li><li><a href="#editar-detalhes-de-uma-aula">Editar detalhes de uma aula</a></li><li><a href="#excluir-aulas-pelo-gestor">Excluir aulas pelo gestor</a></li><li><a href="#confirmar-qts">Confirmar QTS</a></li><li><a href="#exportar-grade">Exportar grade</a></li><li><a href="#autorizar-auxiliares">Autorizar auxiliares</a></li><li><a href="#acompanhar-carga-horaria">Acompanhar carga horária</a></li><li><a href="#acompanhar-horas-aula">Acompanhar horas/aula</a></li><li><a href="#comunicacoes">Comunicações</a></li><li><a href="#banco-de-dados-e-backup">Banco de dados e backup</a></li><li><a href="#editar-perfil-do-gestor">Editar perfil do gestor</a></li></ul></li>
+<li><a href="#rotinas-recomendadas">Rotinas recomendadas</a><ul class="sub"><li><a href="#antes-de-abrir-preenchimento-aos-instrutores">Antes de abrir preenchimento aos instrutores</a></li><li><a href="#durante-o-preenchimento">Durante o preenchimento</a></li><li><a href="#ao-fechar-a-semana">Ao fechar a semana</a></li><li><a href="#periodicamente">Periodicamente</a></li></ul></li>
+<li><a href="#boas-praticas">Boas práticas</a></li>
+<li><a href="#problemas-comuns">Problemas comuns</a><ul class="sub"><li><a href="#a-materia-nao-aparece-para-o-instrutor">A matéria não aparece para o instrutor</a></li><li><a href="#a-semana-nao-aparece-no-filtro">A semana não aparece no filtro</a></li><li><a href="#o-instrutor-nao-consegue-editar-uma-aula">O instrutor não consegue editar uma aula</a></li><li><a href="#o-botao-de-whatsapp-nao-aparece-ou-informa-numero-ausente">O botão de WhatsApp não aparece ou informa número ausente</a></li><li><a href="#o-e-mail-automatico-esta-desativado">O e-mail automático está desativado</a></li><li><a href="#o-banco-esta-perto-do-limite">O banco está perto do limite</a></li></ul></li>
+<li><a href="#checklist-de-treinamento">Checklist de treinamento</a><ul class="sub"><li><a href="#para-instrutores">Para instrutores</a></li><li><a href="#para-gestores">Para gestores</a></li></ul></li>
+<li><a href="#encerramento">Encerramento</a></li></ol>
   </nav>
 
   <main class="content">
-
+    
     <section class="doc-section" id="apresentacao">
       <span class="eyebrow geral">Geral</span>
       <h2>Apresentação</h2>
       <div class="section-rule"></div>
       <p>O E-STE é o sistema usado pela Seção de Treinamento e Ensino para organizar semanas, turmas, matérias, instrutores, horários, confirmações de QTS, relatórios de horas/aula, comunicações e backup das grades.</p>
-      <p>Este guia foi escrito para dois públicos:</p>
-      <ul class="bullets">
-        <li><strong>Instrutores</strong>, que usam o sistema para manter seus dados, selecionar matérias, preencher horários, confirmar a grade e solicitar ajustes à STE.</li>
-        <li><strong>Gestores</strong>, que usam o sistema para preparar a base de dados, aprovar pessoas, organizar turmas e semanas, alterar QTS, confirmar grades, emitir relatórios, enviar comunicações e administrar backups.</li>
-      </ul>
-      <div class="callout warn">
-        <span class="callout-label">Atenção</span>
-        <p>O sistema trabalha com dados reais da grade. Antes de excluir horários ou esvaziar grades, confira turma, semana e filtros selecionados.</p>
-      </div>
+<p>Este guia foi escrito para dois públicos:</p>
+<ul class="bullets">
+<li>Instrutores, que usam o sistema para manter seus dados, selecionar matérias, preencher horários, confirmar a grade e solicitar ajustes à STE.</li>
+<li>Gestores, que usam o sistema para preparar a base de dados, aprovar pessoas, organizar turmas e semanas, alterar QTS, confirmar grades, emitir relatórios, enviar comunicações e administrar backups.</li>
+</ul>
+<div class="callout warn"><span class="callout-label">Atenção</span><p>o sistema trabalha com dados reais da grade. Antes de excluir horários ou esvaziar grades, confira turma, semana e filtros selecionados.</p></div>
+
+      
     </section>
 
     <section class="doc-section" id="acesso-ao-sistema">
       <span class="eyebrow geral">Geral</span>
       <h2>Acesso ao sistema</h2>
       <div class="section-rule"></div>
-
+      
       <h3 id="entrar-no-e-ste">Entrar no E-STE</h3>
-      <ol class="steps">
-        <li>Acesse o endereço do sistema: <code>e-ste.vercel.app</code></li>
-        <li>Na tela de login, informe e-mail ou usuário.</li>
-        <li>Digite a senha cadastrada.</li>
-        <li>Clique em <strong>Entrar</strong>.</li>
-      </ol>
-      <p>O mesmo login atende gestores e instrutores. O sistema identifica o perfil do usuário e exibe os menus adequados.</p>
+<ol class="steps">
+<li>Acesse o endereço do sistema: https://e-ste.vercel.app</li>
+<li>Na tela de login, informe e-mail ou usuário.</li>
+<li>Digite a senha cadastrada.</li>
+<li>Clique em <strong>Entrar</strong>.</li>
+</ol>
+<p>O mesmo login atende gestores e instrutores. O sistema identifica o perfil do usuário e exibe os menus adequados.</p>
 
-      <h3 id="solicitar-cadastro">Solicitar cadastro como instrutor</h3>
-      <ol class="steps">
-        <li>Na tela de login, clique em <strong>Solicitar cadastro de instrutor</strong>.</li>
-        <li>Preencha nome completo, nome que aparecerá na grade, e-mail, WhatsApp com DDD, senha e confirmação de senha.</li>
-        <li>Clique em <strong>Enviar cadastro</strong>.</li>
-        <li>Aguarde a aprovação de um gestor.</li>
-      </ol>
-      <p>Depois da aprovação, o instrutor consegue entrar normalmente pelo login.</p>
+<h3 id="solicitar-cadastro-como-instrutor">Solicitar cadastro como instrutor</h3>
+<ol class="steps">
+<li>Na tela de login, clique em <strong>Solicitar cadastro de instrutor</strong>.</li>
+<li>Preencha nome completo, nome que aparecerá na grade, e-mail, WhatsApp com DDD, senha e confirmação de senha.</li>
+<li>Clique em <strong>Enviar cadastro</strong>.</li>
+<li>Aguarde a aprovação de um gestor.</li>
+</ol>
+<p>Depois da aprovação, o instrutor consegue entrar normalmente pelo login.</p>
 
-      <h3 id="esqueci-minha-senha">Esqueci minha senha</h3>
-      <ol class="steps">
-        <li>Na tela de login, clique em <strong>Esqueci minha senha</strong>.</li>
-        <li>Informe o e-mail cadastrado e clique em <strong>Enviar link de redefinição</strong>.</li>
-        <li>Se o e-mail estiver cadastrado, um link de redefinição é enviado (válido por 1 hora).</li>
-        <li>Abra o e-mail e clique no link recebido.</li>
-        <li>Na tela de redefinição, informe a nova senha e a confirmação e clique em <strong>Redefinir senha</strong>.</li>
-      </ol>
-      <div class="callout warn">
-        <span class="callout-label">Atenção</span>
-        <p>Por segurança, o sistema sempre mostra a mesma mensagem de confirmação, mesmo que o e-mail informado não esteja cadastrado. Depois de redefinir a senha, os acessos já abertos em outros dispositivos são encerrados.</p>
-      </div>
+<h3 id="esqueci-minha-senha">Esqueci minha senha</h3>
+<ol class="steps">
+<li>Na tela de login, clique em <strong>Esqueci minha senha</strong>.</li>
+<li>Informe o e-mail cadastrado e clique em <strong>Enviar link de redefinição</strong>.</li>
+<li>Se o e-mail estiver cadastrado, um link de redefinição é enviado (válido por 1 hora).</li>
+<li>Abra o e-mail e clique no link recebido.</li>
+<li>Na tela de redefinição, informe a nova senha e a confirmação e clique em <strong>Redefinir senha</strong>.</li>
+</ol>
+<div class="callout warn"><span class="callout-label">Atenção</span><p>por segurança, o sistema sempre mostra a mesma mensagem de confirmação no passo 2, mesmo que o e-mail informado não esteja cadastrado. Depois de redefinir a senha, os acessos já abertos em outros dispositivos são encerrados.</p></div>
 
-      <h3 id="sair-do-sistema">Sair do sistema</h3>
-      <p>Use o botão <strong>Sair</strong> no canto superior direito. Em computadores, o nome do usuário e o perfil aparecem na barra superior.</p>
+<h3 id="sair-do-sistema">Sair do sistema</h3>
+<p>Use o botão <strong>Sair</strong> no canto superior direito. Em computadores, o nome do usuário e o perfil aparecem na barra superior.</p>
 
-      <h3 id="mensagens">Mensagens</h3>
-      <p>O sino da barra superior abre a área de mensagens. Ali aparecem avisos gerados pelo sistema, como solicitações de auxiliares, alterações ou comunicações importantes.</p>
-      <ul class="bullets">
-        <li>Mensagens não lidas ficam destacadas.</li>
-        <li>Ao clicar no texto de uma mensagem, o sistema marca a mensagem como lida e leva diretamente para a tela relacionada ao assunto (por exemplo, uma solicitação de auxiliares abre em <strong>Auxiliares pendentes</strong>). Quando isso for possível, aparece o aviso <strong>Clique para abrir</strong>.</li>
-        <li>Também é possível marcar uma mensagem como lida sem abrir a tela, usando o botão de marcar (ícone de check) ao lado do texto.</li>
-        <li>Quando houver várias mensagens, use <strong>Marcar todas</strong>.</li>
-      </ul>
+<h3 id="mensagens">Mensagens</h3>
+<p>O sino da barra superior abre a área de mensagens. Ali aparecem avisos gerados pelo sistema, como solicitações de auxiliares, alterações ou comunicações importantes.</p>
+<ul class="bullets">
+<li>Mensagens não lidas ficam destacadas.</li>
+<li>Ao clicar no texto de uma mensagem, o sistema marca a mensagem como lida e leva diretamente para a tela relacionada ao assunto (por exemplo, uma solicitação de auxiliares abre em <strong>Auxiliares pendentes</strong>). Quando isso for possível, aparece o aviso <strong>Clique para abrir</strong>.</li>
+<li>Também é possível marcar uma mensagem como lida sem abrir a tela, usando o botão de marcar (ícone de check) ao lado do texto.</li>
+<li>Quando houver várias mensagens, use <strong>Marcar todas</strong>.</li>
+</ul>
+
     </section>
 
     <section class="doc-section" id="conceitos-basicos">
       <span class="eyebrow geral">Geral</span>
       <h2>Conceitos básicos</h2>
       <div class="section-rule"></div>
-
+      
       <h3 id="perfis">Perfis</h3>
-      <ul class="bullets">
-        <li><strong>Instrutor:</strong> preenche suas aulas, confirma horários, atualiza perfil, consulta grades e solicita ajustes à STE.</li>
-        <li><strong>Gestor:</strong> administra usuários, turmas, matérias, semanas, QTS, relatórios, comunicações e backup.</li>
-      </ul>
-      <div class="callout">
-        <span class="callout-label">Gestor também pode lecionar</span>
-        <p>Um gestor pode selecionar matérias próprias em <strong>Editar perfil gestor</strong>, na mesma área usada pelos instrutores (&quot;Matérias que também leciona&quot;). Depois disso, o gestor aparece como opção de instrutor em <strong>Preencher horários</strong> e em <strong>Modificar horários</strong>, podendo preencher e confirmar suas próprias aulas normalmente.</p>
-      </div>
+<ul class="bullets">
+<li><strong>Instrutor:</strong> preenche suas aulas, confirma horários, atualiza perfil, consulta grades e solicita ajustes à STE.</li>
+<li><strong>Gestor:</strong> administra usuários, turmas, matérias, semanas, QTS, relatórios, comunicações e backup.</li>
+</ul>
+<div class="callout"><span class="callout-label">Gestor também pode lecionar</span><p>um gestor pode selecionar matérias próprias em <strong>Editar perfil gestor</strong>, na mesma área usada pelos instrutores (&quot;Matérias que também leciona&quot;). Depois disso, o gestor aparece como opção de instrutor em <strong>Preencher horários</strong> e em <strong>Modificar horários</strong>, podendo preencher e confirmar suas próprias aulas normalmente.</p></div>
 
-      <h3 id="turma">Turma</h3>
-      <p>Representa uma turma do curso. Toda grade é lançada para uma turma específica.</p>
+<h3 id="turma">Turma</h3>
+<p>Representa uma turma do curso. Toda grade é lançada para uma turma específica.</p>
 
-      <h3 id="materia">Matéria</h3>
-      <p>Representa uma disciplina ou conteúdo. Cada matéria pode ter carga horária cadastrada e pode ser vinculada a uma ou mais turmas.</p>
+<h3 id="materia">Matéria</h3>
+<p>Representa uma disciplina ou conteúdo. Cada matéria pode ter carga horária cadastrada e pode ser vinculada a uma ou mais turmas.</p>
 
-      <h3 id="semana">Semana</h3>
-      <p>Representa o período semanal usado na grade. A semana possui nome, data inicial e data final.</p>
+<h3 id="semana">Semana</h3>
+<p>Representa o período semanal usado na grade. A semana possui nome, data inicial e data final.</p>
 
-      <h3 id="qts">QTS</h3>
-      <p>É a grade semanal da turma. No sistema, o gestor pode modificar o QTS, confirmar o QTS e exportar PDF ou Excel.</p>
+<h3 id="qts">QTS</h3>
+<p>É a grade semanal da turma. No sistema, o gestor pode modificar o QTS, confirmar o QTS e exportar PDF ou Excel.</p>
 
-      <h3 id="hora-aula">Hora/aula</h3>
-      <p>No relatório de horas/aula, cada aula lançada conta como 1 hora/aula. A referência exibida no sistema é: 45 min = 1 hora/aula.</p>
+<h3 id="hora-aula">Hora/aula</h3>
+<p>No relatório de horas/aula, cada aula lançada conta como 1 hora/aula. A referência exibida no sistema é: 45 min = 1 hora/aula.</p>
 
-      <h3 id="chefe-da-pasta">Chefe da pasta</h3>
-      <p>É o instrutor responsável por uma matéria. Cada matéria pode ter apenas um chefe de pasta. Essa configuração fica na tela de instrutores e gestores.</p>
+<h3 id="chefe-da-pasta">Chefe da pasta</h3>
+<p>É o instrutor responsável por uma matéria. Cada matéria pode ter apenas um chefe de pasta. Essa configuração fica na tela de instrutores e gestores.</p>
+
     </section>
 
     <section class="doc-section" id="navegacao-geral">
       <span class="eyebrow geral">Geral</span>
       <h2>Navegação geral</h2>
       <div class="section-rule"></div>
-
+      
       <h3 id="menu-lateral">Menu lateral</h3>
-      <p>O menu lateral fica à esquerda. Em telas pequenas, use o botão da barra superior para abrir ou fechar o menu.</p>
-      <div class="two-col">
-        <div>
-          <h4>Comum a instrutor e gestor</h4>
-          <ul class="chips">
-            <li>Preencher horários</li>
-            <li>Visualizar horários</li>
-            <li>Horas/aula</li>
-            <li>Minhas matérias</li>
-            <li>Editar perfil</li>
-          </ul>
-        </div>
-        <div>
-          <h4>Exclusiva do gestor</h4>
-          <ul class="chips">
-            <li>Aprovar instrutores</li>
-            <li>Cadastrar instrutor</li>
-            <li>Alterar instrutores/gestores</li>
-            <li>Cadastrar gestor</li>
-            <li>Criar semanas</li>
-            <li>Matérias por turma</li>
-            <li>Modificar horários</li>
-            <li>Auxiliares pendentes</li>
-            <li>Carga horária</li>
-            <li>Comunicações</li>
-            <li>Banco e backup</li>
-            <li>Editar perfil gestor</li>
-          </ul>
-        </div>
-      </div>
+<p>O menu lateral fica à esquerda. Em telas pequenas, use o botão da barra superior para abrir ou fechar o menu.</p>
+<p>Áreas comuns ao instrutor e ao gestor:</p>
+<ul class="bullets">
+<li>Preencher horários</li>
+<li>Visualizar horários</li>
+<li>Horas/aula</li>
+<li>Minhas matérias</li>
+<li>Editar perfil</li>
+</ul>
+<p>Área exclusiva do gestor:</p>
+<ul class="bullets">
+<li>Aprovar instrutores</li>
+<li>Cadastrar instrutor</li>
+<li>Alterar instrutores/gestores</li>
+<li>Cadastrar gestor</li>
+<li>Criar semanas</li>
+<li>Matérias por turma</li>
+<li>Modificar horários</li>
+<li>Auxiliares pendentes</li>
+<li>Carga horária</li>
+<li>Comunicações</li>
+<li>Banco e backup</li>
+<li>Editar perfil gestor</li>
+</ul>
 
-      <h3 id="filtros-principais">Filtros principais</h3>
-      <p>Muitas telas usam filtros parecidos:</p>
-      <ul class="chips">
-        <li>Mês</li>
-        <li>Semana</li>
-        <li>Turma</li>
-        <li>Matéria</li>
-        <li>Instrutor</li>
-      </ul>
-      <p>Sempre confira esses filtros antes de salvar, exportar, confirmar ou excluir.</p>
+<h3 id="filtros-principais">Filtros principais</h3>
+<p>Muitas telas usam filtros parecidos:</p>
+<ul class="bullets">
+<li>Mês</li>
+<li>Semana</li>
+<li>Turma</li>
+<li>Matéria</li>
+<li>Instrutor</li>
+</ul>
+<p>Sempre confira esses filtros antes de salvar, exportar, confirmar ou excluir.</p>
+
     </section>
 
-    <section class="doc-section" id="guia-instrutor">
+    <section class="doc-section" id="guia-rapido-do-instrutor">
       <span class="eyebrow instrutor">Instrutor</span>
       <h2>Guia rápido do instrutor</h2>
       <div class="section-rule"></div>
+      
+      <h3 id="primeiro-acesso-do-instrutor">Primeiro acesso do instrutor</h3>
+<ol class="steps">
+<li>Solicite cadastro na tela pública ou receba um cadastro feito pelo gestor.</li>
+<li>Aguarde a aprovação, caso tenha feito cadastro público.</li>
+<li>Entre no sistema.</li>
+<li>Acesse <strong>Editar perfil</strong> e confira seus dados.</li>
+<li>Acesse <strong>Minhas matérias</strong> e selecione as matérias que leciona, se necessário.</li>
+</ol>
+<div class="callout"><span class="callout-label">Importante</span><p>se uma matéria não aparecer para preenchimento, verifique se ela foi cadastrada pelo gestor, vinculada à turma e associada ao seu perfil.</p></div>
 
-      <h3 id="primeiro-acesso-instrutor">Primeiro acesso do instrutor</h3>
-      <ol class="steps">
-        <li>Solicite cadastro na tela pública ou receba um cadastro feito pelo gestor.</li>
-        <li>Aguarde a aprovação, caso tenha feito cadastro público.</li>
-        <li>Entre no sistema.</li>
-        <li>Acesse <strong>Editar perfil</strong> e confira seus dados.</li>
-        <li>Acesse <strong>Minhas matérias</strong> e selecione as matérias que leciona, se necessário.</li>
-      </ol>
-      <div class="callout">
-        <span class="callout-label">Importante</span>
-        <p>Se uma matéria não aparecer para preenchimento, verifique se ela foi cadastrada pelo gestor, vinculada à turma e associada ao seu perfil.</p>
-      </div>
+<h3 id="atualizar-perfil">Atualizar perfil</h3>
+<ol class="steps">
+<li>Acesse <strong>Editar perfil</strong>.</li>
+<li>Atualize nome completo, nome de aparição na grade, e-mail/login, WhatsApp ou senha.</li>
+<li>Se desejar manter a senha atual, deixe os campos de nova senha e confirmação em branco.</li>
+<li>Se digitar uma nova senha, repita-a no campo <strong>Confirmar nova senha</strong>. As duas precisam ser idênticas para salvar.</li>
+<li>Clique em <strong>Salvar alterações</strong>.</li>
+</ol>
+<p>O WhatsApp é usado para gerar links de aviso e contato. Informe o número com DDD.</p>
 
-      <h3 id="atualizar-perfil">Atualizar perfil</h3>
-      <ol class="steps">
-        <li>Acesse <strong>Editar perfil</strong>.</li>
-        <li>Atualize nome completo, nome de aparição na grade, e-mail/login, WhatsApp ou senha.</li>
-        <li>Se desejar manter a senha atual, deixe os campos de nova senha e confirmação em branco.</li>
-        <li>Se digitar uma nova senha, repita-a no campo <strong>Confirmar nova senha</strong>. As duas precisam ser idênticas para salvar.</li>
-        <li>Clique em <strong>Salvar alterações</strong>.</li>
-      </ol>
-      <p>O WhatsApp é usado para gerar links de aviso e contato. Informe o número com DDD.</p>
+<h3 id="selecionar-materias">Selecionar matérias</h3>
+<ol class="steps">
+<li>Acesse <strong>Minhas matérias</strong>.</li>
+<li>Marque as matérias que fazem parte do seu perfil.</li>
+<li>Clique em <strong>Salvar matérias</strong>.</li>
+</ol>
+<p>Essa seleção ajuda o sistema a mostrar somente as matérias compatíveis com o instrutor e a turma.</p>
 
-      <h3 id="selecionar-materias">Selecionar matérias</h3>
-      <ol class="steps">
-        <li>Acesse <strong>Minhas matérias</strong>.</li>
-        <li>Marque as matérias que fazem parte do seu perfil.</li>
-        <li>Clique em <strong>Salvar matérias</strong>.</li>
-      </ol>
-      <p>Essa seleção ajuda o sistema a mostrar somente as matérias compatíveis com o instrutor e a turma.</p>
+<h3 id="preencher-horarios">Preencher horários</h3>
+<ol class="steps">
+<li>Acesse <strong>Preencher horários</strong>.</li>
+<li>Selecione o mês, a semana e a turma.</li>
+<li>Selecione a matéria.</li>
+<li>Informe o local da instrução. Se deixar em branco, o sistema usa CAEBM.</li>
+<li>Marque <strong>Prova</strong> se a aula for uma avaliação.</li>
+<li>Na grade, clique em <strong>+ preencher</strong> no dia e horário desejado.</li>
+</ol>
+<p>O sistema mostra a carga horária no formato <code>lançadas(CH total)</code>. Exemplo: <code>8(20)</code> significa 8 aulas lançadas de uma carga horária total de 20.</p>
 
-      <h3 id="preencher-horarios">Preencher horários</h3>
-      <ol class="steps">
-        <li>Acesse <strong>Preencher horários</strong>.</li>
-        <li>Selecione o mês, a semana e a turma.</li>
-        <li>Selecione a matéria.</li>
-        <li>Informe o local da instrução. Se deixar em branco, o sistema usa CAEBM.</li>
-        <li>Marque <strong>Prova</strong> se a aula for uma avaliação.</li>
-        <li>Na grade, clique em <strong>+ preencher</strong> no dia e horário desejado.</li>
-      </ol>
-      <p>O sistema mostra a carga horária no formato <code>lançadas(CH total)</code>. Exemplo: <code>8(20)</code> significa 8 aulas lançadas de uma carga horária total de 20.</p>
+<h3 id="aulas-pendentes-de-confirmacao">Aulas pendentes de confirmação</h3>
+<p>Para instrutores, algumas aulas ficam pendentes até a confirmação.</p>
+<ul class="bullets">
+<li>A aula só entra definitivamente na grade quando o instrutor confirma os horários da turma e semana.</li>
+<li>Se sair da página antes de confirmar, as aulas pendentes podem ser perdidas.</li>
+<li>O sistema avisa quando houver aulas aguardando confirmação.</li>
+</ul>
 
-      <h3 id="aulas-pendentes">Aulas pendentes de confirmação</h3>
-      <p>Para instrutores, algumas aulas ficam pendentes até a confirmação.</p>
-      <ul class="bullets">
-        <li>A aula só entra definitivamente na grade quando o instrutor confirma os horários da turma e semana.</li>
-        <li>Se sair da página antes de confirmar, as aulas pendentes podem ser perdidas.</li>
-        <li>O sistema avisa quando houver aulas aguardando confirmação.</li>
-      </ul>
+<h3 id="confirmar-horarios">Confirmar horários</h3>
+<ol class="steps">
+<li>Depois de preencher as aulas, revise a grade.</li>
+<li>Clique em <strong>Confirmar horários desta turma/semana</strong>.</li>
+<li>Se houver aulas pendentes, o botão aparece como <strong>Confirmar e gravar aulas desta turma/semana</strong>.</li>
+<li>Leia as mensagens de confirmação.</li>
+</ol>
+<p>Depois da confirmação, as aulas já gravadas ficam bloqueadas para edição direta. Horários vazios continuam disponíveis para novo preenchimento.</p>
+<div class="callout warn"><span class="callout-label">Atenção</span><p>depois de confirmar, alterações em aulas já lançadas devem ser solicitadas à STE.</p></div>
 
-      <h3 id="confirmar-horarios">Confirmar horários</h3>
-      <ol class="steps">
-        <li>Depois de preencher as aulas, revise a grade.</li>
-        <li>Clique em <strong>Confirmar horários desta turma/semana</strong>.</li>
-        <li>Se houver aulas pendentes, o botão aparece como <strong>Confirmar e gravar aulas desta turma/semana</strong>.</li>
-        <li>Leia as mensagens de confirmação.</li>
-      </ol>
-      <p>Depois da confirmação, as aulas já gravadas ficam bloqueadas para edição direta. Horários vazios continuam disponíveis para novo preenchimento.</p>
-      <div class="callout warn">
-        <span class="callout-label">Atenção</span>
-        <p>Depois de confirmar, alterações em aulas já lançadas devem ser solicitadas à STE.</p>
-      </div>
+<h3 id="remover-aula-antes-da-confirmacao">Remover aula antes da confirmação</h3>
+<p>Enquanto a aula ainda estiver editável, use <strong>Remover aula</strong> dentro da célula preenchida. O sistema pode pedir confirmação antes de remover.</p>
 
-      <h3 id="remover-aula">Remover aula antes da confirmação</h3>
-      <p>Enquanto a aula ainda estiver editável, use <strong>Remover aula</strong> dentro da célula preenchida. O sistema pode pedir confirmação antes de remover.</p>
+<h3 id="alterar-local-ou-marcar-prova">Alterar local ou marcar prova</h3>
+<p>Nas aulas do próprio instrutor, enquanto não estiverem bloqueadas:</p>
+<ul class="bullets">
+<li>Edite o campo de local da instrução e clique em <strong>Salvar</strong>.</li>
+<li>Marque ou desmarque a opção <strong>Prova</strong>.</li>
+</ul>
 
-      <h3 id="alterar-local-prova">Alterar local ou marcar prova</h3>
-      <p>Nas aulas do próprio instrutor, enquanto não estiverem bloqueadas:</p>
-      <ul class="bullets">
-        <li>Edite o campo de local da instrução e clique em <strong>Salvar</strong>.</li>
-        <li>Marque ou desmarque a opção <strong>Prova</strong>.</li>
-      </ul>
+<h3 id="solicitar-auxiliares">Solicitar auxiliares</h3>
+<p>O instrutor pode informar a quantidade desejada de auxiliares tanto em uma aula ainda pendente (antes de confirmar) quanto em uma aula já gravada:</p>
+<ol class="steps">
+<li>Localize a aula na grade.</li>
+<li>Informe a quantidade no campo de auxiliares.</li>
+<li>Clique em <strong>Solicitar auxiliares</strong>.</li>
+</ol>
+<p>Se a aula ainda estiver pendente, o pedido é enviado automaticamente aos gestores no momento em que o instrutor confirmar os horários. Se a aula já estiver gravada, o pedido é enviado assim que o instrutor clicar em <strong>Solicitar auxiliares</strong>.</p>
+<p>Em ambos os casos, o gestor recebe uma notificação e autoriza a quantidade em <strong>Auxiliares pendentes</strong>.</p>
+<div class="callout warn"><span class="callout-label">Atenção</span><p>depois que a aula é confirmada, o instrutor não pode mais alterar a quantidade de auxiliares solicitados. Qualquer ajuste depois da confirmação precisa ser feito pelo gestor.</p></div>
 
-      <h3 id="solicitar-auxiliares">Solicitar auxiliares</h3>
-      <p>O instrutor pode informar a quantidade desejada de auxiliares tanto em uma aula ainda pendente (antes de confirmar) quanto em uma aula já gravada:</p>
-      <ol class="steps">
-        <li>Localize a aula na grade.</li>
-        <li>Informe a quantidade no campo de auxiliares.</li>
-        <li>Clique em <strong>Solicitar auxiliares</strong>.</li>
-      </ol>
-      <p>Se a aula ainda estiver pendente, o pedido é enviado automaticamente aos gestores no momento em que o instrutor confirmar os horários. Se a aula já estiver gravada, o pedido é enviado assim que o instrutor clicar em <strong>Solicitar auxiliares</strong>.</p>
-      <p>Em ambos os casos, o gestor recebe uma notificação e autoriza a quantidade em <strong>Auxiliares pendentes</strong>.</p>
-      <div class="callout warn">
-        <span class="callout-label">Atenção</span>
-        <p>Depois que a aula é confirmada, o instrutor não pode mais alterar a quantidade de auxiliares solicitados. Qualquer ajuste depois da confirmação precisa ser feito pelo gestor.</p>
-      </div>
+<h3 id="solicitar-modificacao-a-ste">Solicitar modificação à STE</h3>
+<p>Use esta tela quando precisar alterar algo após a confirmação ou quando houver uma situação que dependa da equipe gestora.</p>
+<ol class="steps">
+<li>Acesse <strong>Solicitar modificação STE</strong>.</li>
+<li>Selecione mês, turma e semana.</li>
+<li>Descreva o que precisa ser alterado e o motivo.</li>
+<li>Clique em <strong>Enviar solicitação</strong>.</li>
+<li>Acompanhe a situação em <strong>Minhas solicitações</strong>.</li>
+</ol>
+<p>Status possíveis:</p>
+<ul class="bullets">
+<li>Pendente</li>
+<li>Aprovada</li>
+<li>Rejeitada</li>
+</ul>
 
-      <h3 id="solicitar-modificacao-ste">Solicitar modificação à STE</h3>
-      <p>Use esta tela quando precisar alterar algo após a confirmação ou quando houver uma situação que dependa da equipe gestora.</p>
-      <ol class="steps">
-        <li>Acesse <strong>Solicitar modificação STE</strong>.</li>
-        <li>Selecione mês, turma e semana.</li>
-        <li>Descreva o que precisa ser alterado e o motivo.</li>
-        <li>Clique em <strong>Enviar solicitação</strong>.</li>
-        <li>Acompanhe a situação em <strong>Minhas solicitações</strong>.</li>
-      </ol>
-      <p>Status possíveis:</p>
-      <div class="status-row">
-        <span class="status-pill pendente">Pendente</span>
-        <span class="status-pill aprovada">Aprovada</span>
-        <span class="status-pill rejeitada">Rejeitada</span>
-      </div>
+<h3 id="visualizar-horarios">Visualizar horários</h3>
+<ol class="steps">
+<li>Acesse <strong>Visualizar horários</strong>.</li>
+<li>Selecione mês, semana e turma.</li>
+<li>Consulte a grade.</li>
+</ol>
+<p>Gestores podem exportar a visualização em PDF ou Excel. Instrutores usam a tela para consulta.</p>
 
-      <h3 id="visualizar-horarios">Visualizar horários</h3>
-      <ol class="steps">
-        <li>Acesse <strong>Visualizar horários</strong>.</li>
-        <li>Selecione mês, semana e turma.</li>
-        <li>Consulte a grade.</li>
-      </ol>
-      <p>Gestores podem exportar a visualização em PDF ou Excel. Instrutores usam a tela para consulta.</p>
+<h3 id="consultar-horas-aula">Consultar horas/aula</h3>
+<ol class="steps">
+<li>Acesse <strong>Horas/aula</strong>.</li>
+<li>Selecione o mês.</li>
+<li>Consulte o total do mês.</li>
+</ol>
+<p>Para instrutores, o sistema mostra o próprio total. Para gestores, mostra todos os instrutores.</p>
 
-      <h3 id="consultar-horas-aula">Consultar horas/aula</h3>
-      <ol class="steps">
-        <li>Acesse <strong>Horas/aula</strong>.</li>
-        <li>Selecione o mês.</li>
-        <li>Consulte o total do mês.</li>
-      </ol>
-      <p>Para instrutores, o sistema mostra o próprio total. Para gestores, mostra todos os instrutores.</p>
+<h3 id="falar-com-a-ste">Falar com a STE</h3>
+<p>Nas telas de perfil e preenchimento de horários pode aparecer o botão <strong>WhatsApp da STE</strong>. Ele abre uma conversa com mensagem pronta, desde que o gestor tenha cadastrado o contato da STE.</p>
 
-      <h3 id="falar-com-ste">Falar com a STE</h3>
-      <p>Nas telas de perfil e preenchimento de horários pode aparecer o botão <strong>WhatsApp da STE</strong>. Ele abre uma conversa com mensagem pronta, desde que o gestor tenha cadastrado o contato da STE.</p>
     </section>
 
-    <section class="doc-section" id="guia-gestor">
+    <section class="doc-section" id="guia-rapido-do-gestor">
       <span class="eyebrow gestor">Gestor</span>
       <h2>Guia rápido do gestor</h2>
       <div class="section-rule"></div>
+      
+      <h3 id="fluxo-recomendado-de-preparacao">Fluxo recomendado de preparação</h3>
+<p>Para iniciar uma nova base ou novo período, siga esta ordem:</p>
+<ol class="steps">
+<li>Cadastre matérias e cargas horárias em <strong>Matérias por turma</strong>.</li>
+<li>Cadastre turmas em <strong>Matérias por turma</strong>.</li>
+<li>Vincule as matérias às turmas.</li>
+<li>Cadastre semanas em <strong>Criar semanas</strong>.</li>
+<li>Cadastre ou aprove instrutores.</li>
+<li>Associe matérias aos instrutores.</li>
+<li>Defina chefes de pasta por matéria.</li>
+<li>Cadastre o WhatsApp da STE no perfil gestor, se desejar liberar o contato rápido.</li>
+<li>Acompanhe o preenchimento e faça ajustes em <strong>Modificar horários</strong>.</li>
+</ol>
 
-      <h3 id="fluxo-preparacao">Fluxo recomendado de preparação</h3>
-      <p>Para iniciar uma nova base ou novo período, siga esta ordem:</p>
-      <ol class="steps">
-        <li>Cadastre matérias e cargas horárias em <strong>Matérias por turma</strong>.</li>
-        <li>Cadastre turmas em <strong>Matérias por turma</strong>.</li>
-        <li>Vincule as matérias às turmas.</li>
-        <li>Cadastre semanas em <strong>Criar semanas</strong>.</li>
-        <li>Cadastre ou aprove instrutores.</li>
-        <li>Associe matérias aos instrutores.</li>
-        <li>Defina chefes de pasta por matéria.</li>
-        <li>Cadastre o WhatsApp da STE no perfil gestor, se desejar liberar o contato rápido.</li>
-        <li>Acompanhe o preenchimento e faça ajustes em <strong>Modificar horários</strong>.</li>
-      </ol>
+<h3 id="aprovar-instrutores">Aprovar instrutores</h3>
+<ol class="steps">
+<li>Acesse <strong>Aprovar instrutores</strong>.</li>
+<li>Confira nome, e-mail e nome que aparecerá na grade.</li>
+<li>Clique em <strong>Aprovar</strong> para liberar acesso.</li>
+<li>Clique em <strong>Rejeitar</strong> para remover uma solicitação indevida.</li>
+</ol>
+<p>Cadastros feitos pelo link público entram como pendentes.</p>
 
-      <h3 id="aprovar-instrutores">Aprovar instrutores</h3>
-      <ol class="steps">
-        <li>Acesse <strong>Aprovar instrutores</strong>.</li>
-        <li>Confira nome, e-mail e nome que aparecerá na grade.</li>
-        <li>Clique em <strong>Aprovar</strong> para liberar acesso.</li>
-        <li>Clique em <strong>Rejeitar</strong> para remover uma solicitação indevida.</li>
-      </ol>
-      <p>Cadastros feitos pelo link público entram como pendentes.</p>
+<h3 id="cadastrar-instrutor-pelo-gestor">Cadastrar instrutor pelo gestor</h3>
+<ol class="steps">
+<li>Acesse <strong>Cadastrar instrutor</strong>.</li>
+<li>Preencha nome completo, nome na grade, e-mail/login, WhatsApp e senha.</li>
+<li>Selecione as matérias que o instrutor leciona.</li>
+<li>Clique em <strong>Cadastrar instrutor</strong>.</li>
+</ol>
+<p>O instrutor cadastrado pelo gestor já entra aprovado.</p>
 
-      <h3 id="cadastrar-instrutor-gestor">Cadastrar instrutor pelo gestor</h3>
-      <ol class="steps">
-        <li>Acesse <strong>Cadastrar instrutor</strong>.</li>
-        <li>Preencha nome completo, nome na grade, e-mail/login, WhatsApp e senha.</li>
-        <li>Selecione as matérias que o instrutor leciona.</li>
-        <li>Clique em <strong>Cadastrar instrutor</strong>.</li>
-      </ol>
-      <p>O instrutor cadastrado pelo gestor já entra aprovado.</p>
+<h3 id="cadastrar-gestor">Cadastrar gestor</h3>
+<ol class="steps">
+<li>Acesse <strong>Cadastrar gestor</strong>.</li>
+<li>Preencha nome, e-mail/login e senha.</li>
+<li>Marque <strong>Chefe STE</strong> se esse gestor deve assinar como chefe da STE.</li>
+<li>Salve o cadastro.</li>
+</ol>
+<p>Somente gestores podem cadastrar outros gestores.</p>
 
-      <h3 id="cadastrar-gestor">Cadastrar gestor</h3>
-      <ol class="steps">
-        <li>Acesse <strong>Cadastrar gestor</strong>.</li>
-        <li>Preencha nome, e-mail/login e senha.</li>
-        <li>Marque <strong>Chefe STE</strong> se esse gestor deve assinar como chefe da STE.</li>
-        <li>Salve o cadastro.</li>
-      </ol>
-      <p>Somente gestores podem cadastrar outros gestores.</p>
+<h3 id="alterar-instrutores-e-gestores">Alterar instrutores e gestores</h3>
+<ol class="steps">
+<li>Acesse <strong>Alterar instrutores/gestores</strong>.</li>
+<li>Clique no nome do instrutor para abrir as opções.</li>
+<li>Atualize nome, nome na grade, e-mail ou WhatsApp.</li>
+<li>Marque ou desmarque matérias.</li>
+<li>Clique em <strong>Salvar matérias</strong> quando alterar as matérias.</li>
+</ol>
+<p>Também é possível:</p>
+<ul class="bullets">
+<li>Selecionar todas as matérias para um instrutor.</li>
+<li>Limpar todas as matérias.</li>
+<li>Excluir instrutor.</li>
+</ul>
+<p>Na mesma tela, a lista <strong>Gestores cadastrados</strong> também é editável: clique no nome do gestor para abrir os campos de nome, nome na grade, e-mail, WhatsApp e o marcador <strong>Chefe da STE</strong>. É possível excluir um gestor por ali, exceto o gestor master e o próprio usuário logado.</p>
 
-      <h3 id="alterar-instrutores-gestores">Alterar instrutores e gestores</h3>
-      <ol class="steps">
-        <li>Acesse <strong>Alterar instrutores/gestores</strong>.</li>
-        <li>Clique no nome do instrutor para abrir as opções.</li>
-        <li>Atualize nome, nome na grade, e-mail ou WhatsApp.</li>
-        <li>Marque ou desmarque matérias.</li>
-        <li>Clique em <strong>Salvar matérias</strong> quando alterar as matérias.</li>
-      </ol>
-      <p>Também é possível:</p>
-      <ul class="bullets">
-        <li>Selecionar todas as matérias para um instrutor.</li>
-        <li>Limpar todas as matérias.</li>
-        <li>Excluir instrutor.</li>
-      </ul>
-      <p>Na mesma tela, a lista <strong>Gestores cadastrados</strong> também é editável: clique no nome do gestor para abrir os campos de nome, nome na grade, e-mail, WhatsApp e o marcador <strong>Chefe da STE</strong>. É possível excluir um gestor por ali, exceto o gestor master e o próprio usuário logado.</p>
+<h3 id="definir-chefe-de-pasta-por-materia">Definir chefe de pasta por matéria</h3>
+<p>Na tela <strong>Alterar instrutores/gestores</strong>, use a área <strong>Chefia de pasta por matéria</strong>.</p>
+<ol class="steps">
+<li>Localize a matéria.</li>
+<li>Escolha o instrutor responsável.</li>
+<li>O sistema salva a chefia de pasta.</li>
+</ol>
+<p>Só aparecem candidatos vinculados à matéria.</p>
 
-      <h3 id="definir-chefe-pasta">Definir chefe de pasta por matéria</h3>
-      <p>Na tela <strong>Alterar instrutores/gestores</strong>, use a área <strong>Chefia de pasta por matéria</strong>.</p>
-      <ol class="steps">
-        <li>Localize a matéria.</li>
-        <li>Escolha o instrutor responsável.</li>
-        <li>O sistema salva a chefia de pasta.</li>
-      </ol>
-      <p>Só aparecem candidatos vinculados à matéria.</p>
+<h3 id="criar-materias">Criar matérias</h3>
+<ol class="steps">
+<li>Acesse <strong>Matérias por turma</strong>.</li>
+<li>Na área <strong>Criar matéria</strong>, informe o nome da matéria.</li>
+<li>Informe a carga horária total, se houver.</li>
+<li>Clique em <strong>Criar</strong>.</li>
+</ol>
+<p>A carga horária é usada nos relatórios e nos indicadores de progresso da grade.</p>
 
-      <h3 id="criar-materias">Criar matérias</h3>
-      <ol class="steps">
-        <li>Acesse <strong>Matérias por turma</strong>.</li>
-        <li>Na área <strong>Criar matéria</strong>, informe o nome da matéria.</li>
-        <li>Informe a carga horária total, se houver.</li>
-        <li>Clique em <strong>Criar</strong>.</li>
-      </ol>
-      <p>A carga horária é usada nos relatórios e nos indicadores de progresso da grade.</p>
+<h3 id="criar-turmas">Criar turmas</h3>
+<ol class="steps">
+<li>Acesse <strong>Matérias por turma</strong>.</li>
+<li>Na área <strong>Criar turma</strong>, informe o nome.</li>
+<li>Clique em <strong>Criar</strong>.</li>
+</ol>
+<p>Depois, vincule as matérias correspondentes a essa turma.</p>
 
-      <h3 id="criar-turmas">Criar turmas</h3>
-      <ol class="steps">
-        <li>Acesse <strong>Matérias por turma</strong>.</li>
-        <li>Na área <strong>Criar turma</strong>, informe o nome.</li>
-        <li>Clique em <strong>Criar</strong>.</li>
-      </ol>
-      <p>Depois, vincule as matérias correspondentes a essa turma.</p>
+<h3 id="vincular-materias-as-turmas">Vincular matérias às turmas</h3>
+<ol class="steps">
+<li>Ainda em <strong>Matérias por turma</strong>, vá até <strong>Matérias por turma</strong>.</li>
+<li>Em cada turma, marque as matérias que pertencem a ela.</li>
+<li>Desmarque as matérias que não devem aparecer naquela turma.</li>
+</ol>
+<div class="callout"><span class="callout-label">Exemplo</span><p>marque APH na turma que possui APH e deixe desmarcada nas turmas que não terão essa matéria.</p></div>
 
-      <h3 id="vincular-materias-turmas">Vincular matérias às turmas</h3>
-      <ol class="steps">
-        <li>Ainda em <strong>Matérias por turma</strong>, vá até a área de vínculos.</li>
-        <li>Em cada turma, marque as matérias que pertencem a ela.</li>
-        <li>Desmarque as matérias que não devem aparecer naquela turma.</li>
-      </ol>
-      <div class="callout">
-        <span class="callout-label">Exemplo</span>
-        <p>Marque APH na turma que possui APH e deixe desmarcada nas turmas que não terão essa matéria.</p>
-      </div>
+<h3 id="criar-semanas">Criar semanas</h3>
+<ol class="steps">
+<li>Acesse <strong>Criar semanas</strong>.</li>
+<li>Informe o nome da semana. Exemplo: Semana 01.</li>
+<li>Informe data inicial e data final.</li>
+<li>Clique em <strong>Criar</strong>.</li>
+</ol>
+<p>As semanas aparecem nos filtros de preenchimento, visualização, QTS e relatórios.</p>
 
-      <h3 id="criar-semanas">Criar semanas</h3>
-      <ol class="steps">
-        <li>Acesse <strong>Criar semanas</strong>.</li>
-        <li>Informe o nome da semana. Exemplo: Semana 01.</li>
-        <li>Informe data inicial e data final.</li>
-        <li>Clique em <strong>Criar</strong>.</li>
-      </ol>
-      <p>As semanas aparecem nos filtros de preenchimento, visualização, QTS e relatórios.</p>
+<h3 id="modificar-horarios-e-qts">Modificar horários e QTS</h3>
+<p>A tela <strong>Modificar horários</strong> é a principal área operacional do gestor.</p>
+<ol class="steps">
+<li>Selecione mês, semana e turma.</li>
+<li>Escolha o modo de inserção:<ul class="nested">
+<li>Aula</li>
+<li>A DISPOSICAO DA ESFAO</li>
+<li>A DISPOSICAO DA ESFAP</li>
+<li>MISSAO DABM</li>
+<li>FERIADO</li>
+<li>Texto livre</li>
+</ul>
+</li>
+<li>Se o modo for <strong>Aula</strong>, selecione matéria, instrutor, local e prova, se necessário.</li>
+<li>Clique em <strong>+ inserir</strong> em um horário livre ou <strong>Substituir</strong> em um horário preenchido.</li>
+</ol>
+<p>O gestor consegue lançar aulas mesmo quando a carga horária já foi atingida, mas o relatório indicará excedente.</p>
 
-      <h3 id="modificar-horarios-qts">Modificar horários e QTS</h3>
-      <p>A tela <strong>Modificar horários</strong> é a principal área operacional do gestor.</p>
-      <ol class="steps">
-        <li>Selecione mês, semana e turma.</li>
-        <li>
-          Escolha o modo de inserção:
-          <ul class="nested">
-            <li>Aula</li>
-            <li>A DISPOSIÇÃO DA ESFAO</li>
-            <li>A DISPOSIÇÃO DA ESFAP</li>
-            <li>MISSÃO DABM</li>
-            <li>FERIADO</li>
-            <li>Texto livre</li>
-          </ul>
-        </li>
-        <li>Se o modo for <strong>Aula</strong>, selecione matéria, instrutor, local e prova, se necessário.</li>
-        <li>Clique em <strong>+ inserir</strong> em um horário livre ou <strong>Substituir</strong> em um horário preenchido.</li>
-      </ol>
-      <p>O gestor consegue lançar aulas mesmo quando a carga horária já foi atingida, mas o relatório indicará excedente.</p>
+<h3 id="editar-detalhes-de-uma-aula">Editar detalhes de uma aula</h3>
+<p>Na grade de <strong>Modificar horários</strong>, em uma aula existente:</p>
+<ul class="bullets">
+<li>Use <strong>Editar aula/prova</strong> para alterar auxiliares autorizados, aula corrente, local, prova e observações internas.</li>
+<li>Use <strong>Marcar prova</strong> ou <strong>Desmarcar prova</strong> para alterar rapidamente a situação.</li>
+<li>Use <strong>Avisar WhatsApp</strong> para abrir uma mensagem pronta para o instrutor, quando houver WhatsApp cadastrado.</li>
+</ul>
 
-      <h3 id="editar-detalhes-aula">Editar detalhes de uma aula</h3>
-      <p>Na grade de <strong>Modificar horários</strong>, em uma aula existente:</p>
-      <ul class="bullets">
-        <li>Use <strong>Editar aula/prova</strong> para alterar auxiliares autorizados, aula corrente, local, prova e observações internas.</li>
-        <li>Use <strong>Marcar prova</strong> ou <strong>Desmarcar prova</strong> para alterar rapidamente a situação.</li>
-        <li>Use <strong>Avisar WhatsApp</strong> para abrir uma mensagem pronta para o instrutor, quando houver WhatsApp cadastrado.</li>
-      </ul>
+<h3 id="excluir-aulas-pelo-gestor">Excluir aulas pelo gestor</h3>
+<p>Na tela <strong>Modificar horários</strong>, o botão <strong>Excluir</strong> marca a aula para exclusão pendente.</p>
+<ul class="bullets">
+<li>A exclusão não é aplicada imediatamente.</li>
+<li>O sistema informa quantas exclusões estão pendentes.</li>
+<li>As exclusões só são gravadas quando o gestor clica em <strong>Confirmar QTS</strong>.</li>
+<li>É possível usar <strong>Desfazer exclusões pendentes</strong> antes da confirmação.</li>
+</ul>
+<div class="callout warn"><span class="callout-label">Atenção</span><p>essa regra reduz risco de exclusões acidentais. Sempre revise a grade antes de confirmar o QTS.</p></div>
 
-      <h3 id="excluir-aulas-gestor">Excluir aulas pelo gestor</h3>
-      <p>Na tela <strong>Modificar horários</strong>, o botão <strong>Excluir</strong> marca a aula para exclusão pendente.</p>
-      <ul class="bullets">
-        <li>A exclusão não é aplicada imediatamente.</li>
-        <li>O sistema informa quantas exclusões estão pendentes.</li>
-        <li>As exclusões só são gravadas quando o gestor clica em <strong>Confirmar QTS</strong>.</li>
-        <li>É possível usar <strong>Desfazer exclusões pendentes</strong> antes da confirmação.</li>
-      </ul>
-      <div class="callout warn">
-        <span class="callout-label">Atenção</span>
-        <p>Essa regra reduz risco de exclusões acidentais. Sempre revise a grade antes de confirmar o QTS.</p>
-      </div>
+<h3 id="confirmar-qts">Confirmar QTS</h3>
+<ol class="steps">
+<li>Selecione mês, semana e turma.</li>
+<li>Revise a grade.</li>
+<li>Confira exclusões pendentes, se existirem.</li>
+<li>Clique em <strong>Confirmar QTS</strong>.</li>
+<li>O sistema gera o PDF do QTS.</li>
+</ol>
+<p>Ao confirmar, o sistema também consolida exclusões pendentes e pode registrar mensagens aos instrutores envolvidos.</p>
 
-      <h3 id="confirmar-qts">Confirmar QTS</h3>
-      <ol class="steps">
-        <li>Selecione mês, semana e turma.</li>
-        <li>Revise a grade.</li>
-        <li>Confira exclusões pendentes, se existirem.</li>
-        <li>Clique em <strong>Confirmar QTS</strong>.</li>
-        <li>O sistema gera o PDF do QTS.</li>
-      </ol>
-      <p>Ao confirmar, o sistema também consolida exclusões pendentes e pode registrar mensagens aos instrutores envolvidos.</p>
+<h3 id="exportar-grade">Exportar grade</h3>
+<p>Gestores podem exportar:</p>
+<ul class="bullets">
+<li>PDF da grade.</li>
+<li>Excel da grade.</li>
+<li>PDF do QTS ao confirmar.</li>
+</ul>
+<p>Os botões ficam em <strong>Modificar horários</strong> e <strong>Visualizar horários</strong>.</p>
 
-      <h3 id="exportar-grade">Exportar grade</h3>
-      <p>Gestores podem exportar:</p>
-      <ul class="bullets">
-        <li>PDF da grade.</li>
-        <li>Excel da grade.</li>
-        <li>PDF do QTS ao confirmar.</li>
-      </ul>
-      <p>Os botões ficam em <strong>Modificar horários</strong> e <strong>Visualizar horários</strong>.</p>
+<h3 id="autorizar-auxiliares">Autorizar auxiliares</h3>
+<p>A tela <strong>Auxiliares pendentes</strong> reúne todas as aulas com pedido de auxiliares ainda não totalmente autorizado, feito por qualquer instrutor.</p>
+<ol class="steps">
+<li>Acesse <strong>Auxiliares pendentes</strong>.</li>
+<li>Confira turma, semana, dia, horário e matéria de cada pedido.</li>
+<li>Informe a quantidade de auxiliares autorizada.</li>
+<li>Clique em <strong>Autorizar</strong>.</li>
+</ol>
+<p>Depois de autorizada a quantidade solicitada, a aula sai da lista de pendentes. Somente o gestor pode autorizar ou alterar auxiliares depois que a aula estiver confirmada.</p>
 
-      <h3 id="autorizar-auxiliares">Autorizar auxiliares</h3>
-      <p>A tela <strong>Auxiliares pendentes</strong> reúne todas as aulas com pedido de auxiliares ainda não totalmente autorizado, feito por qualquer instrutor.</p>
-      <ol class="steps">
-        <li>Acesse <strong>Auxiliares pendentes</strong>.</li>
-        <li>Confira turma, semana, dia, horário e matéria de cada pedido.</li>
-        <li>Informe a quantidade de auxiliares autorizada.</li>
-        <li>Clique em <strong>Autorizar</strong>.</li>
-      </ol>
-      <p>Depois de autorizada a quantidade solicitada, a aula sai da lista de pendentes. Somente o gestor pode autorizar ou alterar auxiliares depois que a aula estiver confirmada.</p>
+<h3 id="acompanhar-carga-horaria">Acompanhar carga horária</h3>
+<ol class="steps">
+<li>Acesse <strong>Carga horária</strong>.</li>
+<li>Selecione mês e turma, ou veja todas as turmas.</li>
+<li>Confira carga cadastrada, aulas lançadas, saldo, progresso e excedentes.</li>
+</ol>
+<p>Use esta tela para verificar se alguma matéria ultrapassou a carga horária planejada ou se ainda há saldo.</p>
 
-      <h3 id="carga-horaria">Acompanhar carga horária</h3>
-      <ol class="steps">
-        <li>Acesse <strong>Carga horária</strong>.</li>
-        <li>Selecione mês e turma, ou veja todas as turmas.</li>
-        <li>Confira carga cadastrada, aulas lançadas, saldo, progresso e excedentes.</li>
-      </ol>
-      <p>Use esta tela para verificar se alguma matéria ultrapassou a carga horária planejada ou se ainda há saldo.</p>
+<h3 id="acompanhar-horas-aula">Acompanhar horas/aula</h3>
+<ol class="steps">
+<li>Acesse <strong>Horas/aula</strong>.</li>
+<li>Selecione o mês.</li>
+<li>Confira o total geral e a distribuição por instrutor.</li>
+</ol>
+<p>Esse relatório ajuda a acompanhar a carga mensal de cada instrutor.</p>
 
-      <h3 id="horas-aula-gestor">Acompanhar horas/aula</h3>
-      <ol class="steps">
-        <li>Acesse <strong>Horas/aula</strong>.</li>
-        <li>Selecione o mês.</li>
-        <li>Confira o total geral e a distribuição por instrutor.</li>
-      </ol>
-      <p>Esse relatório ajuda a acompanhar a carga mensal de cada instrutor.</p>
+<h3 id="comunicacoes">Comunicações</h3>
+<p>A tela <strong>Comunicações</strong> permite disparar e-mails, desde que o SMTP esteja configurado no ambiente do sistema.</p>
+<p>Opções disponíveis:</p>
+<ul class="bullets">
+<li>Disparar apoio por matéria: envia e-mail para todos os instrutores da matéria selecionada.</li>
+<li>Disparar somente para chefe da pasta: envia e-mail apenas para o chefe da pasta da matéria.</li>
+</ul>
+<p>Para enviar:</p>
+<ol class="steps">
+<li>Selecione a matéria.</li>
+<li>Informe início e fim do período.</li>
+<li>Escreva uma observação opcional.</li>
+<li>Clique no botão de disparo.</li>
+</ol>
+<div class="callout"><span class="callout-label">Observação</span><p>quando o e-mail automático estiver desativado, o sistema avisa que SMTP_HOST, SMTP_FROM, SMTP_USER e SMTP_PASS precisam estar configurados.</p></div>
 
-      <h3 id="comunicacoes">Comunicações</h3>
-      <p>A tela <strong>Comunicações</strong> permite disparar e-mails, desde que o SMTP esteja configurado no ambiente do sistema.</p>
-      <p>Opções disponíveis:</p>
-      <ul class="bullets">
-        <li>Disparar apoio por matéria: envia e-mail para todos os instrutores da matéria selecionada.</li>
-        <li>Disparar somente para chefe da pasta: envia e-mail apenas para o chefe da pasta da matéria.</li>
-      </ul>
-      <p>Para enviar:</p>
-      <ol class="steps">
-        <li>Selecione a matéria.</li>
-        <li>Informe início e fim do período.</li>
-        <li>Escreva uma observação opcional.</li>
-        <li>Clique no botão de disparo.</li>
-      </ol>
-      <div class="callout">
-        <span class="callout-label">Observação</span>
-        <p>Quando o e-mail automático estiver desativado, o sistema avisa que <code>SMTP_HOST</code>, <code>SMTP_FROM</code>, <code>SMTP_USER</code> e <code>SMTP_PASS</code> precisam estar configurados.</p>
-      </div>
+<h3 id="banco-de-dados-e-backup">Banco de dados e backup</h3>
+<p>A tela <strong>Banco e backup</strong> mostra:</p>
+<ul class="bullets">
+<li>Uso atual do banco.</li>
+<li>Limite configurado.</li>
+<li>Total de horários, aulas, confirmações, solicitações, instrutores e gestores.</li>
+</ul>
+<p>Para backup:</p>
+<ol class="steps">
+<li>Acesse <strong>Banco e backup</strong>.</li>
+<li>Clique em <strong>Fazer backup das grades</strong>.</li>
+<li>Guarde o arquivo gerado.</li>
+</ol>
+<p>Para esvaziar grades:</p>
+<ol class="steps">
+<li>Gere um backup na mesma sessão.</li>
+<li>Clique em <strong>Esvaziar grades preenchidas</strong>.</li>
+<li>Confirme a ação.</li>
+</ol>
+<p>Essa limpeza remove horários, confirmações e solicitações de modificação. Instrutores e gestores são mantidos.</p>
+<div class="callout warn"><span class="callout-label">Atenção</span><p>use o esvaziamento somente quando realmente quiser limpar as grades preenchidas. O sistema exige backup antes de liberar a ação.</p></div>
 
-      <h3 id="banco-backup">Banco de dados e backup</h3>
-      <p>A tela <strong>Banco e backup</strong> mostra:</p>
-      <ul class="bullets">
-        <li>Uso atual do banco.</li>
-        <li>Limite configurado.</li>
-        <li>Total de horários, aulas, confirmações, solicitações, instrutores e gestores.</li>
-      </ul>
-      <p>Para backup:</p>
-      <ol class="steps">
-        <li>Acesse <strong>Banco e backup</strong>.</li>
-        <li>Clique em <strong>Fazer backup das grades</strong>.</li>
-        <li>Guarde o arquivo gerado.</li>
-      </ol>
-      <p>Para esvaziar grades:</p>
-      <ol class="steps">
-        <li>Gere um backup na mesma sessão.</li>
-        <li>Clique em <strong>Esvaziar grades preenchidas</strong>.</li>
-        <li>Confirme a ação.</li>
-      </ol>
-      <p>Essa limpeza remove horários, confirmações e solicitações de modificação. Instrutores e gestores são mantidos.</p>
-      <div class="callout warn">
-        <span class="callout-label">Atenção</span>
-        <p>Use o esvaziamento somente quando realmente quiser limpar as grades preenchidas. O sistema exige backup antes de liberar a ação.</p>
-      </div>
+<h3 id="editar-perfil-do-gestor">Editar perfil do gestor</h3>
+<ol class="steps">
+<li>Acesse <strong>Editar perfil gestor</strong>.</li>
+<li>Atualize nome, nome na grade, <strong>e-mail/login</strong>, WhatsApp e senha, se necessário.</li>
+<li>Marque <strong>Chefe da STE</strong> quando aplicável.</li>
+<li>Se também lecionar, selecione as matérias em <strong>Matérias que também leciona</strong>.</li>
+<li>Cadastre o WhatsApp da STE para habilitar o botão de contato dos instrutores.</li>
+</ol>
+<p>O e-mail cadastrado aqui é o mesmo usado para login. Ao trocar o e-mail, use o novo endereço no próximo acesso.</p>
 
-      <h3 id="editar-perfil-gestor">Editar perfil do gestor</h3>
-      <ol class="steps">
-        <li>Acesse <strong>Editar perfil gestor</strong>.</li>
-        <li>Atualize nome, nome na grade, <strong>e-mail/login</strong>, WhatsApp e senha, se necessário.</li>
-        <li>Marque <strong>Chefe da STE</strong> quando aplicável.</li>
-        <li>Se também lecionar, selecione as matérias em <strong>Matérias que também leciona</strong>.</li>
-        <li>Cadastre o WhatsApp da STE para habilitar o botão de contato dos instrutores.</li>
-      </ol>
-      <p>O e-mail cadastrado aqui é o mesmo usado para login. Ao trocar o e-mail, use o novo endereço no próximo acesso.</p>
     </section>
 
     <section class="doc-section" id="rotinas-recomendadas">
       <span class="eyebrow gestor">Gestor</span>
       <h2>Rotinas recomendadas</h2>
       <div class="section-rule"></div>
+      
+      <h3 id="antes-de-abrir-preenchimento-aos-instrutores">Antes de abrir preenchimento aos instrutores</h3>
+<ol class="steps">
+<li>Confira se as semanas do período foram cadastradas.</li>
+<li>Confira se as turmas foram cadastradas.</li>
+<li>Confira se as matérias estão vinculadas às turmas corretas.</li>
+<li>Confira se cada instrutor possui suas matérias associadas.</li>
+<li>Confira se o contato da STE está atualizado.</li>
+</ol>
 
-      <h3 id="antes-de-abrir">Antes de abrir preenchimento aos instrutores</h3>
-      <ol class="steps">
-        <li>Confira se as semanas do período foram cadastradas.</li>
-        <li>Confira se as turmas foram cadastradas.</li>
-        <li>Confira se as matérias estão vinculadas às turmas corretas.</li>
-        <li>Confira se cada instrutor possui suas matérias associadas.</li>
-        <li>Confira se o contato da STE está atualizado.</li>
-      </ol>
+<h3 id="durante-o-preenchimento">Durante o preenchimento</h3>
+<ol class="steps">
+<li>Acompanhe mensagens e solicitações.</li>
+<li>Use <strong>Visualizar horários</strong> para consultar grades.</li>
+<li>Use <strong>Modificar horários</strong> para ajustes necessários.</li>
+<li>Use <strong>Carga horária</strong> para acompanhar saldo e excedente.</li>
+</ol>
 
-      <h3 id="durante-preenchimento">Durante o preenchimento</h3>
-      <ol class="steps">
-        <li>Acompanhe mensagens e solicitações.</li>
-        <li>Use <strong>Visualizar horários</strong> para consultar grades.</li>
-        <li>Use <strong>Modificar horários</strong> para ajustes necessários.</li>
-        <li>Use <strong>Carga horária</strong> para acompanhar saldo e excedente.</li>
-      </ol>
+<h3 id="ao-fechar-a-semana">Ao fechar a semana</h3>
+<ol class="steps">
+<li>Revise a grade em <strong>Modificar horários</strong>.</li>
+<li>Resolva solicitações pendentes.</li>
+<li>Confira auxiliares, provas e locais.</li>
+<li>Clique em <strong>Confirmar QTS</strong>.</li>
+<li>Guarde o PDF gerado.</li>
+</ol>
 
-      <h3 id="ao-fechar-semana">Ao fechar a semana</h3>
-      <ol class="steps">
-        <li>Revise a grade em <strong>Modificar horários</strong>.</li>
-        <li>Resolva solicitações pendentes.</li>
-        <li>Confira auxiliares, provas e locais.</li>
-        <li>Clique em <strong>Confirmar QTS</strong>.</li>
-        <li>Guarde o PDF gerado.</li>
-      </ol>
+<h3 id="periodicamente">Periodicamente</h3>
+<ol class="steps">
+<li>Consulte <strong>Horas/aula</strong>.</li>
+<li>Consulte <strong>Banco e backup</strong>.</li>
+<li>Faça backup das grades quando necessário.</li>
+<li>Revise usuários, matérias e chefias de pasta.</li>
+</ol>
 
-      <h3 id="periodicamente">Periodicamente</h3>
-      <ol class="steps">
-        <li>Consulte <strong>Horas/aula</strong>.</li>
-        <li>Consulte <strong>Banco e backup</strong>.</li>
-        <li>Faça backup das grades quando necessário.</li>
-        <li>Revise usuários, matérias e chefias de pasta.</li>
-      </ol>
     </section>
 
     <section class="doc-section" id="boas-praticas">
@@ -1199,107 +714,106 @@
       <h2>Boas práticas</h2>
       <div class="section-rule"></div>
       <ul class="bullets">
-        <li>Confira sempre mês, semana e turma antes de salvar.</li>
-        <li>Use nomes de semana padronizados, como Semana 01, Semana 02.</li>
-        <li>Mantenha o WhatsApp dos instrutores atualizado.</li>
-        <li>Oriente instrutores a confirmar a grade antes de sair da tela.</li>
-        <li>Use solicitações à STE para mudanças após confirmação.</li>
-        <li>Faça backup antes de qualquer limpeza de grades.</li>
-        <li>Evite excluir usuários sem verificar se ainda precisam acessar histórico ou relatórios.</li>
-      </ul>
+<li>Confira sempre mês, semana e turma antes de salvar.</li>
+<li>Use nomes de semana padronizados, como Semana 01, Semana 02.</li>
+<li>Mantenha o WhatsApp dos instrutores atualizado.</li>
+<li>Oriente instrutores a confirmar a grade antes de sair da tela.</li>
+<li>Use solicitações à STE para mudanças após confirmação.</li>
+<li>Faça backup antes de qualquer limpeza de grades.</li>
+<li>Evite excluir usuários sem verificar se ainda precisam acessar histórico ou relatórios.</li>
+</ul>
+
+      
     </section>
 
     <section class="doc-section" id="problemas-comuns">
       <span class="eyebrow geral">Geral</span>
       <h2>Problemas comuns</h2>
       <div class="section-rule"></div>
+      
+      <h3 id="a-materia-nao-aparece-para-o-instrutor">A matéria não aparece para o instrutor</h3>
+<p>Verifique:</p>
+<ul class="bullets">
+<li>A matéria foi cadastrada?</li>
+<li>A matéria está vinculada à turma?</li>
+<li>A matéria está associada ao instrutor?</li>
+<li>A carga horária já foi atingida? Instrutores podem ficar impedidos de lançar novas aulas quando a carga estiver completa.</li>
+</ul>
 
-      <h3 id="materia-nao-aparece">A matéria não aparece para o instrutor</h3>
-      <p>Verifique:</p>
-      <ul class="bullets">
-        <li>A matéria foi cadastrada?</li>
-        <li>A matéria está vinculada à turma?</li>
-        <li>A matéria está associada ao instrutor?</li>
-        <li>A carga horária já foi atingida? Instrutores podem ficar impedidos de lançar novas aulas quando a carga estiver completa.</li>
-      </ul>
+<h3 id="a-semana-nao-aparece-no-filtro">A semana não aparece no filtro</h3>
+<p>Verifique:</p>
+<ul class="bullets">
+<li>A semana foi cadastrada?</li>
+<li>O mês selecionado no filtro corresponde à semana?</li>
+<li>A data inicial e final foram preenchidas corretamente?</li>
+</ul>
 
-      <h3 id="semana-nao-aparece">A semana não aparece no filtro</h3>
-      <p>Verifique:</p>
-      <ul class="bullets">
-        <li>A semana foi cadastrada?</li>
-        <li>O mês selecionado no filtro corresponde à semana?</li>
-        <li>A data inicial e final foram preenchidas corretamente?</li>
-      </ul>
+<h3 id="o-instrutor-nao-consegue-editar-uma-aula">O instrutor não consegue editar uma aula</h3>
+<p>Possíveis motivos:</p>
+<ul class="bullets">
+<li>A aula já foi confirmada.</li>
+<li>A aula pertence a outro instrutor.</li>
+<li>A alteração precisa ser feita pela STE.</li>
+</ul>
 
-      <h3 id="instrutor-nao-edita">O instrutor não consegue editar uma aula</h3>
-      <p>Possíveis motivos:</p>
-      <ul class="bullets">
-        <li>A aula já foi confirmada.</li>
-        <li>A aula pertence a outro instrutor.</li>
-        <li>A alteração precisa ser feita pela STE.</li>
-      </ul>
+<h3 id="o-botao-de-whatsapp-nao-aparece-ou-informa-numero-ausente">O botão de WhatsApp não aparece ou informa número ausente</h3>
+<p>Verifique:</p>
+<ul class="bullets">
+<li>O WhatsApp do instrutor foi cadastrado?</li>
+<li>O WhatsApp da STE foi cadastrado pelo gestor?</li>
+<li>O número possui DDD?</li>
+</ul>
 
-      <h3 id="whatsapp-nao-aparece">O botão de WhatsApp não aparece ou informa número ausente</h3>
-      <p>Verifique:</p>
-      <ul class="bullets">
-        <li>O WhatsApp do instrutor foi cadastrado?</li>
-        <li>O WhatsApp da STE foi cadastrado pelo gestor?</li>
-        <li>O número possui DDD?</li>
-      </ul>
+<h3 id="o-e-mail-automatico-esta-desativado">O e-mail automático está desativado</h3>
+<p>O sistema precisa de configuração SMTP no ambiente. Enquanto isso, use os avisos por WhatsApp ou comunique manualmente.</p>
 
-      <h3 id="email-desativado">O e-mail automático está desativado</h3>
-      <p>O sistema precisa de configuração SMTP no ambiente. Enquanto isso, use os avisos por WhatsApp ou comunique manualmente.</p>
+<h3 id="o-banco-esta-perto-do-limite">O banco está perto do limite</h3>
+<ol class="steps">
+<li>Acesse <strong>Banco e backup</strong>.</li>
+<li>Gere backup das grades.</li>
+<li>Avalie se é o momento de esvaziar grades preenchidas.</li>
+<li>Não exclua usuários por engano: limpeza de grades e exclusão de usuários são ações separadas.</li>
+</ol>
 
-      <h3 id="banco-proximo-limite">O banco está perto do limite</h3>
-      <ol class="steps">
-        <li>Acesse <strong>Banco e backup</strong>.</li>
-        <li>Gere backup das grades.</li>
-        <li>Avalie se é o momento de esvaziar grades preenchidas.</li>
-        <li>Não exclua usuários por engano: limpeza de grades e exclusão de usuários são ações separadas.</li>
-      </ol>
     </section>
 
-    <section class="doc-section" id="checklist-treinamento">
+    <section class="doc-section" id="checklist-de-treinamento">
       <span class="eyebrow geral">Geral</span>
       <h2>Checklist de treinamento</h2>
       <div class="section-rule"></div>
+      
+      <h3 id="para-instrutores">Para instrutores</h3>
+<ul class="bullets">
+<li>Entrar no sistema.</li>
+<li>Atualizar perfil e WhatsApp.</li>
+<li>Selecionar matérias.</li>
+<li>Preencher aula na grade.</li>
+<li>Marcar prova.</li>
+<li>Informar local da instrução.</li>
+<li>Solicitar auxiliares.</li>
+<li>Confirmar horários.</li>
+<li>Abrir solicitação à STE.</li>
+<li>Consultar horas/aula.</li>
+</ul>
 
-      <div class="two-col">
-        <div>
-          <h4>Para instrutores</h4>
-          <ul class="checklist">
-            <li>Entrar no sistema.</li>
-            <li>Atualizar perfil e WhatsApp.</li>
-            <li>Selecionar matérias.</li>
-            <li>Preencher aula na grade.</li>
-            <li>Marcar prova.</li>
-            <li>Informar local da instrução.</li>
-            <li>Solicitar auxiliares.</li>
-            <li>Confirmar horários.</li>
-            <li>Abrir solicitação à STE.</li>
-            <li>Consultar horas/aula.</li>
-          </ul>
-        </div>
-        <div>
-          <h4>Para gestores</h4>
-          <ul class="checklist">
-            <li>Aprovar instrutor.</li>
-            <li>Criar matéria com carga horária.</li>
-            <li>Criar turma.</li>
-            <li>Vincular matéria à turma.</li>
-            <li>Criar semana.</li>
-            <li>Associar matérias ao instrutor.</li>
-            <li>Definir chefe de pasta.</li>
-            <li>Modificar QTS.</li>
-            <li>Confirmar QTS e gerar PDF.</li>
-            <li>Exportar grade.</li>
-            <li>Autorizar auxiliares pendentes.</li>
-            <li>Consultar carga horária.</li>
-            <li>Consultar horas/aula.</li>
-            <li>Fazer backup.</li>
-          </ul>
-        </div>
-      </div>
+<h3 id="para-gestores">Para gestores</h3>
+<ul class="bullets">
+<li>Aprovar instrutor.</li>
+<li>Criar matéria com carga horária.</li>
+<li>Criar turma.</li>
+<li>Vincular matéria à turma.</li>
+<li>Criar semana.</li>
+<li>Associar matérias ao instrutor.</li>
+<li>Definir chefe de pasta.</li>
+<li>Modificar QTS.</li>
+<li>Confirmar QTS e gerar PDF.</li>
+<li>Exportar grade.</li>
+<li>Autorizar auxiliares pendentes.</li>
+<li>Consultar carga horária.</li>
+<li>Consultar horas/aula.</li>
+<li>Fazer backup.</li>
+</ul>
+
     </section>
 
     <section class="doc-section" id="encerramento">
@@ -1307,14 +821,15 @@
       <h2>Encerramento</h2>
       <div class="section-rule"></div>
       <p>O E-STE centraliza a rotina de grade, confirmação, comunicação e acompanhamento da Seção de Treinamento e Ensino. Para um uso seguro, mantenha os cadastros atualizados, revise filtros antes de salvar e confirme o QTS somente após checagem da grade.</p>
-    </section>
 
+      
+    </section>
   </main>
 </div>
 
 <footer class="doc-footer">
   <div class="rule"></div>
-  <p>E-STE — Guia de Uso do Sistema · Seção de Treinamento e Ensino · Versão julho de 2026</p>
+  <p>E-STE — Guia de Uso do Sistema · Seção de Treinamento e Ensino · Versão: julho de 2026</p>
   <p class="credit">© 2026 Todos os direitos reservados<br />Cadete Adilson William Xavier Jargenboski</p>
 </footer>
 

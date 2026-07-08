@@ -10,9 +10,9 @@
     "check:syntax": "node --check server/index.js && node --check api/index.js",
     "check:critical-sql": "node scripts/check-critical-sql.mjs",
     "smoke:api": "node scripts/smoke-api.mjs",
-    "docs:guia": "node scripts/generate-user-guide-pdf.mjs",
+    "docs:guia": "node scripts/generate-user-guide-pdf.mjs && node scripts/generate-guide-html.mjs",
     "predeploy": "npm run check:syntax && npm run check:critical-sql && npm run smoke:api && npm run build",
-    "build": "npm run check:syntax && npm run check:critical-sql && vite build",
+    "build": "npm run check:syntax && npm run check:critical-sql && npm run docs:guia && vite build",
     "preview": "vite preview"
   },
   "dependencies": {

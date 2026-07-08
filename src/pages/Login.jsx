@@ -23,7 +23,8 @@ export default function Login({ onLogin }) {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-slate-50 px-4">
+    <div className="flex min-h-screen flex-col bg-slate-50 px-4">
+      <div className="flex flex-1 items-center justify-center">
       <div className="w-full max-w-md rounded-3xl border border-slate-200 bg-white p-8 shadow-xl">
         <div className="mb-8 text-center">
           <div className="mx-auto mb-4 inline-flex rounded-2xl bg-blue-50 px-4 py-2 text-3xl font-black tracking-wide text-blue-700">E-STE</div>
@@ -87,6 +88,12 @@ export default function Login({ onLogin }) {
           </a>
         </div>
       </div>
+      </div>
+
+      <footer className="pb-6 text-center text-xs text-slate-500">
+        <p>© 2026 Todos os direitos reservados</p>
+        <p>Cadete Adilson William Xavier Jargenboski</p>
+      </footer>
     </div>
   );
 }
