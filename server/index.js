@@ -1143,87 +1143,6 @@ async function getCargaMateriaNaTurma({ turmaId, materiaId }) {
   };
 }
 
-// Ao confirmar o QTS de uma turma/semana, garante que a numeracao de
-// "aula corrente" de cada materia nunca decresca ao longo da grade: se um
-// gestor sobrescreveu manualmente o numero de uma aula da semana confirmada
-// com um valor menor que o da aula anterior (na mesma materia, em
-// ordem cronologica na turma), o valor e corrigido para (anterior + 1).
-// Aulas sem sobrescrita manual nao sao tocadas, pois a numeracao ao vivo ja
-// resolve corretamente esse caso. A carga horaria total cadastrada da
-// materia (o "total" entre parenteses) nunca e alterada por essa rotina.
-async function padronizarNumeracaoAulasQts({ turmaId, semanaId }) {
-  const aulasResult = await query(
-    `
-      SELECT
-        h.id,
-        h.semana_id,
-        h.dia,
-        h.inicio,
-        h.fim,
-        h.materia_id,
-        h.materia_nome,
-        h.aula_corrente,
-        s.inicio AS semana_inicio
-      FROM horarios h
-      LEFT JOIN semanas s ON s.id = h.semana_id
-      WHERE h.turma_id = $1
-        AND h.tipo = 'aula'
-        AND (h.materia_id IS NOT NULL OR h.materia_nome <> '')
-    `,
-    [turmaId]
-  );
-
-  const semanaTimestamp = (valor) => {
-    const data = valor instanceof Date
-      ? valor
-      : new Date(`${String(valor || "").slice(0, 10)}T00:00:00.000Z`);
-    const tempo = data.getTime();
-    return Number.isFinite(tempo) ? tempo : Number.MAX_SAFE_INTEGER;
-  };
-
-  const grupos = new Map();
-  for (const row of aulasResult.rows) {
-    const chave = row.materia_id || normalizarTextoComparacao(row.materia_nome);
-    if (!chave) continue;
-    if (!grupos.has(chave)) grupos.set(chave, []);
-    grupos.get(chave).push(row);
-  }
-
-  const correcoes = [];
-  for (const linhas of grupos.values()) {
-    const ordenadas = [...linhas].sort((a, b) => {
-      const diffSemana = semanaTimestamp(a.semana_inicio) - semanaTimestamp(b.semana_inicio);
-      if (diffSemana !== 0) return diffSemana;
-      const diffDia = diaOffset(a.dia) - diaOffset(b.dia);
-      if (diffDia !== 0) return diffDia;
-      const diffInicio = horarioParaMinutos(a.inicio) - horarioParaMinutos(b.inicio);
-      if (diffInicio !== 0) return diffInicio;
-      const diffFim = horarioParaMinutos(a.fim) - horarioParaMinutos(b.fim);
-      if (diffFim !== 0) return diffFim;
-      return String(a.id || "").localeCompare(String(b.id || ""), "pt-BR");
-    });
-
-    let sequencial = 0;
-    for (const aula of ordenadas) {
-      const manual = Number.parseInt(aula.aula_corrente, 10);
-      const manualValido = Number.isFinite(manual) && manual > 0;
-      const violaSequencia = manualValido && manual < sequencial;
-      const atual = manualValido && !violaSequencia ? manual : (sequencial + 1);
-      sequencial = atual;
-
-      if (violaSequencia && aula.semana_id === semanaId) {
-        correcoes.push({ id: aula.id, aulaCorrente: atual });
-      }
-    }
-  }
-
-  for (const correcao of correcoes) {
-    await query("UPDATE horarios SET aula_corrente = $1 WHERE id = $2", [correcao.aulaCorrente, correcao.id]);
-  }
-
-  return { aulasRenumeradas: correcoes.length, materiasAtualizadas: 0 };
-}
-
 async function getConfirmacaoHorariosInstrutor({ turmaId, semanaId, instrutorId }) {
   if (!turmaId || !semanaId || !instrutorId) return null;
   const result = await query(
@@ -3416,8 +3335,6 @@ app.post("/api/qts/confirmacao", auth, requireGestor, asyncRoute(async (req, res
     return res.status(400).json({ ok: false, mensagem: "Informe turma e semana para confirmar o QTS." });
   }
 
-  const { aulasRenumeradas } = await padronizarNumeracaoAulasQts({ turmaId, semanaId });
-
   const envio = await enviarEmailsConfirmacaoQts({
     turmaId,
     semanaId,
@@ -3427,19 +3344,14 @@ app.post("/api/qts/confirmacao", auth, requireGestor, asyncRoute(async (req, res
     aulasCanceladas,
   });
 
-  const sufixoRenumeracao = aulasRenumeradas > 0
-    ? ` Numeração de ${aulasRenumeradas} aula(s) padronizada para manter a sequência crescente.`
-    : "";
-
-  const mensagem = (envio.configurado
+  const mensagem = envio.configurado
     ? `QTS confirmado. E-mails enviados para ${envio.emailsEnviados} de ${envio.instrutoresComEmailValido} instrutor(es) alterado(s) com e-mail válido.`
-    : `QTS confirmado. SMTP não configurado, e-mails não enviados (instrutores alterados: ${envio.instrutoresAlterados || 0}).`) + sufixoRenumeracao;
+    : `QTS confirmado. SMTP não configurado, e-mails não enviados (instrutores alterados: ${envio.instrutoresAlterados || 0}).`;
 
   res.json({
     ok: true,
     mensagem,
     email: envio,
-    aulasRenumeradas,
   });
 }));
 
