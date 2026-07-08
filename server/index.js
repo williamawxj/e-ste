@@ -3967,59 +3967,17 @@ app.get("/api/relatorios/carga-horaria", auth, requireGestor, asyncRoute(async (
     filtroTurma = `AND t.id = $${params.length}`;
   }
 
-  const dataAulaSql = `(
-    s.inicio + CASE h.dia
-      WHEN 'Segunda' THEN 0
-      WHEN 'Terca' THEN 1
-      WHEN 'TerÃ§a' THEN 1
-      WHEN 'TerÃƒÂ§a' THEN 1
-      WHEN 'TerÃƒÆ’Ã‚Â§a' THEN 1
-      WHEN 'Quarta' THEN 2
-      WHEN 'Quinta' THEN 3
-      WHEN 'Sexta' THEN 4
-      ELSE 0
-    END
-  )`;
-
-  let filtroMesAulas = "";
-  if (intervaloMes?.ok) {
-    params.push(intervaloMes.inicio);
-    const indiceInicio = params.length;
-    params.push(intervaloMes.fim);
-    const indiceFim = params.length;
-    filtroMesAulas = `
-      AND ${dataAulaSql} >= $${indiceInicio}::date
-      AND ${dataAulaSql} < $${indiceFim}::date
-    `;
-  }
-
-  const result = await query(
+  const materiasResult = await query(
     `
-      WITH aulas_lancadas AS (
-        SELECT
-          h.turma_id,
-          h.materia_id,
-          COUNT(*)::int AS aulas_lancadas
-        FROM horarios h
-        JOIN semanas s ON s.id = h.semana_id
-        WHERE h.tipo = 'aula'
-          AND h.materia_id IS NOT NULL
-          ${filtroMesAulas}
-        GROUP BY h.turma_id, h.materia_id
-      )
       SELECT
         t.id AS turma_id,
         t.nome AS turma_nome,
         m.id AS materia_id,
         m.nome AS materia_nome,
-        COALESCE(m.carga_horaria, 0)::int AS carga_horaria,
-        COALESCE(a.aulas_lancadas, 0)::int AS aulas_lancadas
+        COALESCE(m.carga_horaria, 0)::int AS carga_horaria
       FROM turma_materias tm
       JOIN turmas t ON t.id = tm.turma_id
       JOIN materias m ON m.id = tm.materia_id
-      LEFT JOIN aulas_lancadas a
-        ON a.turma_id = tm.turma_id
-       AND a.materia_id = tm.materia_id
       WHERE 1 = 1
         ${filtroTurma}
       ORDER BY t.nome, m.nome
@@ -4027,9 +3985,69 @@ app.get("/api/relatorios/carga-horaria", auth, requireGestor, asyncRoute(async (
     params
   );
 
-  const itens = result.rows.map((row) => {
+  // "Aulas lancadas" e sempre o maior numero de aula alcancado (respeitando
+  // sobrescritas manuais de aula_corrente), considerando toda a grade ja
+  // registrada da turma -- nunca so o periodo/mes filtrado nesta tela. Usa a
+  // mesma logica de sequencia crescente aplicada ao confirmar o QTS.
+  const aulasResult = await query(
+    `
+      SELECT
+        h.turma_id,
+        h.materia_id,
+        h.dia,
+        h.inicio,
+        h.fim,
+        h.aula_corrente,
+        s.inicio AS semana_inicio
+      FROM horarios h
+      JOIN semanas s ON s.id = h.semana_id
+      JOIN turmas t ON t.id = h.turma_id
+      WHERE h.tipo = 'aula'
+        AND h.materia_id IS NOT NULL
+        ${filtroTurma}
+    `,
+    params
+  );
+
+  const semanaTimestamp = (valor) => {
+    const data = valor instanceof Date
+      ? valor
+      : new Date(`${String(valor || "").slice(0, 10)}T00:00:00.000Z`);
+    const tempo = data.getTime();
+    return Number.isFinite(tempo) ? tempo : Number.MAX_SAFE_INTEGER;
+  };
+
+  const gruposAulas = new Map();
+  for (const row of aulasResult.rows) {
+    const chave = `${row.turma_id}|${row.materia_id}`;
+    if (!gruposAulas.has(chave)) gruposAulas.set(chave, []);
+    gruposAulas.get(chave).push(row);
+  }
+
+  const aulasLancadasPorGrupo = new Map();
+  for (const [chave, linhas] of gruposAulas.entries()) {
+    const ordenadas = [...linhas].sort((a, b) => {
+      const diffSemana = semanaTimestamp(a.semana_inicio) - semanaTimestamp(b.semana_inicio);
+      if (diffSemana !== 0) return diffSemana;
+      const diffDia = diaOffset(a.dia) - diaOffset(b.dia);
+      if (diffDia !== 0) return diffDia;
+      const diffInicio = horarioParaMinutos(a.inicio) - horarioParaMinutos(b.inicio);
+      if (diffInicio !== 0) return diffInicio;
+      return horarioParaMinutos(a.fim) - horarioParaMinutos(b.fim);
+    });
+
+    let sequencial = 0;
+    for (const aula of ordenadas) {
+      const manual = Number.parseInt(aula.aula_corrente, 10);
+      const atual = Number.isFinite(manual) && manual > 0 ? manual : (sequencial + 1);
+      sequencial = atual;
+    }
+    aulasLancadasPorGrupo.set(chave, sequencial);
+  }
+
+  const itens = materiasResult.rows.map((row) => {
     const cargaHoraria = Number(row.carga_horaria || 0);
-    const aulasLancadas = Number(row.aulas_lancadas || 0);
+    const aulasLancadas = aulasLancadasPorGrupo.get(`${row.turma_id}|${row.materia_id}`) || 0;
     const saldo = cargaHoraria - aulasLancadas;
     const percentual = cargaHoraria > 0
       ? Math.min(100, Math.round((aulasLancadas / cargaHoraria) * 100))
