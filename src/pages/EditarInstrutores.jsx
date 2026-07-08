@@ -1,11 +1,19 @@
-﻿import { useEffect, useState } from "react";
-import { ChevronDown, UserRound, UsersRound } from "lucide-react";
+﻿import { useEffect, useMemo, useState } from "react";
+import { ChevronDown, Search, UserRound, UsersRound } from "lucide-react";
 import Button from "../components/Button";
 import Card from "../components/Card";
 import MateriasDropdown from "../components/MateriasDropdown";
 import PageShell from "../components/PageShell";
 import { definirChefeMateria, getChefesMateria, getMaterias } from "../utils/academicoDB";
 import { atualizarMateriasUsuario, atualizarUsuario, getGestores, getInstrutores, removerUsuario } from "../utils/usuariosDB";
+
+function normalizarBusca(valor) {
+  return String(valor || "")
+    .normalize("NFD")
+    .replace(new RegExp("[\\u0300-\\u036f]", "g"), "")
+    .trim()
+    .toLowerCase();
+}
 
 export default function EditarInstrutores({ usuario }) {
   const [instrutores, setInstrutores] = useState([]);
@@ -16,6 +24,25 @@ export default function EditarInstrutores({ usuario }) {
   const [instrutorAbertoId, setInstrutorAbertoId] = useState("");
   const [gestorAbertoId, setGestorAbertoId] = useState("");
   const [statusChefia, setStatusChefia] = useState("");
+  const [busca, setBusca] = useState("");
+
+  const buscaNormalizada = normalizarBusca(busca);
+  const instrutoresFiltrados = useMemo(() => {
+    if (!buscaNormalizada) return instrutores;
+    return instrutores.filter((instrutor) => (
+      normalizarBusca(instrutor.nome).includes(buscaNormalizada)
+      || normalizarBusca(instrutor.nomeGrade).includes(buscaNormalizada)
+      || normalizarBusca(instrutor.email).includes(buscaNormalizada)
+    ));
+  }, [instrutores, buscaNormalizada]);
+  const gestoresFiltrados = useMemo(() => {
+    if (!buscaNormalizada) return gestores;
+    return gestores.filter((gestor) => (
+      normalizarBusca(gestor.nome).includes(buscaNormalizada)
+      || normalizarBusca(gestor.nomeGrade).includes(buscaNormalizada)
+      || normalizarBusca(gestor.email).includes(buscaNormalizada)
+    ));
+  }, [gestores, buscaNormalizada]);
 
   async function recarregar() {
     const [listaInstrutores, listaGestores, listaMaterias, listaChefesMateria] = await Promise.all([
@@ -168,6 +195,23 @@ export default function EditarInstrutores({ usuario }) {
         </Card>
 
         <Card>
+          <label className="flex items-center gap-2 rounded-xl border border-slate-300 bg-white px-4 py-3 focus-within:border-blue-500 focus-within:ring-2 focus-within:ring-blue-100">
+            <Search size={16} className="shrink-0 text-slate-500" />
+            <input
+              className="w-full text-slate-900 outline-none"
+              placeholder="Buscar por nome ou e-mail (instrutor ou gestor)"
+              value={busca}
+              onChange={(event) => setBusca(event.target.value)}
+            />
+          </label>
+          {buscaNormalizada && (
+            <p className="mt-2 text-xs text-slate-600">
+              {instrutoresFiltrados.length} instrutor(es) e {gestoresFiltrados.length} gestor(es) encontrados.
+            </p>
+          )}
+        </Card>
+
+        <Card>
           <h2 className="flex items-center gap-2 text-sm font-bold text-slate-950">
             <UsersRound size={16} />
             Chefia de pasta por matéria
@@ -230,13 +274,15 @@ export default function EditarInstrutores({ usuario }) {
           </p>
         </Card>
 
-        {instrutores.length === 0 && (
+        {instrutoresFiltrados.length === 0 && (
           <Card>
-            <p className="text-slate-600">Nenhum instrutor aprovado cadastrado.</p>
+            <p className="text-slate-600">
+              {buscaNormalizada ? "Nenhum instrutor encontrado para essa busca." : "Nenhum instrutor aprovado cadastrado."}
+            </p>
           </Card>
         )}
 
-        {instrutores.map((instrutor) => (
+        {instrutoresFiltrados.map((instrutor) => (
           <Card key={instrutor.id}>
             <button
               type="button"
@@ -340,11 +386,13 @@ export default function EditarInstrutores({ usuario }) {
             Clique no nome do gestor para editar os dados de perfil, incluindo o e-mail cadastrado.
           </p>
 
-          {gestores.length === 0 ? (
-            <p className="mt-2 text-sm text-slate-600">Nenhum gestor cadastrado.</p>
+          {gestoresFiltrados.length === 0 ? (
+            <p className="mt-2 text-sm text-slate-600">
+              {buscaNormalizada ? "Nenhum gestor encontrado para essa busca." : "Nenhum gestor cadastrado."}
+            </p>
           ) : (
             <div className="mt-3 space-y-2">
-              {gestores.map((gestor) => (
+              {gestoresFiltrados.map((gestor) => (
                 <div key={gestor.id} className="rounded-xl border border-slate-200 bg-slate-50">
                   <button
                     type="button"
